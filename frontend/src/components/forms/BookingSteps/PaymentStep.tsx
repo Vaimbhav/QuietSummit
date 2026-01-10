@@ -71,6 +71,8 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                 return
             }
 
+            console.log('Creating order with amount:', bookingData.totalAmount)
+
             // Create Razorpay order
             const orderResponse = await createRazorpayOrder({
                 amount: bookingData.totalAmount || 0,
@@ -82,11 +84,21 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                 },
             })
 
+            console.log('Order created:', orderResponse.data)
+
             const { orderId, amount, currency } = orderResponse.data
 
             // Format contact number - remove country code and spaces
             const rawContact = bookingData.travelers?.[0]?.emergencyContact || ''
             const formattedContact = rawContact.replace(/\D/g, '').slice(-10)
+            
+            console.log('Payment details:', {
+                orderId,
+                amount,
+                currency,
+                contact: formattedContact,
+                email: bookingData.email
+            })
 
             // Razorpay options
             const options = {
@@ -94,8 +106,10 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                 amount: amount,
                 currency: currency,
                 name: 'QuietSummit',
-                description: journey.title,
+                description: `${journey.title} - ${bookingData.numberOfTravelers} traveler(s)`,
                 order_id: orderId,
+                callback_url: window.location.origin + '/booking-confirmation',
+                redirect: false,
                 handler: async function (response: any) {
                     try {
                         // Verify payment
@@ -154,10 +168,13 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
 
             razorpay.on('payment.failed', function (response: any) {
                 console.error('Payment failed:', response)
-                alert('Payment failed. Please try again.')
+                console.error('Error details:', response.error)
+                const errorMsg = response.error?.description || 'Payment failed. Please try again.'
+                alert(errorMsg)
                 setIsProcessing(false)
             })
 
+            console.log('Opening Razorpay with options:', { ...options, key: '***', handler: '[Function]' })
             razorpay.open()
         } catch (error: any) {
             console.error('Payment error:', error)

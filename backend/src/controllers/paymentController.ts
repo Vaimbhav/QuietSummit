@@ -4,6 +4,11 @@ import crypto from 'crypto'
 import logger from '../utils/logger'
 import { config } from '../config/environment'
 
+// Validate Razorpay configuration on startup
+if (!config.razorpay.keyId || !config.razorpay.keySecret) {
+    logger.error('Razorpay credentials not configured. Please set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET.')
+}
+
 // Initialize Razorpay
 const razorpay = new Razorpay({
     key_id: config.razorpay.keyId,
@@ -15,22 +20,38 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
     try {
         const { amount, currency = 'INR', receipt, notes } = req.body
 
-        if (!amount) {
+        logger.info('Creating Razorpay order:', { amount, currency, receipt })
+
+        if (!amount || amount <= 0) {
             res.status(400).json({
                 success: false,
-                error: 'Amount is required',
+                error: 'Valid amount is required',
+            })
+            return
+        }
+
+        // Ensure amount is a valid number
+        const numAmount = parseFloat(amount)
+        if (isNaN(numAmount) || numAmount <= 0) {
+            res.status(400).json({
+                success: false,
+                error: 'Amount must be a valid positive number',
             })
             return
         }
 
         const options = {
-            amount: Math.round(amount * 100), // Convert to paise
+            amount: Math.round(numAmount * 100), // Convert to paise
             currency,
             receipt: receipt || `receipt_${Date.now()}`,
             notes: notes || {},
         }
 
+        logger.info('Razorpay order options:', options)
+
         const order = await razorpay.orders.create(options)
+
+        logger.info('Razorpay order created successfully:', { orderId: order.id, amount: order.amount })
 
         res.status(201).json({
             success: true,
