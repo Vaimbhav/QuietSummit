@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { User } from 'lucide-react'
 import Button from '../../common/Button'
 import Input from '../../common/Input'
@@ -23,7 +23,7 @@ interface Traveler {
 }
 
 export default function TravelerInfoStep({
-    journey,
+    journey: _journey,
     bookingData,
     onNext,
     onBack,
@@ -34,7 +34,10 @@ export default function TravelerInfoStep({
 
     const [travelers, setTravelers] = useState<Traveler[]>(
         bookingData.travelers && bookingData.travelers.length > 0
-            ? bookingData.travelers
+            ? bookingData.travelers.map(t => ({
+                ...t,
+                emergencyContact: t.emergencyContact || '',
+            }))
             : Array.from({ length: bookingData.numberOfTravelers || 1 }, (_, i) => ({
                 name: i === 0 ? userData?.name || '' : '',
                 age: 0,
@@ -147,7 +150,7 @@ export default function TravelerInfoStep({
                                 <PhoneInput
                                     label="Emergency Contact"
                                     value={traveler.emergencyContact}
-                                    onChange={(phone, countryCode, isValid) => {
+                                    onChange={(phone, countryCode) => {
                                         updateTraveler(index, 'emergencyContact', phone)
                                         updateTraveler(index, 'emergencyContactCountry', countryCode)
                                     }}

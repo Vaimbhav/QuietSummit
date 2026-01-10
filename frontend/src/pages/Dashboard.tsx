@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { useAppSelector, useAppDispatch } from '@store/hooks'
-import { clearUser, updatePreferences } from '@store/slices/userSlice'
+import { useAppDispatch } from '@store/hooks'
+import { clearUser } from '@store/slices/userSlice'
 import { getMemberProfile, updateMemberPreferences as updateMemberAPI, getMemberBookings } from '../services/api'
 import {
     User, Mail, Calendar, Heart, Bell, LogOut,
@@ -12,7 +12,6 @@ import Card from '@components/common/Card'
 import { useNavigate } from 'react-router-dom'
 
 export default function Dashboard() {
-    const user = useAppSelector((state) => state.user)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const [profile, setProfile] = useState<any>(null)

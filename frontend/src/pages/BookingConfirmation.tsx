@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { CheckCircle, Calendar, MapPin, Users, Download, Mail, Phone } from 'lucide-react'
+import { CheckCircle, Calendar, MapPin, Users, Mail, Phone } from 'lucide-react'
 import { getBookingById } from '../services/api'
 import Button from '@components/common/Button'
 import Card from '@components/common/Card'

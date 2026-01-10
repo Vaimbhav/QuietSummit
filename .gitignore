@@ -85,3 +85,5 @@ out/
 # Scripts and seed data (optional - uncomment if needed)
 # *.js
 # seed_journeys.json
+update-journeys.js
+quickstart.sh

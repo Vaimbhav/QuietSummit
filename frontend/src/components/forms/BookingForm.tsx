@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Check } from 'lucide-react'
 import { Journey } from '../../types/journey'
@@ -7,7 +7,6 @@ import TravelerInfoStep from './BookingSteps/TravelerInfoStep'
 import AddOnsStep from './BookingSteps/AddOnsStep'
 import ReviewStep from './BookingSteps/ReviewStep'
 import PaymentStep from './BookingSteps/PaymentStep'
-import { useNavigate, useLocation } from 'react-router-dom'
 
 interface BookingFormProps {
     journey: Journey
@@ -51,8 +50,6 @@ const steps = [
 ]
 
 export default function BookingForm({ journey, isOpen, onClose }: BookingFormProps) {
-    const navigate = useNavigate()
-    const location = useLocation()
     const [currentStep, setCurrentStep] = useState(1)
     const [bookingData, setBookingData] = useState<Partial<BookingData>>({
         journeyId: journey._id,

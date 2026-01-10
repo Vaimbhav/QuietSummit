@@ -91,7 +91,7 @@ export default function ReviewStep({ journey, bookingData, onNext, onBack }: Rev
                     <div className="flex justify-between items-center py-2">
                         <span className="text-sm text-neutral-600">Duration</span>
                         <span className="text-sm font-bold text-neutral-900">
-                            {journey.duration?.days || journey.duration || 'N/A'} days
+                            {journey.duration?.days || 'N/A'} days
                         </span>
                     </div>
                 </div>

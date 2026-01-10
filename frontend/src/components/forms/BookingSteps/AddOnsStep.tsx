@@ -23,6 +23,12 @@ interface CouponData {
     description?: string
 }
 
+type AppliedCoupon = {
+    couponId: string;
+    code: string;
+    discount: number;
+}
+
 // Color palette for coupon cards
 const colorPalette = [
     'bg-gradient-to-br from-teal-500 to-cyan-500',
@@ -44,7 +50,7 @@ export default function AddOnsStep({ journey, bookingData, onNext, onBack }: Add
     const [selectedAddOns, setSelectedAddOns] = useState<string[]>(bookingData.addOns || [])
     const [specialRequests, setSpecialRequests] = useState(bookingData.specialRequests || '')
     const [couponCode, setCouponCode] = useState(bookingData.couponCode || '')
-    const [appliedCoupon, setAppliedCoupon] = useState(bookingData.couponDetails || null)
+    const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(bookingData.couponDetails ?? null)
     const [couponError, setCouponError] = useState('')
     const [isApplyingCoupon, setIsApplyingCoupon] = useState(false)
     const [showAllCoupons, setShowAllCoupons] = useState(false)
@@ -297,7 +303,7 @@ export default function AddOnsStep({ journey, bookingData, onNext, onBack }: Add
                                                 ? `${coupon.discountValue}% OFF`
                                                 : `₹${coupon.discountValue.toLocaleString()} OFF`
 
-                                            const isApplied = appliedCoupon?.code === coupon.code
+                                            const isApplied = appliedCoupon ? (appliedCoupon as AppliedCoupon).code === coupon.code : false
 
                                             return (
                                                 <div

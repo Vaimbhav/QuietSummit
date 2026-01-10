@@ -162,7 +162,7 @@ export default function SignUpForm() {
             <PhoneInput
                 label="Phone Number (Optional)"
                 value={phoneNumber}
-                onChange={(phone, countryCode, isValid) => {
+                onChange={(phone, countryCode) => {
                     setPhoneNumber(phone)
                     setPhoneCountry(countryCode)
                 }}
