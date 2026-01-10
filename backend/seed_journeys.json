@@ -1,0 +1,2385 @@
+[
+  {
+    "title": "Himalayan Silence: Manali Wilderness",
+    "slug": "himalayan-silence-manali",
+    "description": "A 5-day immersive journey into the quiet corners of the Himalayas. Move beyond the crowded tourist trails into secluded pine forests and hidden waterfalls. This is not just a trek; it is a guided practice in slowing down, with daily meditation sessions, silent walks, and evenings spent around a fire sharing stories.",
+    "status": "published",
+    "location": {
+      "region": "Himachal Pradesh",
+      "country": "India",
+      "coordinates": {
+        "lat": 32.2432,
+        "lng": 77.1892
+      }
+    },
+    "duration": {
+      "days": 5,
+      "nights": 4
+    },
+    "difficulty": "moderate",
+    "idealFor": [
+      "Solo Travelers",
+      "Nature Lovers",
+      "Digital Detox Seekers"
+    ],
+    "season": [
+      "Spring",
+      "Autumn"
+    ],
+    "maxGroupSize": 12,
+    "basePrice": 24000,
+    "margin": 20,
+    "includes": [
+      "All accommodation (Boutique homestays & Luxury Tents)",
+      "All vegetarian meals (Farm-to-table)",
+      "Professional Guide & Mindfulness Coach",
+      "Forest Permit Fees",
+      "Local Transport from Manali Bus Stand"
+    ],
+    "excludes": [
+      "Travel to Manali",
+      "Personal Porter",
+      "Travel Insurance",
+      "Alcoholic Beverages"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival & Grounding",
+        "description": "Arrive in Manali and transfer to our secluded homestay in Nasogi. Briefing on the 'Art of Slow Travel'. Evening silent walk through the apple orchards.",
+        "activities": [
+          "Welcome Circle",
+          "Orchard Walk",
+          "Sunset Meditation"
+        ],
+        "meals": [
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Stone Cottage Homestay",
+        "imageUrl": "/images/insta-1.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Into the Cedar Forests",
+        "description": "We leave civilization behind and trek gently up to the Lama Dugh meadow. The focus is on rhythmic breathing and noticing the micro-details of the forest.",
+        "activities": [
+          "Forest Bathing (Shinrin-yoku)",
+          "Nature Journaling"
+        ],
+        "meals": [
+          "Breakfast",
+          "Picnic Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Luxury Canvas Tents",
+        "imageUrl": "/images/insta-3.jpg"
+      },
+      {
+        "day": 3,
+        "title": "The Ridge of Silence",
+        "description": "A slightly challenging climb to the ridge offering panoramic views of Indrasan and Deo Tibba. We spend an hour in noble silence at the top.",
+        "activities": [
+          "Ridge Trek",
+          "Silent sitting",
+          "Stargazing"
+        ],
+        "meals": [
+          "Breakfast",
+          "Packed Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Luxury Canvas Tents",
+        "imageUrl": "/images/insta-4.jpg"
+      },
+      {
+        "day": 4,
+        "title": "Descent & Community",
+        "description": "Return to the valley. Afternoon free for rest. Evening community dinner with local hosts, learning about mountain culture and folklore.",
+        "activities": [
+          "Cultural Exchange",
+          "Closing Circle"
+        ],
+        "meals": [
+          "Breakfast",
+          "Lunch",
+          "Feast Dinner"
+        ],
+        "accommodation": "Stone Cottage Homestay",
+        "imageUrl": "/images/insta-5.jpg"
+      },
+      {
+        "day": 5,
+        "title": "Departure",
+        "description": "Morning tea and reflection. Check-out and transfer to Manali bus stand with a renewed sense of calm.",
+        "activities": [
+          "Reflection Session"
+        ],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-1.jpg",
+      "/images/insta-3.jpg",
+      "/images/insta-4.jpg",
+      "/images/insta-5.jpg"
+    ],
+    "testimonials": [
+      {
+        "author": "Sarah J.",
+        "rating": 5,
+        "text": "I came looking for a break, I found a whole new way of seeing. The silence was exactly what I needed."
+      },
+      {
+        "author": "Dhruv K.",
+        "rating": 5,
+        "text": "QuietSummit lives up to its name. Perfectly curated, deeply respectful of nature."
+      }
+    ],
+    "createdAt": "2024-01-15T10:00:00.000Z",
+    "updatedAt": "2024-01-15T10:00:00.000Z",
+    "price": 24000,
+    "destination": "Himachal Pradesh",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Monastic Spiti: High Altitude Stillness",
+    "slug": "monastic-spiti-stillness",
+    "description": "A high-altitude expedition into the stark, lunar landscapes of Spiti Valley. We visit ancient monasteries not just to see them, but to practice with the monks. This journey pushes your physical limits while expanding your mental space.",
+    "status": "published",
+    "location": {
+      "region": "Spiti Valley",
+      "country": "India",
+      "coordinates": {
+        "lat": 32.2276,
+        "lng": 78.0782
+      }
+    },
+    "duration": {
+      "days": 7,
+      "nights": 6
+    },
+    "difficulty": "challenging",
+    "idealFor": [
+      "Adventure Seekers",
+      "Spiritual Seekers",
+      "Photographers"
+    ],
+    "season": [
+      "Summer"
+    ],
+    "maxGroupSize": 10,
+    "basePrice": 35000,
+    "margin": 18,
+    "includes": [
+      "Transport (Tempo Traveller) from Shimla",
+      "All homestay & monastery guesthouse stays",
+      "All meals",
+      "Inner Line Permits",
+      "Expert High-Altitude Guide"
+    ],
+    "excludes": [
+      "Travel to Shimla",
+      "Personal Medication",
+      "Camera Fees"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Shimla to Kalpa",
+        "description": "The journey begins. A long scenic drive to Kalpa, viewing the sacred Kinner Kailash peak at sunset.",
+        "activities": [
+          "Acclimatization Walk",
+          "Sunset View"
+        ],
+        "meals": [
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Homestay in Kalpa",
+        "imageUrl": "/images/insta-2.webp"
+      },
+      {
+        "day": 2,
+        "title": "Entering the Valley: Nako & Tabo",
+        "description": "Crossing into the arid high desert. Visit Nako lake and the 1000-year-old Tabo monastery.",
+        "activities": [
+          "Monastery Visit",
+          "Lake Walk"
+        ],
+        "meals": [
+          "Breakfast",
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Guesthouse in Tabo",
+        "imageUrl": "/images/insta-5.jpg"
+      },
+      {
+        "day": 3,
+        "title": "Dhankar & Kaza",
+        "description": "Hike to Dhankar Lake for clarity. Afternoon arrival in Kaza, the headquarters of Spiti.",
+        "activities": [
+          "High Altitude Hike",
+          "Market Visit"
+        ],
+        "meals": [
+          "Breakfast",
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Premium Homestay Kaza",
+        "imageUrl": "/images/insta-1.jpg"
+      },
+      {
+        "day": 4,
+        "title": "The Highest Villages: Langza & Komic",
+        "description": "Driving to some of the world's highest inhabited villages. Fossil hunting and sending postcards from the world's highest post office.",
+        "activities": [
+          "Village Walk",
+          "Fossil Hunting"
+        ],
+        "meals": [
+          "Breakfast",
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Premium Homestay Kaza",
+        "imageUrl": "/images/insta-3.jpg"
+      },
+      {
+        "day": 5,
+        "title": "Monastic Life: Key Monastery",
+        "description": "A day dedicated to Key Monastery. We join the monks for morning prayers and have a private session on Buddhist philosophy.",
+        "activities": [
+          "Morning Prayers",
+          "Philosophy Talk"
+        ],
+        "meals": [
+          "Breakfast",
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Premium Homestay Kaza"
+      },
+      {
+        "day": 6,
+        "title": "Chandratal: The Moon Lake",
+        "description": "Drive to the mesmerising Chandratal lake. Camping under a blanket of stars.",
+        "activities": [
+          "Lake Circumambulation",
+          "Camping"
+        ],
+        "meals": [
+          "Breakfast",
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "luxury Camps Chandratal",
+        "imageUrl": "/images/insta-4.jpg"
+      },
+      {
+        "day": 7,
+        "title": "Return to Manali",
+        "description": "Crossing the Kunzum and Rohtang/Atal passes to return to the lush greenery of Manali.",
+        "activities": [
+          "Pass Crossing"
+        ],
+        "meals": [
+          "Breakfast",
+          "Lunch"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-2.webp",
+      "/images/insta-5.jpg",
+      "/images/insta-1.jpg",
+      "/images/insta-4.jpg"
+    ],
+    "testimonials": [
+      {
+        "author": "Elena R.",
+        "rating": 5,
+        "text": "Spiti changed me. The landscape is unforgiving but incredibly beautiful. QuietSummit organized it perfectly."
+      }
+    ],
+    "createdAt": "2024-02-10T10:00:00.000Z",
+    "updatedAt": "2024-02-10T10:00:00.000Z",
+    "price": 35000,
+    "destination": "Spiti Valley",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Wayanad: Forest Bathing & Coffee",
+    "slug": "wayanad-forest-coffee",
+    "description": "A gentle, sensory journey through the misty rainforests of Wayanad. Stay in a coffee estate, learn the art of brewing, and walk silently through ancient groves. Perfect for those looking to reset their nervous system.",
+    "status": "published",
+    "location": {
+      "region": "Kerala",
+      "country": "India",
+      "coordinates": {
+        "lat": 11.6854,
+        "lng": 76.132
+      }
+    },
+    "duration": {
+      "days": 4,
+      "nights": 3
+    },
+    "difficulty": "easy",
+    "idealFor": [
+      "Couples",
+      "Foodies",
+      "Slow Travelers"
+    ],
+    "season": [
+      "Winter",
+      "Monsoon"
+    ],
+    "maxGroupSize": 8,
+    "basePrice": 18000,
+    "margin": 25,
+    "includes": [
+      "Estate Villa Stay",
+      "All meals (Traditional Kerala Cuisine)",
+      "Coffee plantation tour",
+      "Guided Forest Walks",
+      "Jeep Transfers"
+    ],
+    "excludes": [
+      "Travel to Calicut/Wayanad",
+      "Personal expenses"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival at the Estate",
+        "description": "Check into a heritage bungalow in the middle of a 100-acre coffee estate. Evening campfire and listening to the forest sounds.",
+        "activities": [
+          "Estate Walk",
+          "Campfire"
+        ],
+        "meals": [
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Heritage Bungalow",
+        "imageUrl": "/images/insta-2.webp"
+      },
+      {
+        "day": 2,
+        "title": "The Coffee Journey",
+        "description": "From bean to cup. Participate in the harvesting (seasonal) or processing of coffee. Afternoon tasting session.",
+        "activities": [
+          "Coffee Tour",
+          "Cupping Session"
+        ],
+        "meals": [
+          "Breakfast",
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Heritage Bungalow"
+      },
+      {
+        "day": 3,
+        "title": "Edakkal & The Caves",
+        "description": "A morning trek to the Neolithic Edakkal Caves. Afternoon free for reading or Ayurvedic massage (optional).",
+        "activities": [
+          "Cave Trek",
+          "Leisure"
+        ],
+        "meals": [
+          "Breakfast",
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Heritage Bungalow",
+        "imageUrl": "/images/insta-3.jpg"
+      },
+      {
+        "day": 4,
+        "title": "Departure",
+        "description": "Breakfast with the birds. Departure to Calicut.",
+        "activities": [
+          "Bird Watching"
+        ],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-2.webp",
+      "/images/insta-3.jpg",
+      "/images/insta-5.jpg"
+    ],
+    "testimonials": [
+      {
+        "author": "Priya M.",
+        "rating": 4,
+        "text": "Green, lush, and peaceful. The food was incredible."
+      }
+    ],
+    "createdAt": "2024-03-01T10:00:00.000Z",
+    "updatedAt": "2024-03-01T10:00:00.000Z",
+    "price": 18000,
+    "destination": "Kerala",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Ladakh: The High Desert Monastery",
+    "slug": "ladakh-high-desert",
+    "description": "Experience the stark beauty of Ladakh. Visit ancient monasteries perched on craggy peaks, meditate by the azure Pangong Lake, and lose yourself in the vastness of the high desert.",
+    "status": "published",
+    "location": {
+      "region": "Ladakh",
+      "country": "India",
+      "coordinates": {
+        "lat": 34.1526,
+        "lng": 77.5771
+      }
+    },
+    "duration": {
+      "days": 6,
+      "nights": 5
+    },
+    "difficulty": "moderate",
+    "idealFor": [
+      "Adventure Seekers",
+      "Photographers",
+      "History Buffs"
+    ],
+    "season": [
+      "Summer",
+      "Spring"
+    ],
+    "maxGroupSize": 12,
+    "basePrice": 32000,
+    "margin": 20,
+    "includes": [
+      "Airport Transfers",
+      "Accommodation in Boutique Hotels & Camps",
+      "Breakfast & Dinner",
+      "Inner Line Permits",
+      "Oxygen Cylinder in Vehicle"
+    ],
+    "excludes": [
+      "Flights to Leh",
+      "Lunch",
+      "Personal Expenses"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Acclimatization in Leh",
+        "description": "Rest day to adapt to the high altitude. Evening walk to Shanti Stupa.",
+        "activities": [
+          "Rest",
+          "Sunset Walk"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Boutique Hotel Leh",
+        "imageUrl": "/images/insta-4.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Monasteries of the Indus Valley",
+        "description": "Visit Thiksey and Hemis monasteries to witness morning prayers.",
+        "activities": [
+          "Monastery Tour",
+          "Chanting Session"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Boutique Hotel Leh"
+      },
+      {
+        "day": 3,
+        "title": "Crossing Khardung La",
+        "description": "Drive over one of the world's highest motorable passes to Nubra Valley.",
+        "activities": [
+          "High Pass Drive",
+          "Dune Walk"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Luxury Camp Nubra",
+        "imageUrl": "/images/insta-1.jpg"
+      },
+      {
+        "day": 4,
+        "title": "Pangong Tso",
+        "description": "Journey to the famous changing colors lake. Overnight by the lakeside.",
+        "activities": [
+          "Lake Walk",
+          "Stargazing"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Luxury Camp Pangong"
+      },
+      {
+        "day": 5,
+        "title": "Return to Leh",
+        "description": "Drive back via Chang La pass. Farewell dinner.",
+        "activities": [
+          "Scenic Drive",
+          "Farewell Dinner"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Boutique Hotel Leh"
+      },
+      {
+        "day": 6,
+        "title": "Departure",
+        "description": "Transfer to Leh airport.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-4.jpg",
+      "/images/insta-1.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-03-10T10:00:00.000Z",
+    "updatedAt": "2024-03-10T10:00:00.000Z",
+    "price": 32000,
+    "destination": "Ladakh",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Kashmir: The Silent Valley",
+    "slug": "kashmir-silent-valley",
+    "description": "Drift on Dal Lake, walk through saffron fields, and find peace in the meadows of Pahalgam. A journey through 'Paradise on Earth' focusing on its quieter, untouched side.",
+    "status": "published",
+    "location": {
+      "region": "Jammu & Kashmir",
+      "country": "India",
+      "coordinates": {
+        "lat": 34.0837,
+        "lng": 74.7973
+      }
+    },
+    "duration": {
+      "days": 5,
+      "nights": 4
+    },
+    "difficulty": "easy",
+    "idealFor": [
+      "Couples",
+      "Families",
+      "Nature Lovers"
+    ],
+    "season": [
+      "Spring",
+      "Summer",
+      "Autumn"
+    ],
+    "maxGroupSize": 10,
+    "basePrice": 28000,
+    "margin": 15,
+    "includes": [
+      "Houseboat Stay",
+      "Shikara Ride",
+      "All Meals",
+      "Local Transport"
+    ],
+    "excludes": [
+      "Flights",
+      "Shopping"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival in Srinagar",
+        "description": "Check into a heritage houseboat.",
+        "activities": [
+          "Shikara Ride"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Heritage Houseboat",
+        "imageUrl": "/images/insta-2.webp"
+      },
+      {
+        "day": 2,
+        "title": "Pahalgam Meadows",
+        "description": "Day trip to the Valley of Shepherds.",
+        "activities": [
+          "Nature Walk"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Houseboat"
+      },
+      {
+        "day": 3,
+        "title": "Gulmarg Gondola",
+        "description": "Visit the meadow of flowers and take the cable car.",
+        "activities": [
+          "Gondola Ride"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Houseboat"
+      },
+      {
+        "day": 4,
+        "title": "Mughal Gardens",
+        "description": "Walk through history in Nishat and Shalimar gardens.",
+        "activities": [
+          "Garden Tour"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Houseboat"
+      },
+      {
+        "day": 5,
+        "title": "Departure",
+        "description": "Transfer to airport.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-2.webp"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-03-12T10:00:00.000Z",
+    "updatedAt": "2024-03-12T10:00:00.000Z",
+    "price": 28000,
+    "destination": "Jammu & Kashmir",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Meghalaya: Root Bridges & Rain",
+    "slug": "meghalaya-roots",
+    "description": "Trek to the double-decker root bridges, explore crystal clear rivers, and witness the wettest place on earth. a journey into the heart of the Khasi hills.",
+    "status": "published",
+    "location": {
+      "region": "Meghalaya",
+      "country": "India",
+      "coordinates": {
+        "lat": 25.467,
+        "lng": 91.3662
+      }
+    },
+    "duration": {
+      "days": 5,
+      "nights": 4
+    },
+    "difficulty": "moderate",
+    "idealFor": [
+      "Trekkers",
+      "Nature Lovers"
+    ],
+    "season": [
+      "Winter",
+      "Spring"
+    ],
+    "maxGroupSize": 8,
+    "basePrice": 22000,
+    "margin": 20,
+    "includes": [
+      "Homestays",
+      "Guide",
+      "Meals"
+    ],
+    "excludes": [
+      "Flights to Guwahati"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival in Shillong",
+        "description": "Drive from Guwahati to the Scotland of the East.",
+        "activities": [
+          "Umiam Lake Stop"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Boutique Guesthouse",
+        "imageUrl": "/images/insta-3.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Cherrapunjee",
+        "description": "Waterfalls and caves.",
+        "activities": [
+          "Caving"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Homestay"
+      },
+      {
+        "day": 3,
+        "title": "Double Decker Trek",
+        "description": "The challenging but rewarding trek to the living root bridges.",
+        "activities": [
+          "Trekking",
+          "Swimming"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Homestay in Nongriat"
+      },
+      {
+        "day": 4,
+        "title": "Dawki River",
+        "description": "Boating on the crystal clear Umngot river.",
+        "activities": [
+          "Boating"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Riverside Camp",
+        "imageUrl": "/images/insta-5.jpg"
+      },
+      {
+        "day": 5,
+        "title": "Departure",
+        "description": "Drive back to Guwahati.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-3.jpg",
+      "/images/insta-5.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-03-15T10:00:00.000Z",
+    "updatedAt": "2024-03-15T10:00:00.000Z",
+    "price": 22000,
+    "destination": "Meghalaya",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Coorg: Coffee & Mist",
+    "slug": "coorg-coffee-mist",
+    "description": "Wake up to the smell of coffee and the sound of birds. Explore the lush plantations of Coorg, hike to Abbey Falls, and visit the serene Tibetan monastery.",
+    "status": "published",
+    "location": {
+      "region": "Karnataka",
+      "country": "India",
+      "coordinates": {
+        "lat": 12.3375,
+        "lng": 75.8069
+      }
+    },
+    "duration": {
+      "days": 3,
+      "nights": 2
+    },
+    "difficulty": "easy",
+    "idealFor": [
+      "Coffee Lovers",
+      "Relaxation"
+    ],
+    "season": [
+      "Winter",
+      "Monsoon"
+    ],
+    "maxGroupSize": 10,
+    "basePrice": 15000,
+    "margin": 25,
+    "includes": [
+      "Plantation Stay",
+      "Meals",
+      "Coffee Tour"
+    ],
+    "excludes": [
+      "Transport to Coorg"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Plantation Arrival",
+        "description": "Welcome drink and relaxation.",
+        "activities": [
+          "Nature Walk"
+        ],
+        "meals": [
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Coffee Estate Homestay",
+        "imageUrl": "/images/insta-2.webp"
+      },
+      {
+        "day": 2,
+        "title": "Dubare & Bylakuppe",
+        "description": "Elephant camp and Golden Temple.",
+        "activities": [
+          "Elephant Interaction",
+          "Monastery Visit"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Coffee Estate Homestay"
+      },
+      {
+        "day": 3,
+        "title": "Departure",
+        "description": "Checkout after breakfast.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-2.webp"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-03-18T10:00:00.000Z",
+    "updatedAt": "2024-03-18T10:00:00.000Z",
+    "price": 15000,
+    "destination": "Karnataka",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Varkala: Cliffside Calm",
+    "slug": "varkala-cliff-calm",
+    "description": "Perched on dramatic red cliffs overlooking the Arabian Sea, Varkala is a place to unwind. Daily yoga by the ocean, Ayurvedic treatments, and sunset walks.",
+    "status": "published",
+    "location": {
+      "region": "Kerala",
+      "country": "India",
+      "coordinates": {
+        "lat": 8.7379,
+        "lng": 76.7163
+      }
+    },
+    "duration": {
+      "days": 4,
+      "nights": 3
+    },
+    "difficulty": "easy",
+    "idealFor": [
+      "Yogis",
+      "Beach Lovers"
+    ],
+    "season": [
+      "Winter"
+    ],
+    "maxGroupSize": 15,
+    "basePrice": 12000,
+    "margin": 15,
+    "includes": [
+      "Yoga Sessions",
+      "Accommodation",
+      "Breakfast"
+    ],
+    "excludes": [
+      "Flights",
+      "Lunch/Dinner"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Cliff Arrival",
+        "description": "Check in and sunset at the cliff.",
+        "activities": [
+          "Sunset Watch"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Cliffside Resort",
+        "imageUrl": "/images/insta-1.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Yoga & Beach",
+        "description": "Morning yoga followed by beach time.",
+        "activities": [
+          "Yoga",
+          "Swimming"
+        ],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "Cliffside Resort"
+      },
+      {
+        "day": 3,
+        "title": "Backwaters",
+        "description": "Short trip to nearby backwaters.",
+        "activities": [
+          "Boating"
+        ],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "Cliffside Resort"
+      },
+      {
+        "day": 4,
+        "title": "Departure",
+        "description": "Morning practice and checkout.",
+        "activities": [
+          "Yoga"
+        ],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-1.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-03-20T10:00:00.000Z",
+    "updatedAt": "2024-03-20T10:00:00.000Z",
+    "price": 12000,
+    "destination": "Kerala",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Rishikesh: The Source of Yoga",
+    "slug": "rishikesh-yoga-source",
+    "description": "Connect with your spiritual side in the Yoga Capital of the World. Stay in a peaceful ashram, attend Ganga Aarti, and raft on the holy river.",
+    "status": "published",
+    "location": {
+      "region": "Uttarakhand",
+      "country": "India",
+      "coordinates": {
+        "lat": 30.0869,
+        "lng": 78.2676
+      }
+    },
+    "duration": {
+      "days": 5,
+      "nights": 4
+    },
+    "difficulty": "moderate",
+    "idealFor": [
+      "Spiritual Seekers",
+      "Adventure"
+    ],
+    "season": [
+      "Spring",
+      "Autumn"
+    ],
+    "maxGroupSize": 12,
+    "basePrice": 16000,
+    "margin": 20,
+    "includes": [
+      "Ashram Stay",
+      "Rafting",
+      "Meals"
+    ],
+    "excludes": [
+      "Travel to Rishikesh"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Ashram Life",
+        "description": "Welcome to the banks of the Ganga.",
+        "activities": [
+          "Aarti"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "River View Ashram",
+        "imageUrl": "/images/insta-5.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Rafting & Hiking",
+        "description": "White water rafting adventure.",
+        "activities": [
+          "Rafting"
+        ],
+        "meals": [
+          "Breakfast",
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Ashram"
+      },
+      {
+        "day": 3,
+        "title": "Beatles Ashram",
+        "description": "Visit the famous derelict ashram.",
+        "activities": [
+          "History Walk"
+        ],
+        "meals": [
+          "Breakfast",
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Ashram"
+      },
+      {
+        "day": 4,
+        "title": "Meditation Cave",
+        "description": "Trek to Vashishta Guha.",
+        "activities": [
+          "Meditation"
+        ],
+        "meals": [
+          "Breakfast",
+          "Lunch",
+          "Dinner"
+        ],
+        "accommodation": "Ashram"
+      },
+      {
+        "day": 5,
+        "title": "Departure",
+        "description": "Closing ceremony.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-5.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-03-22T10:00:00.000Z",
+    "updatedAt": "2024-03-22T10:00:00.000Z",
+    "price": 16000,
+    "destination": "Uttarakhand",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Jaisalmer: Desert Star Gazing",
+    "slug": "jaisalmer-desert-stars",
+    "description": "Sleep under a canopy of stars in the Thar Desert. Camel safaris, folk music by the campfire, and the golden silence of the dunes.",
+    "status": "published",
+    "location": {
+      "region": "Rajasthan",
+      "country": "India",
+      "coordinates": {
+        "lat": 26.9157,
+        "lng": 70.9083
+      }
+    },
+    "duration": {
+      "days": 3,
+      "nights": 2
+    },
+    "difficulty": "easy",
+    "idealFor": [
+      "Couples",
+      "Culture"
+    ],
+    "season": [
+      "Winter"
+    ],
+    "maxGroupSize": 10,
+    "basePrice": 14000,
+    "margin": 25,
+    "includes": [
+      "Desert Camp",
+      "Camel Ride",
+      "Meals"
+    ],
+    "excludes": [
+      "Travel to Jaisalmer"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Golden City",
+        "description": "Explore the fort and havelis.",
+        "activities": [
+          "Fort Walk"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Heritage Hotel",
+        "imageUrl": "/images/insta-4.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Into the Dunes",
+        "description": "Jeep safari to the dunes.",
+        "activities": [
+          "Camel Ride",
+          "Folk Dance"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Luxury Tent"
+      },
+      {
+        "day": 3,
+        "title": "Departure",
+        "description": "Sunrise over dunes and departure.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-4.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-03-25T10:00:00.000Z",
+    "updatedAt": "2024-03-25T10:00:00.000Z",
+    "price": 14000,
+    "destination": "Rajasthan",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Andaman: Blue Solitude",
+    "slug": "andaman-blue-solitude",
+    "description": "Turquoise waters and white sands. Discover the underwater world of Havelock and relax on the pristine Radhanagar beach.",
+    "status": "published",
+    "location": {
+      "region": "Andaman Islands",
+      "country": "India",
+      "coordinates": {
+        "lat": 11.9761,
+        "lng": 92.9876
+      }
+    },
+    "duration": {
+      "days": 6,
+      "nights": 5
+    },
+    "difficulty": "easy",
+    "idealFor": [
+      "Beach Lovers",
+      "Divers"
+    ],
+    "season": [
+      "Winter",
+      "Spring"
+    ],
+    "maxGroupSize": 12,
+    "basePrice": 45000,
+    "margin": 15,
+    "includes": [
+      "Ferry Tickets",
+      "Resort Stay",
+      "Snorkeling"
+    ],
+    "excludes": [
+      "Flights",
+      "Scuba Diving"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Port Blair",
+        "description": "Arrival and Cellular Jail visit.",
+        "activities": [
+          "History Tour"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Hotel",
+        "imageUrl": "/images/insta-1.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Havelock Ferry",
+        "description": "Cruise to the islands.",
+        "activities": [
+          "Ferry Ride"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Beach Resort"
+      },
+      {
+        "day": 3,
+        "title": "Radhanagar Beach",
+        "description": "Sunset at Asia's best beach.",
+        "activities": [
+          "Swimming"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Beach Resort"
+      },
+      {
+        "day": 4,
+        "title": "Elephant Beach",
+        "description": "Water sports and fun.",
+        "activities": [
+          "Snorkeling"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Beach Resort"
+      },
+      {
+        "day": 5,
+        "title": "Neil Island",
+        "description": "Day trip to Neil.",
+        "activities": [
+          "Island Hopping"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Beach Resort"
+      },
+      {
+        "day": 6,
+        "title": "Departure",
+        "description": "Back to Port Blair and fly out.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-1.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-03-28T10:00:00.000Z",
+    "updatedAt": "2024-03-28T10:00:00.000Z",
+    "price": 45000,
+    "destination": "Andaman Islands",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Sikkim: The Hidden Kingdom",
+    "slug": "sikkim-hidden-kingdom",
+    "description": "Prayer flags fluttering in the wind, snow-capped peaks of Kanchenjunga, and warm hospitality. Explore the Buddhist culture of Gangtok and North Sikkim.",
+    "status": "published",
+    "location": {
+      "region": "Sikkim",
+      "country": "India",
+      "coordinates": {
+        "lat": 27.3389,
+        "lng": 88.6065
+      }
+    },
+    "duration": {
+      "days": 6,
+      "nights": 5
+    },
+    "difficulty": "moderate",
+    "idealFor": [
+      "Culture",
+      "Mountains"
+    ],
+    "season": [
+      "Spring",
+      "Autumn"
+    ],
+    "maxGroupSize": 10,
+    "basePrice": 30000,
+    "margin": 18,
+    "includes": [
+      "Permits",
+      "Transport",
+      "Stay"
+    ],
+    "excludes": [
+      "Flights to Bagdogra"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Gangtok Arrival",
+        "description": "Drive from Bagdogra.",
+        "activities": [
+          "MG Marg Walk"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Hotel",
+        "imageUrl": "/images/insta-3.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Tsomgo Lake",
+        "description": "High altitude lake visit.",
+        "activities": [
+          "Yak Ride"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Hotel"
+      },
+      {
+        "day": 3,
+        "title": "Lachen",
+        "description": "Drive to North Sikkim.",
+        "activities": [
+          "Scenic Drive"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Homestay"
+      },
+      {
+        "day": 4,
+        "title": "Gurudongmar Lake",
+        "description": "One of the highest lakes.",
+        "activities": [
+          "High Altitude"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Homestay in Lachung"
+      },
+      {
+        "day": 5,
+        "title": "Yumthang Valley",
+        "description": "Valley of flowers.",
+        "activities": [
+          "Nature Walk"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Hotel Gangtok"
+      },
+      {
+        "day": 6,
+        "title": "Departure",
+        "description": "Return to airport.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-3.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-04-01T10:00:00.000Z",
+    "updatedAt": "2024-04-01T10:00:00.000Z",
+    "price": 30000,
+    "destination": "Sikkim",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Hampi: Ruins & Boulders",
+    "slug": "hampi-ruins-boulders",
+    "description": "A landscape of giant boulders and ancient temple ruins. Explore the Vijaynagar empire's remnants on bicycle and watch the sunset from Matanga Hill.",
+    "status": "published",
+    "location": {
+      "region": "Karnataka",
+      "country": "India",
+      "coordinates": {
+        "lat": 15.335,
+        "lng": 76.46
+      }
+    },
+    "duration": {
+      "days": 3,
+      "nights": 2
+    },
+    "difficulty": "moderate",
+    "idealFor": [
+      "History",
+      "Backpackers"
+    ],
+    "season": [
+      "Winter"
+    ],
+    "maxGroupSize": 12,
+    "basePrice": 10000,
+    "margin": 20,
+    "includes": [
+      "Guesthouse",
+      "Cycle Rental"
+    ],
+    "excludes": [
+      "Travel to Hampi"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Temple Trail",
+        "description": "Virupaksha and beyond.",
+        "activities": [
+          "Temple Tour"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Guesthouse",
+        "imageUrl": "/images/insta-2.webp"
+      },
+      {
+        "day": 2,
+        "title": "The Other Side",
+        "description": "Coracle ride and Hippie island.",
+        "activities": [
+          "Coracle Ride"
+        ],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "Guesthouse"
+      },
+      {
+        "day": 3,
+        "title": "Departure",
+        "description": "Sunrise hike and leave.",
+        "activities": [
+          "Hike"
+        ],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-2.webp"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-04-05T10:00:00.000Z",
+    "updatedAt": "2024-04-05T10:00:00.000Z",
+    "price": 10000,
+    "destination": "Karnataka",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Gokarna: The Coastal Trek",
+    "slug": "gokarna-coastal-trek",
+    "description": "Trek across 5 pristine beaches separated by hills. A unique combination of hiking and beach relaxation away from the crowds.",
+    "status": "published",
+    "location": {
+      "region": "Karnataka",
+      "country": "India",
+      "coordinates": {
+        "lat": 14.5479,
+        "lng": 74.3188
+      }
+    },
+    "duration": {
+      "days": 3,
+      "nights": 2
+    },
+    "difficulty": "moderate",
+    "idealFor": [
+      "Active Travelers"
+    ],
+    "season": [
+      "Winter"
+    ],
+    "maxGroupSize": 15,
+    "basePrice": 9000,
+    "margin": 20,
+    "includes": [
+      "Beach Huts",
+      "Guide"
+    ],
+    "excludes": [
+      "Travel to Gokarna"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Om Beach",
+        "description": "Start the trek.",
+        "activities": [
+          "Beach Trek"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Beach Hut",
+        "imageUrl": "/images/insta-1.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Paradise Beach",
+        "description": "Camping on the beach.",
+        "activities": [
+          "Camping"
+        ],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "Tent"
+      },
+      {
+        "day": 3,
+        "title": "Departure",
+        "description": "Morning swim and leave.",
+        "activities": [
+          "Swimming"
+        ],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-1.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-04-08T10:00:00.000Z",
+    "updatedAt": "2024-04-08T10:00:00.000Z",
+    "price": 9000,
+    "destination": "Karnataka",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Valley of Flowers: Nature's Canvas",
+    "slug": "valley-of-flowers",
+    "description": "A UNESCO world heritage site that comes alive with millions of blooms in the monsoon. A high altitude trek into a floral wonderland.",
+    "status": "published",
+    "location": {
+      "region": "Uttarakhand",
+      "country": "India",
+      "coordinates": {
+        "lat": 30.728,
+        "lng": 79.6053
+      }
+    },
+    "duration": {
+      "days": 6,
+      "nights": 5
+    },
+    "difficulty": "moderate",
+    "idealFor": [
+      "Trekkers",
+      "Nature Lovers"
+    ],
+    "season": [
+      "Monsoon"
+    ],
+    "maxGroupSize": 10,
+    "basePrice": 18000,
+    "margin": 15,
+    "includes": [
+      "Lodge Stay",
+      "Guide",
+      "Meals"
+    ],
+    "excludes": [
+      "Travel to Rishikesh"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Govindghat",
+        "description": "Drive from Rishikesh.",
+        "activities": [
+          "Drive"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Lodge",
+        "imageUrl": "/images/insta-3.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Ghangaria",
+        "description": "Trek to base camp.",
+        "activities": [
+          "Trek"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Lodge"
+      },
+      {
+        "day": 3,
+        "title": "The Valley",
+        "description": "Enter the national park.",
+        "activities": [
+          "Flower Watching"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Lodge"
+      },
+      {
+        "day": 4,
+        "title": "Hemkund Sahib",
+        "description": "Trek to the holy lake.",
+        "activities": [
+          "Steep Trek"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Lodge"
+      },
+      {
+        "day": 5,
+        "title": "Return",
+        "description": "Trek down.",
+        "activities": [
+          "Descent"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Lodge"
+      },
+      {
+        "day": 6,
+        "title": "Departure",
+        "description": "Drive back.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-3.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-04-12T10:00:00.000Z",
+    "updatedAt": "2024-04-12T10:00:00.000Z",
+    "price": 18000,
+    "destination": "Uttarakhand",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Pondicherry: French Quietude",
+    "slug": "pondicherry-french",
+    "description": "Cycle through the French Quarter, meditate at the Aurobindo Ashram, and visit the experimental township of Auroville.",
+    "status": "published",
+    "location": {
+      "region": "Tamil Nadu",
+      "country": "India",
+      "coordinates": {
+        "lat": 11.9416,
+        "lng": 79.8083
+      }
+    },
+    "duration": {
+      "days": 3,
+      "nights": 2
+    },
+    "difficulty": "easy",
+    "idealFor": [
+      "Culture",
+      "Peace"
+    ],
+    "season": [
+      "Winter"
+    ],
+    "maxGroupSize": 12,
+    "basePrice": 12000,
+    "margin": 20,
+    "includes": [
+      "Heritage Stay",
+      "Cycle Tour"
+    ],
+    "excludes": [
+      "Travel to Chennai"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "White Town",
+        "description": "Explore the promenade.",
+        "activities": [
+          "Walking Tour"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Heritage Hotel",
+        "imageUrl": "/images/insta-4.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Auroville",
+        "description": "Matrimandir viewing.",
+        "activities": [
+          "Meditation"
+        ],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "Heritage Hotel"
+      },
+      {
+        "day": 3,
+        "title": "Departure",
+        "description": "Beach morning and leave.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-4.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-04-15T10:00:00.000Z",
+    "updatedAt": "2024-04-15T10:00:00.000Z",
+    "price": 12000,
+    "destination": "Tamil Nadu",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Zanskar: The Frozen Path",
+    "slug": "zanskar-chadar",
+    "description": "The ultimate winter expedition. Walk on the frozen Zanskar river, sleeping in caves and surviving in sub-zero temperatures.",
+    "status": "published",
+    "location": {
+      "region": "Ladakh",
+      "country": "India",
+      "coordinates": {
+        "lat": 33.9375,
+        "lng": 76.8971
+      }
+    },
+    "duration": {
+      "days": 9,
+      "nights": 8
+    },
+    "difficulty": "challenging",
+    "idealFor": [
+      "Extreme Adventure"
+    ],
+    "season": [
+      "Winter"
+    ],
+    "maxGroupSize": 8,
+    "basePrice": 65000,
+    "margin": 15,
+    "includes": [
+      "All Gear",
+      "Porters",
+      "Guide"
+    ],
+    "excludes": [
+      "Flights"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Leh Arrival",
+        "description": "Acclimatize.",
+        "activities": [
+          "Rest"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Hotel",
+        "imageUrl": "/images/insta-5.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Medical Check",
+        "description": "Mandatory check.",
+        "activities": [
+          "Checkup"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Hotel"
+      },
+      {
+        "day": 3,
+        "title": "Drive to Shingra",
+        "description": "Start the trek.",
+        "activities": [
+          "First Steps"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Camp"
+      },
+      {
+        "day": 4,
+        "title": "Trek to Tibb",
+        "description": "Walking on ice.",
+        "activities": [
+          "Ice Walk"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Cave/Camp"
+      },
+      {
+        "day": 5,
+        "title": "Nerak Waterfall",
+        "description": "Frozen waterfall.",
+        "activities": [
+          "Photography"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Camp"
+      },
+      {
+        "day": 6,
+        "title": "Return",
+        "description": "Walk back.",
+        "activities": [
+          "Trek"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Camp"
+      },
+      {
+        "day": 7,
+        "title": "Return",
+        "description": "Walk back.",
+        "activities": [
+          "Trek"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Camp"
+      },
+      {
+        "day": 8,
+        "title": "Return to Leh",
+        "description": "Drive back.",
+        "activities": [
+          "Celebration"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Hotel"
+      },
+      {
+        "day": 9,
+        "title": "Departure",
+        "description": "Fly out.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-5.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-04-18T10:00:00.000Z",
+    "updatedAt": "2024-04-18T10:00:00.000Z",
+    "price": 65000,
+    "destination": "Ladakh",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Darjeeling: Tea & Clouds",
+    "slug": "darjeeling-tea",
+    "description": "Colonial charm, steam engines, and the world's best tea. Watch the sunrise over Kanchenjunga from Tiger Hill.",
+    "status": "published",
+    "location": {
+      "region": "West Bengal",
+      "country": "India",
+      "coordinates": {
+        "lat": 27.041,
+        "lng": 88.2663
+      }
+    },
+    "duration": {
+      "days": 4,
+      "nights": 3
+    },
+    "difficulty": "easy",
+    "idealFor": [
+      "Relaxation"
+    ],
+    "season": [
+      "Summer",
+      "Autumn"
+    ],
+    "maxGroupSize": 12,
+    "basePrice": 20000,
+    "margin": 20,
+    "includes": [
+      "Tea Estate Stay",
+      "Toy Train"
+    ],
+    "excludes": [
+      "Travel to Bagdogra"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival",
+        "description": "Drive through tea gardens.",
+        "activities": [
+          "Relax"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Heritage Resort",
+        "imageUrl": "/images/insta-2.webp"
+      },
+      {
+        "day": 2,
+        "title": "Tiger Hill",
+        "description": "Sunrise view.",
+        "activities": [
+          "Sunrise",
+          "Train Ride"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Resort"
+      },
+      {
+        "day": 3,
+        "title": "Tea Tasting",
+        "description": "Factory visit.",
+        "activities": [
+          "Tasting"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Resort"
+      },
+      {
+        "day": 4,
+        "title": "Departure",
+        "description": "Leave.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-2.webp"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-04-22T10:00:00.000Z",
+    "updatedAt": "2024-04-22T10:00:00.000Z",
+    "price": 20000,
+    "destination": "West Bengal",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Munnar: Tea Garden Solitude",
+    "slug": "munnar-tea-solitude",
+    "description": "Endless rolling hills of green. Trek through the tea gardens, spot the Nilgiri Tahr, and breathe the fresh mountain air.",
+    "status": "published",
+    "location": {
+      "region": "Kerala",
+      "country": "India",
+      "coordinates": {
+        "lat": 10.0889,
+        "lng": 77.0595
+      }
+    },
+    "duration": {
+      "days": 3,
+      "nights": 2
+    },
+    "difficulty": "easy",
+    "idealFor": [
+      "Nature"
+    ],
+    "season": [
+      "Winter",
+      "Monsoon"
+    ],
+    "maxGroupSize": 12,
+    "basePrice": 14000,
+    "margin": 20,
+    "includes": [
+      "Stay",
+      "Meals"
+    ],
+    "excludes": [
+      "Transport"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival",
+        "description": "Into the hills.",
+        "activities": [
+          "Walk"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Resort",
+        "imageUrl": "/images/insta-3.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Top Station",
+        "description": "Views galore.",
+        "activities": [
+          "Trek"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Resort"
+      },
+      {
+        "day": 3,
+        "title": "Departure",
+        "description": "Leave.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-3.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-04-25T10:00:00.000Z",
+    "updatedAt": "2024-04-25T10:00:00.000Z",
+    "price": 14000,
+    "destination": "Kerala",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  },
+  {
+    "title": "Tirthan Valley: The Secret River",
+    "slug": "tirthan-secret-river",
+    "description": "The gateway to the Great Himalayan National Park. Trout fishing, river crossing, and absolute seclusion.",
+    "status": "published",
+    "location": {
+      "region": "Himachal Pradesh",
+      "country": "India",
+      "coordinates": {
+        "lat": 31.6377,
+        "lng": 77.3491
+      }
+    },
+    "duration": {
+      "days": 4,
+      "nights": 3
+    },
+    "difficulty": "easy",
+    "idealFor": [
+      "Peace",
+      "Fishing"
+    ],
+    "season": [
+      "Spring",
+      "Summer"
+    ],
+    "maxGroupSize": 8,
+    "basePrice": 16000,
+    "margin": 20,
+    "includes": [
+      "Riverside Cottage",
+      "Fishing Permit"
+    ],
+    "excludes": [
+      "Travel"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Riverside Arrival",
+        "description": "Sound of the river.",
+        "activities": [
+          "Relax"
+        ],
+        "meals": [
+          "Dinner"
+        ],
+        "accommodation": "Cottage",
+        "imageUrl": "/images/insta-1.jpg"
+      },
+      {
+        "day": 2,
+        "title": "Waterfall Hike",
+        "description": "Short trek.",
+        "activities": [
+          "Hike"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Cottage"
+      },
+      {
+        "day": 3,
+        "title": "Fishing",
+        "description": "Try your hand at trout.",
+        "activities": [
+          "Fishing"
+        ],
+        "meals": [
+          "Breakfast",
+          "Dinner"
+        ],
+        "accommodation": "Cottage"
+      },
+      {
+        "day": 4,
+        "title": "Departure",
+        "description": "Leave.",
+        "activities": [],
+        "meals": [
+          "Breakfast"
+        ],
+        "accommodation": "None"
+      }
+    ],
+    "images": [
+      "/images/insta-1.jpg"
+    ],
+    "testimonials": [],
+    "createdAt": "2024-04-28T10:00:00.000Z",
+    "updatedAt": "2024-04-28T10:00:00.000Z",
+    "price": 16000,
+    "destination": "Himachal Pradesh",
+    "departureDates": [
+      "2026-02-15",
+      "2026-03-20",
+      "2026-04-25",
+      "2026-05-30",
+      "2026-06-15",
+      "2026-07-10"
+    ]
+  }
+]
