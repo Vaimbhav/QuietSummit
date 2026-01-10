@@ -16,7 +16,6 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["node"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
