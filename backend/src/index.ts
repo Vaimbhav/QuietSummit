@@ -23,6 +23,11 @@ app.use((req, _res, next) => {
   next()
 })
 
+// Health check route
+app.get('/', (_req, res) => {
+  res.json({ status: 'ok', message: 'QuietSummit API is running' })
+})
+
 // Routes
 app.use('/api/v1', routes)
 

@@ -59,7 +59,7 @@ SignUpSchema.methods.comparePassword = async function (candidatePassword: string
     }
 }
 
-SignUpSchema.index({ email: 1 }, { unique: true })
+// Index for status queries
 SignUpSchema.index({ status: 1 })
 
 export default mongoose.model<ISignUp>('SignUp', SignUpSchema)
