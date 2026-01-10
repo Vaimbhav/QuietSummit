@@ -1,9 +1,7 @@
 // Update Journey Schema with Booking Fields
 import mongoose from 'mongoose'
+import Journey from '../models/Journey'
 import 'dotenv/config'
-
-const journeySchema = new mongoose.Schema({}, { strict: false })
-const Journey = mongoose.model('Journey', journeySchema)
 
 async function updateJourneys() {
     try {

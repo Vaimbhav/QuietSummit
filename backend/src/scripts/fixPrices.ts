@@ -1,4 +1,3 @@
-import mongoose from 'mongoose'
 import Journey from '../models/Journey'
 import { connectDatabase } from '../config/database'
 
