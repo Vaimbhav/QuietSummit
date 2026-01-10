@@ -1,5 +1,6 @@
 import cors from 'cors'
 import { config } from '../config/environment'
+import logger from '../utils/logger'
 
 const allowedOrigins = [
     config.corsOrigin,
@@ -9,7 +10,7 @@ const allowedOrigins = [
     'http://127.0.0.1:5173',
     'http://127.0.0.1:5174',
     'http://127.0.0.1:3000'
-]
+].map(origin => origin.replace(/\/$/, '')) // Remove trailing slashes
 
 export const corsMiddleware = cors({
     origin: (origin, callback) => {
@@ -18,21 +19,28 @@ export const corsMiddleware = cors({
             return callback(null, true)
         }
 
+        const normalizedOrigin = origin.replace(/\/$/, '')
+
         // In development, allow all origins
         if (config.env === 'development') {
+            logger.info(`CORS: Allowing origin (development): ${origin}`)
             return callback(null, true)
         }
 
         // In production, check against allowed origins
-        if (allowedOrigins.includes(origin)) {
+        if (allowedOrigins.includes(normalizedOrigin)) {
+            logger.info(`CORS: Allowing origin: ${origin}`)
             callback(null, true)
         } else {
-            callback(null, false)
+            logger.warn(`CORS: Blocking origin: ${origin}`)
+            callback(new Error('Not allowed by CORS'))
         }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
     maxAge: 86400, // 24 hours
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 })
