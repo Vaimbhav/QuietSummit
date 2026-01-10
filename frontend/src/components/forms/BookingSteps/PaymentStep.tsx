@@ -40,6 +40,19 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
         setIsProcessing(true)
 
         try {
+            // Validate booking data
+            if (!bookingData.email || !bookingData.travelers?.[0]?.name) {
+                alert('Please complete all required fields before payment.')
+                setIsProcessing(false)
+                return
+            }
+
+            if (!bookingData.totalAmount || bookingData.totalAmount <= 0) {
+                alert('Invalid booking amount.')
+                setIsProcessing(false)
+                return
+            }
+
             // Load Razorpay script
             const scriptLoaded = await loadRazorpayScript()
             if (!scriptLoaded) {
@@ -70,6 +83,10 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
             })
 
             const { orderId, amount, currency } = orderResponse.data
+
+            // Format contact number - remove country code and spaces
+            const rawContact = bookingData.travelers?.[0]?.emergencyContact || ''
+            const formattedContact = rawContact.replace(/\D/g, '').slice(-10)
 
             // Razorpay options
             const options = {
@@ -114,7 +131,11 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                 prefill: {
                     name: bookingData.travelers?.[0]?.name || '',
                     email: bookingData.email || '',
-                    contact: bookingData.travelers?.[0]?.emergencyContact || '',
+                    contact: formattedContact || '',
+                },
+                notes: {
+                    journey: journey.title,
+                    travelers: bookingData.numberOfTravelers,
                 },
                 theme: {
                     color: '#6366f1',
@@ -123,7 +144,9 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                     ondismiss: function () {
                         console.log('Payment cancelled by user')
                         setIsProcessing(false)
-                    }
+                    },
+                    escape: true,
+                    backdropclose: false,
                 }
             }
 
