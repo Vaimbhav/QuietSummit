@@ -26,4 +26,8 @@ export const config = {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
         callbackUrl: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:5000/api/v1/auth/google/callback',
     },
+    razorpay: {
+        keyId: process.env.RAZORPAY_KEY_ID || '',
+        keySecret: process.env.RAZORPAY_KEY_SECRET || '',
+    },
 }

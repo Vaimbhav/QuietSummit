@@ -2,11 +2,12 @@ import { Request, Response } from 'express'
 import Razorpay from 'razorpay'
 import crypto from 'crypto'
 import logger from '../utils/logger'
+import { config } from '../config/environment'
 
 // Initialize Razorpay
 const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID || '',
-    key_secret: process.env.RAZORPAY_KEY_SECRET || '',
+    key_id: config.razorpay.keyId,
+    key_secret: config.razorpay.keySecret,
 })
 
 // Create Razorpay order
@@ -66,7 +67,7 @@ export const verifyPayment = async (req: Request, res: Response): Promise<void> 
         // Generate signature
         const body = razorpay_order_id + '|' + razorpay_payment_id
         const expectedSignature = crypto
-            .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET || '')
+            .createHmac('sha256', config.razorpay.keySecret)
             .update(body.toString())
             .digest('hex')
 
@@ -112,7 +113,7 @@ export const getRazorpayKey = async (_req: Request, res: Response): Promise<void
         res.status(200).json({
             success: true,
             data: {
-                key: process.env.RAZORPAY_KEY_ID || '',
+                key: config.razorpay.keyId,
             },
         })
     } catch (error: any) {
