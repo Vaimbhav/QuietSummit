@@ -4,7 +4,7 @@ import { CreditCard, CheckCircle, Smartphone, Building2, Wallet, Banknote } from
 import Button from '../../common/Button'
 import { Journey } from '../../../types/journey'
 import { BookingData } from '../BookingForm'
-import { createRazorpayOrder, verifyPayment, createBooking } from '../../../services/api'
+import { createRazorpayOrder, verifyPayment, createBooking, getRazorpayKey } from '../../../services/api'
 import { useNavigate } from 'react-router-dom'
 
 interface PaymentStepProps {
@@ -48,6 +48,16 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                 return
             }
 
+            // Get Razorpay key from backend
+            const keyResponse = await getRazorpayKey()
+            const razorpayKey = keyResponse.data.key
+
+            if (!razorpayKey) {
+                alert('Payment gateway not configured. Please contact support.')
+                setIsProcessing(false)
+                return
+            }
+
             // Create Razorpay order
             const orderResponse = await createRazorpayOrder({
                 amount: bookingData.totalAmount || 0,
@@ -63,7 +73,7 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
 
             // Razorpay options
             const options = {
-                key: import.meta.env.VITE_RAZORPAY_KEY_ID || '',
+                key: razorpayKey,
                 amount: amount,
                 currency: currency,
                 name: 'QuietSummit',
