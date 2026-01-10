@@ -8,6 +8,7 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    timeout: 15000, // 15 seconds timeout for mobile networks
 });
 
 // Journey APIs
