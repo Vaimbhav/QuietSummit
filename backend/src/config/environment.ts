@@ -9,18 +9,6 @@ export const config = {
     jwtSecret: process.env.JWT_SECRET || '',
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
     corsOrigin: (process.env.CORS_ORIGIN || 'http://localhost:5173').replace(/\/$/, ''),
-    openaiApiKey: process.env.OPENAI_API_KEY || '',
-    email: {
-        service: process.env.EMAIL_SERVICE || '',
-        apiKey: process.env.EMAIL_API_KEY || '',
-        from: process.env.EMAIL_FROM || 'quietsummit07@gmail.com',
-    },
-    aws: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
-        region: process.env.AWS_REGION || 'us-east-1',
-        s3Bucket: process.env.AWS_S3_BUCKET || '',
-    },
     google: {
         clientId: process.env.GOOGLE_CLIENT_ID || '',
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',

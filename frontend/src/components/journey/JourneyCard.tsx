@@ -40,7 +40,7 @@ export default function JourneyCard({
         >
             {/* Image */}
             <Link to={`/journeys/${id}`}>
-                <div className="relative h-56 bg-gradient-to-br from-primary-100 via-accent-100 to-primary-200 overflow-hidden">
+                <div className="relative h-56 bg-linear-to-br from-primary-100 via-accent-100 to-primary-200 overflow-hidden">
                     {image ? (
                         <img
                             src={image}
@@ -61,7 +61,7 @@ export default function JourneyCard({
             </Link>
 
             {/* Content */}
-            <div className="p-6 flex flex-col flex-grow">
+            <div className="p-6 flex flex-col grow">
                 <div className="flex items-center gap-2 text-sm text-neutral-500 mb-2">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -76,7 +76,7 @@ export default function JourneyCard({
                     </h3>
                 </Link>
 
-                <p className="text-neutral-600 mb-4 flex-grow line-clamp-3">
+                <p className="text-neutral-600 mb-4 grow line-clamp-3">
                     {description}
                 </p>
 

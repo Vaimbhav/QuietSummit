@@ -50,8 +50,34 @@ const steps = [
 ]
 
 export default function BookingForm({ journey, isOpen, onClose }: BookingFormProps) {
-    const [currentStep, setCurrentStep] = useState(1)
-    const [bookingData, setBookingData] = useState<Partial<BookingData>>({
+    // Restore booking state from sessionStorage on mount
+    const getInitialState = () => {
+        const saved = sessionStorage.getItem(`booking_${journey._id}`)
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved)
+                return {
+                    step: parsed.step || 1,
+                    data: parsed.data || {
+                        journeyId: journey._id,
+                        numberOfTravelers: 1,
+                        travelers: [],
+                        roomPreference: 'double',
+                        addOns: [],
+                        specialRequests: '',
+                        basePrice: journey.basePrice,
+                    }
+                }
+            } catch {
+                return { step: 1, data: null }
+            }
+        }
+        return { step: 1, data: null }
+    }
+
+    const initialState = getInitialState()
+    const [currentStep, setCurrentStep] = useState(initialState.step)
+    const [bookingData, setBookingData] = useState<Partial<BookingData>>(initialState.data || {
         journeyId: journey._id,
         numberOfTravelers: 1,
         travelers: [],
@@ -64,10 +90,16 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
     const CurrentStepComponent = steps[currentStep - 1].component
 
     const handleNext = (data: Partial<BookingData>) => {
-        setBookingData({ ...bookingData, ...data })
+        const updatedData = { ...bookingData, ...data }
+        setBookingData(updatedData)
         if (currentStep < steps.length) {
             const nextStep = currentStep + 1
             setCurrentStep(nextStep)
+            // Save state to sessionStorage
+            sessionStorage.setItem(`booking_${journey._id}`, JSON.stringify({
+                step: nextStep,
+                data: updatedData
+            }))
             // Push new history entry for next step
             window.history.pushState({ step: nextStep }, '')
         }
@@ -83,6 +115,18 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
     }
 
     const handleClose = () => {
+        // Clean up history entries added by booking form
+        const stepsToRemove = currentStep // Remove all step entries
+        for (let i = 0; i < stepsToRemove; i++) {
+            if (window.history.state?.step) {
+                window.history.back()
+            }
+        }
+
+        // Clear sessionStorage for this booking
+        sessionStorage.removeItem(`booking_${journey._id}`)
+
+        // Reset state
         setCurrentStep(1)
         setBookingData({
             journeyId: journey._id,
@@ -93,6 +137,8 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
             specialRequests: '',
             basePrice: journey.basePrice,
         })
+
+        // Close modal
         onClose()
     }
 
@@ -137,6 +183,18 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
         }
     }, [isOpen])
 
+    // Handle ESC key to close modal
+    useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && isOpen) {
+                handleClose()
+            }
+        }
+
+        window.addEventListener('keydown', handleEscape)
+        return () => window.removeEventListener('keydown', handleEscape)
+    }, [isOpen, currentStep])
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -146,17 +204,19 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={handleClose}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 overflow-hidden"
+                        transition={{ duration: 0.2 }}
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998] overflow-hidden"
                     />
 
                     {/* Modal */}
-                    <div className="fixed inset-0 flex items-center justify-center z-50 p-4 overflow-y-auto">
+                    <div className="fixed inset-0 flex items-center justify-center z-[9999] p-4 overflow-y-auto">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden relative my-8"
+                            transition={{ duration: 0.3, ease: 'easeOut' }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="glass-luxury rounded-4xl shadow-luxury-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden relative my-8 border-luxury"
                         >
                             {/* Close button */}
                             <button
@@ -167,7 +227,7 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
                             </button>
 
                             {/* Progress Bar */}
-                            <div className="px-8 pt-8 pb-6 bg-gradient-to-r from-primary-50 to-accent-50">
+                            <div className="px-8 pt-8 pb-6 bg-linear-to-r from-primary-50 to-accent-50">
                                 <h2 className="text-3xl font-black text-neutral-900 mb-2">
                                     Book Your Journey
                                 </h2>

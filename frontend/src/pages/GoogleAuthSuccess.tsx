@@ -17,22 +17,33 @@ export default function GoogleAuthSuccess() {
             try {
                 const userData = JSON.parse(decodeURIComponent(dataParam))
 
-                // Store user in Redux
+                // Store user in Redux with token
                 dispatch(
                     setUser({
                         email: userData.email,
                         name: userData.name,
+                        token: userData.token,
                         isAuthenticated: true,
                     })
                 )
 
-                // Store in localStorage
+                // Store in localStorage with token
                 localStorage.setItem('quietsummit_user', JSON.stringify(userData))
 
-                // Redirect to dashboard
-                setTimeout(() => {
-                    navigate('/dashboard')
-                }, 1000)
+                // Check if there's a redirect URL
+                const redirectUrl = localStorage.getItem('redirectAfterLogin')
+                if (redirectUrl) {
+                    localStorage.removeItem('redirectAfterLogin')
+                    // Use window.location for full page reload to ensure state is loaded
+                    setTimeout(() => {
+                        window.location.href = redirectUrl
+                    }, 1000)
+                } else {
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = '/dashboard'
+                    }, 1000)
+                }
             } catch (error) {
                 console.error('Error parsing user data:', error)
                 navigate('/signup?error=Authentication failed')
@@ -43,7 +54,7 @@ export default function GoogleAuthSuccess() {
     }, [navigate, dispatch])
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-accent-50">
+        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-primary-50 to-accent-50">
             <div className="text-center">
                 <Loader size="lg" />
                 <p className="mt-4 text-lg text-neutral-700">

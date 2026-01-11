@@ -6,7 +6,7 @@ export default function Contact() {
     return (
         <div className="min-h-screen bg-neutral-50">
             {/* Hero Section */}
-            <section className="relative bg-gradient-to-br from-primary-600 via-accent-600 to-primary-700 text-white py-24 overflow-hidden">
+            <section className="relative bg-linear-to-br from-primary-600 via-accent-600 to-primary-700 text-white py-12 sm:py-16 overflow-hidden">
                 {/* Animated background elements */}
                 <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/30 rounded-full blur-3xl animate-pulse"></div>

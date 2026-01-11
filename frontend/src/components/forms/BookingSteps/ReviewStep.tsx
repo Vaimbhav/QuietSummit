@@ -62,7 +62,7 @@ export default function ReviewStep({ journey, bookingData, onNext, onBack }: Rev
             {/* Journey Details */}
             <div className="p-5 sm:p-6 bg-white rounded-2xl border-2 border-neutral-100 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-neutral-100">
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-linear-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center">
                         <MapPin className="w-5 h-5 text-white" />
                     </div>
                     <h4 className="text-lg font-bold text-neutral-900">Journey Details</h4>
@@ -100,7 +100,7 @@ export default function ReviewStep({ journey, bookingData, onNext, onBack }: Rev
             {/* Travelers */}
             <div className="p-5 sm:p-6 bg-white rounded-2xl border-2 border-neutral-100 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-neutral-100">
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-linear-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center">
                         <Users className="w-5 h-5 text-white" />
                     </div>
                     <h4 className="text-lg font-bold text-neutral-900">
@@ -109,7 +109,7 @@ export default function ReviewStep({ journey, bookingData, onNext, onBack }: Rev
                 </div>
                 <div className="space-y-3">
                     {bookingData.travelers?.map((traveler, index) => (
-                        <div key={index} className="flex items-center gap-3 p-3 bg-gradient-to-r from-neutral-50 to-primary-50/20 rounded-xl border border-neutral-100">
+                        <div key={index} className="flex items-center gap-3 p-3 bg-linear-to-r from-neutral-50 to-primary-50/20 rounded-xl border border-neutral-100">
                             <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center shrink-0">
                                 <User className="w-5 h-5 text-primary-600" />
                             </div>
@@ -134,7 +134,7 @@ export default function ReviewStep({ journey, bookingData, onNext, onBack }: Rev
 
             {/* Add-Ons */}
             {bookingData.addOns && bookingData.addOns.length > 0 && (
-                <div className="p-6 bg-gradient-to-br from-neutral-50 to-primary-50/30 rounded-2xl border border-neutral-200">
+                <div className="p-6 bg-linear-to-br from-neutral-50 to-primary-50/30 rounded-2xl border border-neutral-200">
                     <h4 className="font-bold text-neutral-900 mb-4">Add-Ons & Extras</h4>
                     <div className="space-y-2">
                         {bookingData.addOns.includes('insurance') && (
@@ -155,14 +155,14 @@ export default function ReviewStep({ journey, bookingData, onNext, onBack }: Rev
 
             {/* Special Requests */}
             {bookingData.specialRequests && (
-                <div className="p-6 bg-gradient-to-br from-neutral-50 to-primary-50/30 rounded-2xl border border-neutral-200">
+                <div className="p-6 bg-linear-to-br from-neutral-50 to-primary-50/30 rounded-2xl border border-neutral-200">
                     <h4 className="font-bold text-neutral-900 mb-2">Special Requests</h4>
                     <p className="text-neutral-700 text-sm">{bookingData.specialRequests}</p>
                 </div>
             )}
 
             {/* Price Breakdown */}
-            <div className="p-6 bg-gradient-to-br from-primary-50 to-accent-50 rounded-2xl border-2 border-primary-200">
+            <div className="p-6 bg-linear-to-br from-primary-50 to-accent-50 rounded-2xl border-2 border-primary-200">
                 <h4 className="text-xl font-bold text-neutral-900 mb-4">Price Breakdown</h4>
 
                 {/* Applied Coupon Display */}
@@ -258,10 +258,10 @@ export default function ReviewStep({ journey, bookingData, onNext, onBack }: Rev
 
             {/* Navigation */}
             <div className="flex flex-col gap-3 pt-4">
-                <Button onClick={handleNext} size="lg" className="w-full">
+                <Button onClick={handleNext} size="lg" className="w-full whitespace-nowrap">
                     Proceed to Payment →
                 </Button>
-                <Button variant="outline" onClick={onBack} className="w-full">
+                <Button variant="outline" onClick={onBack} className="w-full whitespace-nowrap">
                     ← Back
                 </Button>
             </div>

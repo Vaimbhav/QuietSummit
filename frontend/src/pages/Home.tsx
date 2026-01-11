@@ -39,8 +39,8 @@ export default function Home() {
                         <source src="/videos/hero.mp4" type="video/mp4" />
                     </video>
                     {/* Enhanced overlay gradient for readability */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-neutral-50" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary-900/20 to-accent-900/20" />
+                    <div className="absolute inset-0 bg-linear-to-b from-black/50 via-black/30 to-neutral-50" />
+                    <div className="absolute inset-0 bg-linear-to-r from-primary-900/20 to-accent-900/20" />
                 </div>
 
                 <motion.div
@@ -78,26 +78,20 @@ export default function Home() {
 
                     <motion.div
                         variants={itemVariants}
-                        className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-4"
+                        className="flex flex-col sm:flex-row gap-5 sm:gap-6 justify-center items-center px-4"
                     >
                         <Link to="/journeys" className="w-full sm:w-auto">
-                            <motion.button
-                                whileHover={{ scale: 1.05, y: -2 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 text-base sm:text-lg font-bold rounded-lg md:rounded-full bg-gradient-to-r from-primary-600 via-primary-500 to-accent-600 text-white hover:from-primary-700 hover:via-primary-600 hover:to-accent-700 transition-all shadow-2xl shadow-primary-900/50 hover:shadow-primary-900/70 inline-flex items-center justify-center gap-3 group"
-                            >
-                                Explore Journeys
-                                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-2 transition-transform" />
-                            </motion.button>
+                            <button className="w-full sm:w-auto px-10 sm:px-12 py-5 sm:py-6 text-base sm:text-lg font-extrabold rounded-3xl gradient-premium text-white shadow-luxury-2xl hover:shadow-luxury-xl hover:-translate-y-1 active:translate-y-0 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 inline-flex items-center justify-center gap-3 group relative overflow-hidden">
+                                <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></span>
+                                <span className="relative z-10">Explore Journeys</span>
+                                <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 relative z-10 group-hover:translate-x-2 transition-transform" />
+                            </button>
                         </Link>
                         <Link to="/about" className="w-full sm:w-auto">
-                            <motion.button
-                                whileHover={{ scale: 1.05, y: -2 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 text-base sm:text-lg font-bold rounded-lg md:rounded-full glass-effect text-neutral-900 hover:bg-white/95 transition-all shadow-2xl inline-flex items-center justify-center gap-2 backdrop-blur-xl"
-                            >
-                                Our Philosophy
-                            </motion.button>
+                            <button className="w-full sm:w-auto px-10 sm:px-12 py-5 sm:py-6 text-base sm:text-lg font-extrabold rounded-3xl glass-luxury text-primary-700 shadow-luxury-lg hover:shadow-luxury-xl hover:-translate-y-1 active:translate-y-0 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 inline-flex items-center justify-center gap-2 relative overflow-hidden group">
+                                <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></span>
+                                <span className="relative z-10">Our Philosophy</span>
+                            </button>
                         </Link>
                     </motion.div>
                 </motion.div>
@@ -114,13 +108,13 @@ export default function Home() {
                         animate={{ y: [0, 10, 0] }}
                         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                     >
-                        <div className="w-0.5 h-14 bg-gradient-to-b from-white via-white to-transparent rounded-full" />
+                        <div className="w-0.5 h-14 bg-linear-to-b from-white via-white to-transparent rounded-full" />
                     </motion.div>
                 </motion.div>
             </section>
 
             {/* Quick Stats Section */}
-            <section className="py-8 sm:py-12 md:py-16 lg:py-28 bg-gradient-to-b from-white via-primary-50/30 to-white relative z-20">
+            <section className="py-6 sm:py-10 md:py-16 lg:py-24 bg-gradient-to-b from-white via-primary-50/30 to-white relative z-20">
                 <motion.div
                     initial="hidden"
                     whileInView="visible"
@@ -128,7 +122,7 @@ export default function Home() {
                     variants={containerVariants}
                     className="container mx-auto px-4"
                 >
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-12 max-w-6xl mx-auto">
+                    <div className="grid grid-cols-3 gap-3 sm:gap-6 md:gap-8 max-w-4xl mx-auto">
                         {[
                             { value: '12+', label: 'Curated Journeys', icon: Mountain },
                             { value: '500+', label: 'Happy Travelers', icon: Users },
@@ -137,13 +131,14 @@ export default function Home() {
                             <motion.div
                                 key={index}
                                 variants={itemVariants}
-                                className="text-center group p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl glass-effect hover:shadow-premium-lg transition-all duration-500 transform hover:-translate-y-2"
+                                whileHover={{ y: -8 }}
+                                className="text-center group p-3 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-all duration-300 border border-neutral-100"
                             >
-                                <div className="mb-3 sm:mb-4 md:mb-6 inline-flex p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary-500 to-accent-600 text-white group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                                    <stat.icon className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" strokeWidth={2} />
+                                <div className="mb-2 sm:mb-4 inline-flex p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 text-white group-hover:scale-105 transition-transform duration-300 shadow-sm">
+                                    <stat.icon className="w-5 h-5 sm:w-7 sm:h-7 md:w-8 md:h-8" strokeWidth={2} />
                                 </div>
-                                <h3 className="text-3xl sm:text-4xl md:text-5xl font-black text-neutral-900 mb-2 sm:mb-3 tracking-tight gradient-text">{stat.value}</h3>
-                                <p className="text-neutral-600 font-bold uppercase tracking-wider text-xs sm:text-sm">{stat.label}</p>
+                                <h3 className="text-2xl sm:text-4xl md:text-5xl font-bold text-primary-600 mb-1 sm:mb-2 tracking-tight">{stat.value}</h3>
+                                <p className="text-neutral-500 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">{stat.label}</p>
                             </motion.div>
                         ))}
                     </div>
@@ -179,20 +174,17 @@ export default function Home() {
 
                     <motion.div variants={itemVariants}>
                         <Link to="/about">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="px-8 py-4 text-lg font-medium rounded-lg md:rounded-full border border-neutral-700 text-white hover:bg-white hover:text-neutral-900 transition-all duration-300"
-                            >
-                                Read Our Manifesto
-                            </motion.button>
+                            <button className="px-10 py-5 text-lg font-bold rounded-3xl border-2 border-primary-400 text-white hover:bg-primary-400 hover:text-neutral-900 transition-all duration-300 shadow-luxury-lg hover:shadow-luxury-xl hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group">
+                                <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></span>
+                                <span className="relative z-10 font-extrabold">Read Our Manifesto</span>
+                            </button>
                         </Link>
                     </motion.div>
                 </motion.div>
             </section>
 
             {/* Features Section */}
-            <section className="py-12 sm:py-20 md:py-32 bg-white">
+            <section className="py-8 sm:py-16 md:py-24 bg-white">
                 <motion.div
                     initial="hidden"
                     whileInView="visible"
@@ -200,14 +192,14 @@ export default function Home() {
                     variants={containerVariants}
                     className="container mx-auto px-4"
                 >
-                    <motion.div variants={itemVariants} className="text-center mb-16 sm:mb-20">
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 mb-4 sm:mb-6 px-4">The Quiet Difference</h2>
-                        <p className="text-base sm:text-lg text-neutral-600 max-w-2xl mx-auto px-4">
+                    <motion.div variants={itemVariants} className="text-center mb-8 sm:mb-12">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-neutral-900 mb-2 sm:mb-4">The Quiet Difference</h2>
+                        <p className="text-sm sm:text-base text-neutral-500 max-w-xl mx-auto">
                             Experience travel that prioritizes depth over distance and quality over quantity.
                         </p>
                     </motion.div>
 
-                    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
                         {[
                             {
                                 icon: Leaf,
@@ -225,13 +217,17 @@ export default function Home() {
                                 description: 'We build in time for reflection, meditation, and simply "being" in the destination, rather than just "seeing" it.'
                             }
                         ].map((feature, index) => (
-                            <motion.div key={index} variants={itemVariants}>
-                                <div className="h-full p-8 rounded-3xl bg-neutral-50 hover:bg-white border border-transparent hover:border-neutral-100 hover:shadow-xl transition-all duration-300 group">
-                                    <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                                        <feature.icon className="w-7 h-7 text-primary-600" strokeWidth={1.5} />
+                            <motion.div
+                                key={index}
+                                variants={itemVariants}
+                                whileHover={{ y: -6 }}
+                            >
+                                <div className="h-full p-5 sm:p-7 md:p-8 rounded-2xl sm:rounded-3xl bg-white border border-neutral-100 hover:border-primary-200 shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] transition-all duration-300 group">
+                                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-5 bg-gradient-to-br from-primary-500 to-primary-600 shadow-sm group-hover:scale-105 transition-transform duration-300">
+                                        <feature.icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" strokeWidth={2} />
                                     </div>
-                                    <h3 className="text-2xl font-bold text-neutral-900 mb-4">{feature.title}</h3>
-                                    <p className="text-neutral-600 leading-relaxed text-base">{feature.description}</p>
+                                    <h3 className="text-lg sm:text-xl font-bold text-neutral-800 mb-2 sm:mb-3">{feature.title}</h3>
+                                    <p className="text-neutral-500 leading-relaxed text-sm">{feature.description}</p>
                                 </div>
                             </motion.div>
                         ))}
@@ -342,9 +338,9 @@ export default function Home() {
                     </div>
                 </motion.div>
             </section>
-            <section className="py-32 relative overflow-hidden">
+            <section className="py-16 sm:py-20 md:py-24 relative overflow-hidden">
                 <div className="absolute inset-0 bg-primary-900">
-                    <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                    <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
                 </div>
 
                 <motion.div
@@ -354,31 +350,24 @@ export default function Home() {
                     variants={containerVariants}
                     className="container mx-auto px-4 text-center text-white relative z-10"
                 >
-                    <motion.h2 variants={itemVariants} className="text-4xl md:text-6xl font-bold mb-8 tracking-tight">
+                    <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-5 tracking-tight">
                         Start Your Journey
                     </motion.h2>
-                    <motion.p variants={itemVariants} className="text-xl md:text-2xl mb-12 max-w-2xl mx-auto text-primary-100 font-light">
+                    <motion.p variants={itemVariants} className="text-base sm:text-lg md:text-xl mb-8 sm:mb-10 max-w-xl mx-auto text-primary-100/90 font-light">
                         Join a community of intentional travelers and discover the world at your own pace.
                     </motion.p>
-                    <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link to="/journeys">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="px-10 py-5 text-lg font-medium rounded-full bg-white text-primary-900 hover:bg-primary-50 transition-all shadow-lg inline-flex items-center gap-2"
-                            >
-                                View All Journeys
-                                <ArrowRight className="w-5 h-5" />
-                            </motion.button>
+
+                    <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-xs sm:max-w-none mx-auto">
+                        <Link to="/journeys" className="w-full sm:w-auto">
+                            <button className="w-full sm:w-auto px-6 py-3 text-base font-semibold rounded-xl bg-white text-primary-800 hover:bg-primary-50 transition-all shadow-[0_4px_14px_rgba(255,255,255,0.25)] hover:shadow-[0_6px_20px_rgba(255,255,255,0.35)] hover:-translate-y-0.5 active:translate-y-0 inline-flex items-center justify-center gap-2 group">
+                                <span>View All Journeys</span>
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                            </button>
                         </Link>
-                        <Link to="/signup">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="px-10 py-5 text-lg font-medium rounded-full border border-primary-500 text-white hover:bg-primary-800 transition-all"
-                            >
+                        <Link to="/signup" className="w-full sm:w-auto">
+                            <button className="w-full sm:w-auto px-6 py-3 text-base font-semibold rounded-xl border-2 border-primary-300/60 text-white hover:bg-white/10 hover:border-primary-200 transition-all hover:-translate-y-0.5 active:translate-y-0">
                                 Become a Member
-                            </motion.button>
+                            </button>
                         </Link>
                     </motion.div>
                 </motion.div>

@@ -1,19 +1,20 @@
 import { Request, Response } from 'express'
 import { Coupon } from '../models/Coupon'
+import logger from '../utils/logger'
 
 export const getActiveCoupons = async (_req: Request, res: Response) => {
     try {
         const now = new Date()
-        console.log('Fetching coupons. Current date:', now)
+        logger.debug('Fetching coupons. Current date:', now)
 
         // First, check all coupons in the database
         const allCoupons = await Coupon.find({})
-        console.log('Total coupons in database:', allCoupons.length)
+        logger.debug('Total coupons in database:', allCoupons.length)
 
         if (allCoupons.length > 0) {
             const sample = allCoupons[0]
-            console.log('Sample coupon validFrom type:', typeof sample.validFrom, sample.validFrom)
-            console.log('Sample coupon validUntil type:', typeof sample.validUntil, sample.validUntil)
+            logger.debug('Sample coupon validFrom type:', typeof sample.validFrom, sample.validFrom)
+            logger.debug('Sample coupon validUntil type:', typeof sample.validUntil, sample.validUntil)
         }
 
         // Find all active coupons that are currently valid
@@ -28,14 +29,14 @@ export const getActiveCoupons = async (_req: Request, res: Response) => {
             }
         }).select('-__v -createdAt -updatedAt')
 
-        console.log('Coupons matching active filter:', coupons.length)
+        logger.debug('Coupons matching active filter:', coupons.length)
 
         // Filter out coupons that have reached usage limit
         const availableCoupons = coupons.filter(
             (coupon) => !coupon.usageLimit || coupon.usedCount < coupon.usageLimit
         )
 
-        console.log('Final available coupons:', availableCoupons.length)
+        logger.debug('Final available coupons:', availableCoupons.length)
 
         return res.status(200).json({
             success: true,
@@ -43,7 +44,7 @@ export const getActiveCoupons = async (_req: Request, res: Response) => {
             data: availableCoupons,
         })
     } catch (error) {
-        console.error('Get active coupons error:', error)
+        logger.error('Get active coupons error:', error)
         return res.status(500).json({
             success: false,
             message: 'Failed to fetch coupons',
@@ -136,7 +137,7 @@ export const validateCoupon = async (req: Request, res: Response) => {
             },
         })
     } catch (error) {
-        console.error('Validate coupon error:', error)
+        logger.error('Validate coupon error:', error)
         return res.status(500).json({
             success: false,
             message: 'Failed to validate coupon',
@@ -150,6 +151,6 @@ export const applyCoupon = async (couponId: string) => {
             $inc: { usedCount: 1 },
         })
     } catch (error) {
-        console.error('Apply coupon error:', error)
+        logger.error('Apply coupon error:', error)
     }
 }

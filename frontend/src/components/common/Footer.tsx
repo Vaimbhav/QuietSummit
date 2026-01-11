@@ -6,7 +6,7 @@ export default function Footer() {
     const currentYear = new Date().getFullYear()
 
     return (
-        <footer className="bg-gradient-to-b from-neutral-900 to-black text-neutral-300 relative overflow-hidden">
+        <footer className="bg-linear-to-b from-neutral-900 to-black text-neutral-300 relative overflow-hidden">
             {/* Background decoration */}
             <div className="absolute inset-0 opacity-5">
                 <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500 rounded-full blur-3xl"></div>
@@ -45,7 +45,7 @@ export default function Footer() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     whileHover={{ scale: 1.15, y: -3 }}
-                                    className="p-3 bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-xl hover:from-primary-600 hover:to-accent-600 hover:text-white transition-all duration-300 shadow-lg hover:shadow-primary-500/50"
+                                    className="p-3 bg-linear-to-br from-neutral-800 to-neutral-900 rounded-xl hover:from-primary-600 hover:to-accent-600 hover:text-white transition-all duration-300 shadow-lg hover:shadow-primary-500/50"
                                     aria-label={social.label}
                                 >
                                     <social.icon className="w-5 h-5" />
@@ -124,14 +124,14 @@ export default function Footer() {
                             <motion.button
                                 whileHover={{ scale: 1.03, y: -2 }}
                                 whileTap={{ scale: 0.97 }}
-                                className="w-full px-6 py-4 bg-gradient-to-r from-primary-600 via-primary-500 to-accent-600 text-white rounded-xl hover:from-primary-700 hover:via-primary-600 hover:to-accent-700 transition-all font-bold text-sm shadow-lg hover:shadow-xl hover:shadow-primary-500/30"
+                                className="w-full px-6 py-4 bg-linear-to-r from-primary-600 via-primary-500 to-accent-600 text-white rounded-xl hover:from-primary-700 hover:via-primary-600 hover:to-accent-700 transition-all font-bold text-sm shadow-lg hover:shadow-xl hover:shadow-primary-500/30"
                             >
                                 Join Community
                             </motion.button>
                         </Link>
-                        <div className="mt-8 p-5 bg-gradient-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-sm rounded-2xl border border-neutral-700/50 hover:border-primary-500/30 transition-all duration-300">
+                        <div className="mt-8 p-5 bg-linear-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-sm rounded-2xl border border-neutral-700/50 hover:border-primary-500/30 transition-all duration-300">
                             <div className="flex items-center space-x-4">
-                                <div className="p-3 bg-gradient-to-br from-primary-500 to-accent-600 rounded-xl shadow-lg flex-shrink-0">
+                                <div className="p-3 bg-linear-to-br from-primary-500 to-accent-600 rounded-xl shadow-lg shrink-0">
                                     <Sparkles className="w-5 h-5 text-white" />
                                 </div>
                                 <div>

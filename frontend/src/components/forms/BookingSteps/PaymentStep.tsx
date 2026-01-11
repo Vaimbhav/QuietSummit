@@ -71,8 +71,6 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                 return
             }
 
-            console.log('Creating order with amount:', bookingData.totalAmount)
-
             // Create Razorpay order
             const orderResponse = await createRazorpayOrder({
                 amount: bookingData.totalAmount || 0,
@@ -84,21 +82,11 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                 },
             })
 
-            console.log('Order created:', orderResponse.data)
-
             const { orderId, amount, currency } = orderResponse.data
 
             // Format contact number - remove country code and spaces
             const rawContact = bookingData.travelers?.[0]?.emergencyContact || ''
             const formattedContact = rawContact.replace(/\D/g, '').slice(-10)
-            
-            console.log('Payment details:', {
-                orderId,
-                amount,
-                currency,
-                contact: formattedContact,
-                email: bookingData.email
-            })
 
             // Razorpay options
             const options = {
@@ -156,7 +144,6 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                 },
                 modal: {
                     ondismiss: function () {
-                        console.log('Payment cancelled by user')
                         setIsProcessing(false)
                     },
                     escape: true,
@@ -174,7 +161,6 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                 setIsProcessing(false)
             })
 
-            console.log('Opening Razorpay with options:', { ...options, key: '***', handler: '[Function]' })
             razorpay.open()
         } catch (error: any) {
             console.error('Payment error:', error)
@@ -221,7 +207,7 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
             </div>
 
             {/* Payment Summary */}
-            <div className="p-5 sm:p-6 md:p-8 bg-gradient-to-br from-primary-600 via-accent-600 to-primary-700 text-white rounded-2xl sm:rounded-3xl shadow-lg">
+            <div className="p-5 sm:p-6 md:p-8 bg-linear-to-br from-primary-600 via-accent-600 to-primary-700 text-white rounded-2xl sm:rounded-3xl shadow-lg">
                 <div className="flex items-center gap-3 mb-4 sm:mb-6">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-xl flex items-center justify-center">
                         <CreditCard className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -258,7 +244,7 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                 <h4 className="text-base sm:text-lg font-bold text-neutral-900 mb-3 sm:mb-4">Accepted Payment Methods</h4>
                 <div className="flex flex-col gap-2 sm:gap-3">
                     <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-neutral-200 hover:border-primary-300 transition-colors">
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
                             <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                         </div>
                         <div className="min-w-0">
@@ -268,7 +254,7 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                     </div>
 
                     <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-neutral-200 hover:border-primary-300 transition-colors">
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-purple-100 rounded-lg flex items-center justify-center shrink-0">
                             <Smartphone className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                         </div>
                         <div className="min-w-0">
@@ -278,7 +264,7 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                     </div>
 
                     <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-neutral-200 hover:border-primary-300 transition-colors">
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
                             <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                         </div>
                         <div className="min-w-0">
@@ -288,7 +274,7 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                     </div>
 
                     <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-neutral-200 hover:border-primary-300 transition-colors">
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-amber-100 rounded-lg flex items-center justify-center shrink-0">
                             <Wallet className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
                         </div>
                         <div className="min-w-0">
@@ -298,7 +284,7 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                     </div>
 
                     <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-neutral-200 hover:border-primary-300 transition-colors">
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-indigo-100 rounded-lg flex items-center justify-center shrink-0">
                             <Banknote className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
                         </div>
                         <div className="min-w-0">
@@ -311,7 +297,7 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
 
             {/* Security Notice */}
             <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 bg-green-50 rounded-xl border border-green-200">
-                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 shrink-0 mt-0.5" />
                 <div className="text-xs sm:text-sm">
                     <p className="font-bold text-green-900 mb-1">Secure Payment</p>
                     <p className="text-green-700">

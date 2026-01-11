@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 import SignUp from '../models/SignUp'
 import logger from '../utils/logger'
+import jwt from 'jsonwebtoken'
+import { config } from '../config/environment'
 
 export const createSignUp = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -45,7 +47,14 @@ export const createSignUp = async (req: Request, res: Response): Promise<void> =
             status: 'confirmed',
         })
 
-        // Return without password
+        // Generate JWT token (expires in 7 days for persistent login)
+        const token = jwt.sign(
+            { id: signUp._id, email: signUp.email },
+            config.jwtSecret,
+            { expiresIn: '7d' }
+        )
+
+        // Return without password but with token
         res.status(201).json({
             success: true,
             message: 'Account created successfully! Welcome to QuietSummit.',
@@ -57,6 +66,7 @@ export const createSignUp = async (req: Request, res: Response): Promise<void> =
                 interests: signUp.interests,
                 subscribeToNewsletter: signUp.subscribeToNewsletter,
                 memberSince: signUp.createdAt,
+                token: token,
             },
         })
     } catch (error) {

@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { useAppDispatch } from '@store/hooks'
+import { setUser } from '@store/slices/userSlice'
 import Input from '@components/common/Input'
 import Button from '@components/common/Button'
 import PhoneInput from '@components/common/PhoneInput'
@@ -20,6 +23,8 @@ interface SignUpFormData {
 }
 
 export default function SignUpForm() {
+    const navigate = useNavigate()
+    const dispatch = useAppDispatch()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isSuccess, setIsSuccess] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -77,8 +82,46 @@ export default function SignUpForm() {
                 interests: data.interests,
                 subscribeToNewsletter: data.subscribeToNewsletter
             }
-            await submitSignUp(submitData)
+            const response = await submitSignUp(submitData)
+
+            // Store user in localStorage AND Redux with token
+            const userData = {
+                email: response.data.email,
+                name: response.data.name,
+                token: response.data.token,
+                id: response.data.id,
+                phone: response.data.phone,
+                interests: response.data.interests,
+                subscribeToNewsletter: response.data.subscribeToNewsletter,
+                memberSince: response.data.memberSince,
+                isAuthenticated: true
+            }
+            localStorage.setItem('quietsummit_user', JSON.stringify(userData))
+
+            // Immediately update Redux store
+            dispatch(setUser({
+                email: response.data.email,
+                name: response.data.name,
+                token: response.data.token,
+                isAuthenticated: true
+            }))
+
+            // Check if there's a redirect URL
+            const redirectUrl = localStorage.getItem('redirectAfterLogin')
+
             setIsSuccess(true)
+
+            setTimeout(() => {
+                if (redirectUrl) {
+                    localStorage.removeItem('redirectAfterLogin')
+                    // Navigate back to the journey detail page
+                    window.location.href = redirectUrl
+                } else {
+                    // If no redirect, go to dashboard
+                    navigate('/dashboard')
+                }
+            }, 1500)
+
             reset()
             setPhoneNumber('')
         } catch (error: any) {

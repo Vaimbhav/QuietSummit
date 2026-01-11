@@ -24,8 +24,11 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             couponDetails,
         } = req.body
 
+        // Get email from token if authenticated, otherwise use request body
+        const userEmail = req.user?.email || email
+
         // Validate required fields
-        if (!email || !journeyId || !departureDate || !numberOfTravelers || !totalAmount) {
+        if (!userEmail || !journeyId || !departureDate || !numberOfTravelers || !totalAmount) {
             res.status(400).json({
                 success: false,
                 error: 'Missing required booking information',
@@ -34,7 +37,7 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
         }
 
         // Find member
-        const member = await SignUp.findOne({ email: email.toLowerCase() })
+        const member = await SignUp.findOne({ email: userEmail.toLowerCase() })
         if (!member) {
             res.status(404).json({
                 success: false,
@@ -156,9 +159,9 @@ export const getBookingById = async (req: Request, res: Response): Promise<void>
 // Get all bookings for a member
 export const getMemberBookings = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { email } = req.query
+        const userEmail = req.user?.email || req.query.email
 
-        if (!email) {
+        if (!userEmail) {
             res.status(400).json({
                 success: false,
                 error: 'Email is required',
@@ -166,7 +169,7 @@ export const getMemberBookings = async (req: Request, res: Response): Promise<vo
             return
         }
 
-        const member = await SignUp.findOne({ email: email.toString().toLowerCase() })
+        const member = await SignUp.findOne({ email: userEmail.toString().toLowerCase() })
         if (!member) {
             res.status(404).json({
                 success: false,

@@ -6,14 +6,15 @@ import {
     cancelBooking,
     calculatePrice,
 } from '../controllers/bookingController'
+import { authenticateToken, optionalAuth } from '../middleware/auth'
 
 const router = Router()
 
 // Booking routes
-router.post('/', createBooking)
-router.get('/:id', getBookingById)
-router.get('/member/all', getMemberBookings)
-router.put('/:id/cancel', cancelBooking)
+router.post('/', optionalAuth, createBooking)
+router.get('/member/all', authenticateToken, getMemberBookings)
+router.get('/:id', authenticateToken, getBookingById)
+router.put('/:id/cancel', authenticateToken, cancelBooking)
 router.post('/calculate-price', calculatePrice)
 
 export default router

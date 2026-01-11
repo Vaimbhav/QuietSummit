@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
-import { useAppDispatch } from '@store/hooks'
-import { setUser } from '@store/slices/userSlice'
+import { useAuth } from '@/hooks/useAuth'
 import Header from '@components/common/Header'
 import Footer from '@components/common/Footer'
+import ProtectedRoute from '@components/common/ProtectedRoute'
+import AuthStateManager from '@components/common/AuthStateManager'
+import SessionManager from '@components/common/SessionManager'
 import Home from '@pages/Home'
 import Journeys from '@pages/Journeys'
 import JourneyDetail from '@pages/JourneyDetail'
@@ -21,11 +22,17 @@ function AppContent() {
     const location = useLocation()
     const isJourneyDetailPage = location.pathname.startsWith('/journeys/') && location.pathname !== '/journeys'
 
+    // Initialize auth state on app load
+    useAuth()
+
     return (
         <div className="min-h-screen flex flex-col">
+            <AuthStateManager />
+            <SessionManager />
             <Header />
-            <main className="flex-grow">
+            <main className="grow">
                 <Routes>
+                    {/* Public Routes */}
                     <Route path="/" element={<Home />} />
                     <Route path="/journeys" element={<Journeys />} />
                     <Route path="/journeys/:id" element={<JourneyDetail />} />
@@ -33,9 +40,19 @@ function AppContent() {
                     <Route path="/future-offerings" element={<FutureOfferings />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/signup" element={<SignUp />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/booking-confirmation/:id" element={<BookingConfirmation />} />
                     <Route path="/auth/google/success" element={<GoogleAuthSuccess />} />
+
+                    {/* Protected Routes - Require Authentication */}
+                    <Route path="/dashboard" element={
+                        <ProtectedRoute>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/booking-confirmation/:id" element={
+                        <ProtectedRoute>
+                            <BookingConfirmation />
+                        </ProtectedRoute>
+                    } />
                 </Routes>
             </main>
             <div className={isJourneyDetailPage ? 'hidden md:block' : ''}>
@@ -46,26 +63,6 @@ function AppContent() {
 }
 
 function App() {
-    const dispatch = useAppDispatch()
-
-    // Check for existing user session on app load
-    useEffect(() => {
-        const storedUser = localStorage.getItem('quietsummit_user')
-        if (storedUser) {
-            try {
-                const userData = JSON.parse(storedUser)
-                dispatch(setUser({
-                    email: userData.email,
-                    name: userData.name,
-                    isAuthenticated: true,
-                }))
-            } catch (error) {
-                console.error('Error parsing stored user:', error)
-                localStorage.removeItem('quietsummit_user')
-            }
-        }
-    }, [dispatch])
-
     return (
         <BrowserRouter>
             <ScrollToTop />

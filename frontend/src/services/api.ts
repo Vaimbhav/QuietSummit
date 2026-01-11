@@ -12,6 +12,48 @@ const api = axios.create({
     timeout: 15000, // 15 seconds timeout for mobile networks
 });
 
+// Request interceptor: Attach JWT token to all requests
+api.interceptors.request.use(
+    (config) => {
+        const userDataStr = localStorage.getItem('quietsummit_user');
+        if (userDataStr) {
+            try {
+                const userData = JSON.parse(userDataStr);
+                if (userData.token) {
+                    config.headers.Authorization = `Bearer ${userData.token}`;
+                }
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+            }
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+// Response interceptor: Handle token expiration
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401 && error.response?.data?.expired) {
+            // Token expired - clear auth and redirect to login
+            localStorage.removeItem('quietsummit_user');
+
+            // Dispatch custom event for auth state change
+            window.dispatchEvent(new CustomEvent('auth:expired'));
+
+            // Store current path for redirect after login
+            const currentPath = window.location.pathname + window.location.search;
+            if (currentPath !== '/signup' && currentPath !== '/') {
+                localStorage.setItem('redirectAfterLogin', currentPath);
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
 // Journey APIs
 export const getJourneys = async (filters?: {
     difficulty?: string;
@@ -105,6 +147,16 @@ export const loginMember = async (email: string, password: string): Promise<any>
         return response.data;
     } catch (error) {
         console.error('Error logging in:', error);
+        throw error;
+    }
+};
+
+export const refreshToken = async (refreshTokenValue: string): Promise<any> => {
+    try {
+        const response = await api.post('/auth/refresh', { refreshToken: refreshTokenValue });
+        return response.data;
+    } catch (error) {
+        console.error('Error refreshing token:', error);
         throw error;
     }
 };
