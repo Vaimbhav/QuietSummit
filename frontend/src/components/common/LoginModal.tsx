@@ -11,9 +11,11 @@ import { setUser } from '@store/slices/userSlice'
 interface LoginModalProps {
     isOpen: boolean
     onClose: () => void
+    onSuccess?: () => void // Callback after successful login
+    showCloseButton?: boolean // Whether to show close button (false for required auth)
 }
 
-export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
+export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [rememberMe, setRememberMe] = useState(false)
@@ -70,8 +72,17 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             }
 
             setSuccess(true)
+
+            // Dispatch storage event for other tabs to sync
+            window.dispatchEvent(new Event('storage'))
+
             setTimeout(() => {
-                onClose()
+                // Check if onSuccess callback is provided (for BookingGuard)
+                if (onSuccess) {
+                    onSuccess()
+                    onClose()
+                    return
+                }
 
                 // Check if there's a redirect path stored
                 const redirectPath = localStorage.getItem('redirectAfterLogin')

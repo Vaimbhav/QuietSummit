@@ -45,7 +45,9 @@ export default function GoogleAuthSuccess() {
                     }, 1000)
                 }
             } catch (error) {
-                console.error('Error parsing user data:', error)
+                if (import.meta.env.DEV) {
+                    console.error('Error parsing user data:', error)
+                }
                 navigate('/signup?error=Authentication failed')
             }
         } else {

@@ -3,13 +3,16 @@ import { refreshToken } from '../../services/api'
 
 const AUTO_REFRESH_THRESHOLD = 10 * 60 * 1000 // Refresh when 10 minutes remaining
 const CHECK_INTERVAL = 60 * 1000 // Check every minute
+const WARNING_THRESHOLD = 5 * 60 * 1000 // Show warning when 5 minutes remaining
 
 /**
  * SessionManager - Automatically refreshes auth tokens in the background
  * No user interaction required - tokens are refreshed silently
+ * Shows subtle warnings before session expires
  */
 export default function SessionManager() {
     const isRefreshing = useRef(false)
+    const hasShownWarning = useRef(false)
 
     useEffect(() => {
         const handleLogout = () => {
@@ -46,6 +49,14 @@ export default function SessionManager() {
                     return
                 }
 
+                // Show warning if session is about to expire and no refresh token
+                if (timeLeft <= WARNING_THRESHOLD && !user.refreshToken && !hasShownWarning.current) {
+                    hasShownWarning.current = true
+                    window.dispatchEvent(new CustomEvent('session:expiring', {
+                        detail: { timeLeft }
+                    }))
+                }
+
                 // Auto-refresh if within threshold and has refresh token
                 if (timeLeft <= AUTO_REFRESH_THRESHOLD && user.refreshToken) {
                     isRefreshing.current = true
@@ -61,6 +72,10 @@ export default function SessionManager() {
                                 refreshToken: response.data.refreshToken,
                             }
                             localStorage.setItem('quietsummit_user', JSON.stringify(updatedUser))
+                            hasShownWarning.current = false // Reset warning flag
+
+                            // Dispatch event for other components
+                            window.dispatchEvent(new Event('storage'))
                         }
                     } catch (error) {
                         // If refresh token is invalid/expired, logout

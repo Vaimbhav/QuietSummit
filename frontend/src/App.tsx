@@ -5,6 +5,8 @@ import Footer from '@components/common/Footer'
 import ProtectedRoute from '@components/common/ProtectedRoute'
 import AuthStateManager from '@components/common/AuthStateManager'
 import SessionManager from '@components/common/SessionManager'
+import AIAssistant from '@components/common/AIAssistant'
+import { ToastProvider } from '@components/common/ToastProvider'
 import Home from '@pages/Home'
 import Journeys from '@pages/Journeys'
 import JourneyDetail from '@pages/JourneyDetail'
@@ -21,6 +23,7 @@ import ScrollToTop from '@components/common/ScrollToTop'
 function AppContent() {
     const location = useLocation()
     const isJourneyDetailPage = location.pathname.startsWith('/journeys/') && location.pathname !== '/journeys'
+    const isHomePage = location.pathname === '/'
 
     // Initialize auth state on app load
     useAuth()
@@ -58,16 +61,21 @@ function AppContent() {
             <div className={isJourneyDetailPage ? 'hidden md:block' : ''}>
                 <Footer />
             </div>
+
+            {/* AI Assistant - Visible only on home page */}
+            {isHomePage && <AIAssistant />}
         </div>
     )
 }
 
 function App() {
     return (
-        <BrowserRouter>
-            <ScrollToTop />
-            <AppContent />
-        </BrowserRouter>
+        <ToastProvider>
+            <BrowserRouter>
+                <ScrollToTop />
+                <AppContent />
+            </BrowserRouter>
+        </ToastProvider>
     )
 }
 

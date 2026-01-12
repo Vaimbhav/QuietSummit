@@ -11,6 +11,7 @@ export default function BookingConfirmation() {
     const navigate = useNavigate()
     const [booking, setBooking] = useState<any>(null)
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         const fetchBooking = async () => {
@@ -23,7 +24,10 @@ export default function BookingConfirmation() {
                 const response = await getBookingById(id)
                 setBooking(response.data)
             } catch (error) {
-                console.error('Error fetching booking:', error)
+                if (import.meta.env.DEV) {
+                    console.error('Error fetching booking:', error)
+                }
+                setError('Failed to load booking details')
             } finally {
                 setLoading(false)
             }
@@ -36,6 +40,22 @@ export default function BookingConfirmation() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-neutral-50">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-neutral-50">
+                <div className="text-center">
+                    <p className="text-red-600 text-lg mb-4">{error}</p>
+                    <button
+                        onClick={() => navigate('/journeys')}
+                        className="text-primary-600 hover:text-primary-700 font-medium"
+                    >
+                        ← Return to Journeys
+                    </button>
+                </div>
             </div>
         )
     }

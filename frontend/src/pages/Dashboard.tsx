@@ -47,7 +47,10 @@ export default function Dashboard() {
             const bookingsResponse = await getMemberBookings(email)
             setBookings(bookingsResponse.data || [])
         } catch (error) {
-            console.error('Error fetching profile:', error)
+            if (import.meta.env.DEV) {
+                console.error('Error fetching profile:', error)
+            }
+            // Silent fail - use basic user data from Redux
         } finally {
             setLoading(false)
         }

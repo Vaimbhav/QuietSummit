@@ -25,7 +25,7 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
         } = req.body
 
         // Get email from token if authenticated, otherwise use request body
-        const userEmail = req.user?.email || email
+        const userEmail = (req.user as any)?.email || email
 
         // Validate required fields
         if (!userEmail || !journeyId || !departureDate || !numberOfTravelers || !totalAmount) {
@@ -159,7 +159,7 @@ export const getBookingById = async (req: Request, res: Response): Promise<void>
 // Get all bookings for a member
 export const getMemberBookings = async (req: Request, res: Response): Promise<void> => {
     try {
-        const userEmail = req.user?.email || req.query.email
+        const userEmail = (req.user as any)?.email || req.query.email
 
         if (!userEmail) {
             res.status(400).json({

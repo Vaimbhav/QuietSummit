@@ -1,20 +1,23 @@
 import { ReactNode, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import Loader from './Loader'
 
 interface ProtectedRouteProps {
     children: ReactNode
+    fallbackPath?: string
 }
 
 /**
  * Wrapper component for protected routes
- * Redirects to signup page if user is not authenticated
+ * Redirects to signup/login if user is not authenticated
  * Shows loading state while checking authentication
+ * Stores current path for post-login redirect
  */
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function ProtectedRoute({ children, fallbackPath = '/signup' }: ProtectedRouteProps) {
     const { isAuthenticated } = useAuth()
     const navigate = useNavigate()
+    const location = useLocation()
     const [isChecking, setIsChecking] = useState(true)
 
     useEffect(() => {
@@ -31,7 +34,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
                         if (parts.length === 3) {
                             const payload = JSON.parse(atob(parts[1]))
                             const expiry = payload.exp * 1000
-                            if (Date.now() < expiry) {
+                            if (Date.now() < expiry - 60000) { // 1 min buffer
                                 setIsChecking(false)
                                 return // User is authenticated
                             }
@@ -42,11 +45,17 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
                 }
             }
 
-            // Not authenticated - redirect
+            // Not authenticated - redirect and save current location
             setIsChecking(false)
-            const currentPath = window.location.pathname + window.location.search
-            localStorage.setItem('redirectAfterLogin', currentPath)
-            navigate('/signup')
+            const redirectUrl = location.pathname + location.search + location.hash
+            localStorage.setItem('redirectAfterLogin', redirectUrl)
+
+            // Dispatch custom event for other components to react
+            window.dispatchEvent(new CustomEvent('auth:required', {
+                detail: { redirectUrl }
+            }))
+
+            navigate(fallbackPath, { replace: true })
         }
 
         checkAuth()

@@ -6,6 +6,7 @@ import authRouter from './auth'
 import bookingsRouter from './bookings'
 import paymentsRouter from './payments'
 import couponsRouter from './coupons'
+import chatRouter from './chat'
 
 const router = Router()
 
@@ -16,6 +17,7 @@ router.use('/auth', authRouter)
 router.use('/bookings', bookingsRouter)
 router.use('/payments', paymentsRouter)
 router.use('/coupons', couponsRouter)
+router.use('/chat', chatRouter)
 
 router.get('/health', (_req, res) => {
     res.json({

@@ -50,7 +50,10 @@ const userSlice = createSlice({
                     state.tokenExpiry = payload.exp * 1000 // Convert to milliseconds
                 }
             } catch (error) {
-                console.error('Error decoding token:', error)
+                // Silent fail - token expiry is not critical for functionality
+                if (import.meta.env.DEV) {
+                    console.error('Error decoding token:', error)
+                }
             }
         },
         clearUser: (state) => {

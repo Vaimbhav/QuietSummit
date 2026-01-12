@@ -10,6 +10,7 @@ import { getJourneyBySlug } from '../services/api'
 import { Journey } from '../types/journey'
 import Button from '@components/common/Button'
 import BookingForm from '@components/forms/BookingForm'
+import BookingGuard from '@components/common/BookingGuard'
 
 export default function JourneyDetail() {
     const { id } = useParams()
@@ -39,7 +40,9 @@ export default function JourneyDetail() {
                 const data = await getJourneyBySlug(id || '')
                 setJourney(data)
             } catch (err) {
-                console.error(err)
+                if (import.meta.env.DEV) {
+                    console.error(err)
+                }
                 setError('Failed to load journey details. Please try again later.')
             } finally {
                 setLoading(false)
@@ -421,19 +424,18 @@ export default function JourneyDetail() {
                                 </div>
                             </div>
 
-                            <Button
-                                onClick={() => {
-                                    // Store current page URL for redirect after signup
-                                    const currentPath = window.location.pathname
-                                    localStorage.setItem('redirectAfterLogin', currentPath)
-                                    setIsBookingOpen(true)
-                                }}
-                                variant="primary"
-                                size="lg"
-                                className="w-full mb-3 sm:mb-4 text-base sm:text-lg font-bold py-3 sm:py-4"
-                            >
-                                Book This Journey
-                            </Button>
+                            <BookingGuard onAuthenticated={() => setIsBookingOpen(true)}>
+                                {(openBooking) => (
+                                    <Button
+                                        onClick={openBooking}
+                                        variant="primary"
+                                        size="lg"
+                                        className="w-full mb-3 sm:mb-4 text-base sm:text-lg font-bold py-3 sm:py-4"
+                                    >
+                                        Book This Journey
+                                    </Button>
+                                )}
+                            </BookingGuard>
 
                             <Button
                                 onClick={() => navigate('/contact')}
@@ -462,19 +464,18 @@ export default function JourneyDetail() {
                             <span className="text-xs text-neutral-600">/ person</span>
                         </div>
                     </div>
-                    <Button
-                        onClick={() => {
-                            // Store current page URL for redirect after signup
-                            const currentPath = window.location.pathname
-                            localStorage.setItem('redirectAfterLogin', currentPath)
-                            setIsBookingOpen(true)
-                        }}
-                        variant="primary"
-                        size="lg"
-                        className="px-8 py-3 text-base font-bold"
-                    >
-                        Book Now
-                    </Button>
+                    <BookingGuard onAuthenticated={() => setIsBookingOpen(true)}>
+                        {(openBooking) => (
+                            <Button
+                                onClick={openBooking}
+                                variant="primary"
+                                size="lg"
+                                className="px-8 py-3 text-base font-bold"
+                            >
+                                Book Now
+                            </Button>
+                        )}
+                    </BookingGuard>
                 </div>
             </div>
 

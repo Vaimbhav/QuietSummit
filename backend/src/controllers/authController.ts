@@ -230,7 +230,7 @@ export const checkMember = async (req: Request, res: Response): Promise<void> =>
 export const getMemberProfile = async (req: Request, res: Response): Promise<void> => {
     try {
         // Authenticated user from token
-        const userEmail = req.user?.email
+        const userEmail = (req.user as any)?.email
 
         // Fallback to query if not in protected route (though we just protected it)
         const email = userEmail || req.query.email
@@ -295,7 +295,7 @@ export const getMemberProfile = async (req: Request, res: Response): Promise<voi
 export const updateMemberPreferences = async (req: Request, res: Response): Promise<void> => {
     try {
         const { interests, subscribeToNewsletter } = req.body
-        const userEmail = req.user?.email
+        const userEmail = (req.user as any)?.email
         const email = userEmail || req.body.email
 
         if (!email) {

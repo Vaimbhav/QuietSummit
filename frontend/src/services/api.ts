@@ -2,6 +2,26 @@ import axios from 'axios';
 import { Journey } from '../types/journey';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1';
+const IS_DEV = import.meta.env.DEV;
+
+// Simple logger that only logs in development
+const logger = {
+    error: (...args: any[]) => {
+        if (IS_DEV) {
+            console.error(...args);
+        }
+    },
+    warn: (...args: any[]) => {
+        if (IS_DEV) {
+            console.warn(...args);
+        }
+    },
+    info: (...args: any[]) => {
+        if (IS_DEV) {
+            console.info(...args);
+        }
+    }
+};
 
 const api = axios.create({
     baseURL: API_URL,
@@ -9,7 +29,7 @@ const api = axios.create({
         'Content-Type': 'application/json',
     },
     withCredentials: true,
-    timeout: 15000, // 15 seconds timeout for mobile networks
+    timeout: 30000, // 30 seconds timeout
 });
 
 // Request interceptor: Attach JWT token to all requests
@@ -23,7 +43,9 @@ api.interceptors.request.use(
                     config.headers.Authorization = `Bearer ${userData.token}`;
                 }
             } catch (error) {
-                console.error('Error parsing user data:', error);
+                logger.error('Error parsing user data:', error);
+                // Clear corrupted data
+                localStorage.removeItem('quietsummit_user');
             }
         }
         return config;
@@ -70,7 +92,7 @@ export const getJourneys = async (filters?: {
         const response = await api.get(url);
         return response.data.data; // Backend returns { success, count, data }
     } catch (error) {
-        console.error('Error fetching journeys:', error);
+        logger.error('Error fetching journeys:', error);
         throw error;
     }
 };
@@ -80,7 +102,7 @@ export const getJourneyBySlug = async (slug: string): Promise<Journey> => {
         const response = await api.get(`/journeys/${slug}`);
         return response.data.data;
     } catch (error) {
-        console.error('Error fetching journey by slug:', error);
+        logger.error('Error fetching journey by slug:', error);
         throw error;
     }
 }
@@ -99,7 +121,7 @@ export const submitContactForm = async (data: ContactFormData): Promise<any> => 
         const response = await api.post('/contact', data);
         return response.data;
     } catch (error) {
-        console.error('Error submitting contact form:', error);
+        logger.error('Error submitting contact form:', error);
         throw error;
     }
 };
@@ -119,7 +141,7 @@ export const submitSignUp = async (data: SignUpFormData): Promise<any> => {
         const response = await api.post('/signup', data);
         return response.data;
     } catch (error) {
-        console.error('Error submitting signup:', error);
+        logger.error('Error submitting signup:', error);
         throw error;
     }
 };
@@ -130,7 +152,7 @@ export const updateMemberPreferences = async (data: SignUpFormData): Promise<any
         const response = await api.put('/auth/preferences', data);
         return response.data;
     } catch (error) {
-        console.error('Error updating preferences:', error);
+        logger.error('Error updating preferences:', error);
         throw error;
     }
 };
@@ -146,7 +168,7 @@ export const loginMember = async (email: string, password: string): Promise<any>
         const response = await api.post('/auth/login', { email, password });
         return response.data;
     } catch (error) {
-        console.error('Error logging in:', error);
+        logger.error('Error logging in:', error);
         throw error;
     }
 };
@@ -156,7 +178,7 @@ export const refreshToken = async (refreshTokenValue: string): Promise<any> => {
         const response = await api.post('/auth/refresh', { refreshToken: refreshTokenValue });
         return response.data;
     } catch (error) {
-        console.error('Error refreshing token:', error);
+        logger.error('Error refreshing token:', error);
         throw error;
     }
 };
@@ -166,7 +188,7 @@ export const checkMember = async (email: string): Promise<any> => {
         const response = await api.get(`/auth/check?email=${encodeURIComponent(email)}`);
         return response.data;
     } catch (error) {
-        console.error('Error checking member:', error);
+        logger.error('Error checking member:', error);
         throw error;
     }
 };
@@ -176,7 +198,7 @@ export const getMemberProfile = async (email: string): Promise<any> => {
         const response = await api.get(`/auth/profile?email=${encodeURIComponent(email)}`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching profile:', error);
+        logger.error('Error fetching profile:', error);
         throw error;
     }
 };
@@ -211,7 +233,7 @@ export const createBooking = async (data: Partial<BookingFormData>): Promise<any
         const response = await api.post('/bookings', data);
         return response.data;
     } catch (error) {
-        console.error('Error creating booking:', error);
+        logger.error('Error creating booking:', error);
         throw error;
     }
 };
@@ -221,7 +243,7 @@ export const getBookingById = async (id: string): Promise<any> => {
         const response = await api.get(`/bookings/${id}`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching booking:', error);
+        logger.error('Error fetching booking:', error);
         throw error;
     }
 };
@@ -231,7 +253,7 @@ export const getMemberBookings = async (email: string): Promise<any> => {
         const response = await api.get(`/bookings/member/all?email=${encodeURIComponent(email)}`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching bookings:', error);
+        logger.error('Error fetching bookings:', error);
         throw error;
     }
 };
@@ -245,7 +267,7 @@ export const calculatePrice = async (data: {
         const response = await api.post('/bookings/calculate-price', data);
         return response.data;
     } catch (error) {
-        console.error('Error calculating price:', error);
+        logger.error('Error calculating price:', error);
         throw error;
     }
 };
@@ -261,7 +283,7 @@ export const createRazorpayOrder = async (data: {
         const response = await api.post('/payments/create-order', data);
         return response.data;
     } catch (error) {
-        console.error('Error creating Razorpay order:', error);
+        logger.error('Error creating Razorpay order:', error);
         throw error;
     }
 };
@@ -275,7 +297,7 @@ export const verifyPayment = async (data: {
         const response = await api.post('/payments/verify', data);
         return response.data;
     } catch (error) {
-        console.error('Error verifying payment:', error);
+        logger.error('Error verifying payment:', error);
         throw error;
     }
 };
@@ -285,7 +307,7 @@ export const getRazorpayKey = async (): Promise<any> => {
         const response = await api.get('/payments/key');
         return response.data;
     } catch (error) {
-        console.error('Error fetching Razorpay key:', error);
+        logger.error('Error fetching Razorpay key:', error);
         throw error;
     }
 };
@@ -296,7 +318,7 @@ export const getActiveCoupons = async (): Promise<any> => {
         const response = await api.get('/coupons/active');
         return response.data;
     } catch (error) {
-        console.error('Error fetching active coupons:', error);
+        logger.error('Error fetching active coupons:', error);
         throw error;
     }
 };
@@ -310,7 +332,7 @@ export const validateCoupon = async (data: {
         const response = await api.post('/coupons/validate', data);
         return response.data;
     } catch (error) {
-        console.error('Error validating coupon:', error);
+        logger.error('Error validating coupon:', error);
         throw error;
     }
 };

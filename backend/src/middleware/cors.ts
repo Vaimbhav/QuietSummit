@@ -14,25 +14,29 @@ const allowedOrigins = [
 
 export const corsMiddleware = cors({
     origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl requests)
+        // In production, don't allow requests with no origin for security
         if (!origin) {
+            if (config.isProduction) {
+                logger.warn('CORS: Blocking request with no origin in production')
+                return callback(new Error('Not allowed by CORS'))
+            }
             return callback(null, true)
         }
 
         const normalizedOrigin = origin.replace(/\/$/, '')
 
-        // In development, allow all origins
-        if (config.env === 'development') {
-            logger.info(`CORS: Allowing origin (development): ${origin}`)
+        // In development, be more permissive with localhost origins
+        if (config.isDevelopment && normalizedOrigin.includes('localhost')) {
+            logger.info(`CORS: Allowing localhost origin (development): ${origin}`)
             return callback(null, true)
         }
 
-        // In production, check against allowed origins
+        // Check against allowed origins
         if (allowedOrigins.includes(normalizedOrigin)) {
             logger.info(`CORS: Allowing origin: ${origin}`)
             callback(null, true)
         } else {
-            logger.warn(`CORS: Blocking origin: ${origin}`)
+            logger.warn(`CORS: Blocking unauthorized origin: ${origin}`)
             callback(new Error('Not allowed by CORS'))
         }
     },

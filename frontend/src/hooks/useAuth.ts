@@ -16,7 +16,9 @@ const isTokenValid = (token: string): boolean => {
         // Check if token expires in more than 1 minute
         return Date.now() < expiry - 60000
     } catch (error) {
-        console.error('Error validating token:', error)
+        if (import.meta.env.DEV) {
+            console.error('Error validating token:', error)
+        }
         return false
     }
 }
@@ -58,7 +60,9 @@ export function useAuth() {
                         logout()
                     }
                 } catch (error) {
-                    console.error('Error parsing stored user:', error)
+                    if (import.meta.env.DEV) {
+                        console.error('Error parsing stored user:', error)
+                    }
                     logout()
                 }
             }

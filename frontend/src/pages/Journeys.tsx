@@ -29,7 +29,9 @@ export default function Journeys() {
                 const data = await getJourneys()
                 setAllJourneys(data)
             } catch (err) {
-                console.error(err)
+                if (import.meta.env.DEV) {
+                    console.error(err)
+                }
                 setError('Failed to load journeys. Please try again later.')
             } finally {
                 setLoading(false)
