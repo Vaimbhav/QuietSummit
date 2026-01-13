@@ -55,12 +55,9 @@ app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
 // Data sanitization against NoSQL injection
-// Use replaceWith option to avoid modifying read-only properties
+// IMPORTANT: Must come AFTER body-parser to work correctly
 app.use(mongoSanitize({
-    replaceWith: '_',
-    onSanitize: ({ req, key }) => {
-        logger.warn(`Sanitized key: ${key} in request from ${req.ip}`)
-    }
+    replaceWith: '_'
 }))
 
 // Compression middleware - compress responses
