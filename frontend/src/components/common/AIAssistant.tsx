@@ -495,7 +495,7 @@ export default function AIAssistant() {
                                         disabled={!inputValue.trim() || isLoading}
                                         className="p-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[48px]"
                                     >
-                                        <svg className="w-5 h-5 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-5 h-5 rotate-[-270deg]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                                         </svg>
                                     </motion.button>
