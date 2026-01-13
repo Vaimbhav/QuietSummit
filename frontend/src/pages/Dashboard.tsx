@@ -14,7 +14,7 @@ export default function Dashboard() {
     const navigate = useNavigate()
     const { user: authUser, logout } = useAuth()
     const [profile, setProfile] = useState<any>(null)
-    const [bookings, setBookings] = useState<any[]>([])
+    const [bookings, setBookings] = useState<Array<Record<string, any>>>([])
     const [loading, setLoading] = useState(true)
     const [selectedInterests, setSelectedInterests] = useState<string[]>([])
     const [newsletter, setNewsletter] = useState(true)
@@ -114,9 +114,9 @@ export default function Dashboard() {
     })
 
     return (
-        <div className="min-h-screen bg-linear-to-b from-primary-50 via-white to-neutral-50">
+        <div className="min-h-screen bg-gradient-to-b from-primary-50 via-white to-neutral-50">
             {/* Header */}
-            <section className="relative bg-linear-to-br from-primary-600 via-accent-600 to-primary-700 text-white py-12 sm:py-16 lg:py-20 overflow-hidden">
+            <section className="relative bg-gradient-to-br from-primary-600 via-accent-600 to-primary-700 text-white py-12 sm:py-16 lg:py-20 overflow-hidden">
                 <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute top-0 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-primary-500/30 rounded-full blur-3xl animate-pulse"></div>
                     <div className="absolute bottom-0 right-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-accent-500/30 rounded-full blur-3xl animate-pulse [animation-delay:1s]"></div>
@@ -153,9 +153,9 @@ export default function Dashboard() {
                 <div className="grid md:grid-cols-3 gap-6 md:gap-7 lg:gap-8 max-w-7xl mx-auto">
                     {/* Profile Card */}
                     <div className="md:col-span-1 space-y-4 sm:space-y-6">
-                        <Card className="bg-linear-to-br! from-primary-50 to-accent-50">
+                        <Card className="bg-gradient-to-br! from-primary-50 to-accent-50">
                             <div className="text-center">
-                                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-linear-to-br from-primary-500 to-accent-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white text-2xl sm:text-3xl font-bold shadow-lg">
+                                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-primary-500 to-accent-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white text-2xl sm:text-3xl font-bold shadow-lg">
                                     {profile.name.charAt(0).toUpperCase()}
                                 </div>
                                 <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 mb-2">
@@ -273,7 +273,7 @@ export default function Dashboard() {
                                 <a href="/journeys">
                                     <motion.div
                                         whileHover={{ scale: 1.02, y: -2 }}
-                                        className="p-5 sm:p-6 bg-linear-to-br from-primary-50 to-accent-50 rounded-2xl border-2 border-primary-100 cursor-pointer">
+                                        className="p-5 sm:p-6 bg-gradient-to-br from-primary-50 to-accent-50 rounded-2xl border-2 border-primary-100 cursor-pointer">
                                         <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-primary-600 mb-2 sm:mb-3" />
                                         <h4 className="text-base sm:text-lg font-bold text-neutral-900 mb-1">
                                             Browse Journeys
@@ -287,7 +287,7 @@ export default function Dashboard() {
                                 <a href="/contact">
                                     <motion.div
                                         whileHover={{ scale: 1.02, y: -2 }}
-                                        className="p-5 sm:p-6 bg-linear-to-br from-accent-50 to-primary-50 rounded-2xl border-2 border-accent-100 cursor-pointer">
+                                        className="p-5 sm:p-6 bg-gradient-to-br from-accent-50 to-primary-50 rounded-2xl border-2 border-accent-100 cursor-pointer">
                                         <Mail className="w-6 h-6 sm:w-8 sm:h-8 text-accent-600 mb-2 sm:mb-3" />
                                         <h4 className="text-base sm:text-lg font-bold text-neutral-900 mb-1">
                                             Contact Us
@@ -343,7 +343,7 @@ export default function Dashboard() {
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: idx * 0.1 }}
-                                            className="p-4 sm:p-5 bg-linear-to-br from-neutral-50 to-primary-50/30 rounded-xl border border-neutral-200 hover:border-primary-300 transition-all cursor-pointer"
+                                            className="p-4 sm:p-5 bg-gradient-to-br from-neutral-50 to-primary-50/30 rounded-xl border border-neutral-200 hover:border-primary-300 transition-all cursor-pointer"
                                             onClick={() => navigate(`/booking-confirmation/${booking._id}`)}
                                         >
                                             <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-3">

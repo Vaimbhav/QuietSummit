@@ -5,19 +5,37 @@ import logger from '../utils/logger'
 import { config } from '../config/environment'
 
 // Validate Razorpay configuration on startup
-if (!config.razorpay.keyId || !config.razorpay.keySecret) {
+const isRazorpayConfigured = !!(config.razorpay.keyId && config.razorpay.keySecret)
+
+if (!isRazorpayConfigured) {
     logger.error('Razorpay credentials not configured. Please set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET.')
+    logger.error('Payment endpoints will return errors until credentials are configured.')
 }
 
-// Initialize Razorpay
-const razorpay = new Razorpay({
+// Initialize Razorpay (will be null if not configured)
+const razorpay = isRazorpayConfigured ? new Razorpay({
     key_id: config.razorpay.keyId,
     key_secret: config.razorpay.keySecret,
-})
+}) : null
+
+// Helper function to check Razorpay configuration
+const checkRazorpayConfig = (res: Response): boolean => {
+    if (!isRazorpayConfigured || !razorpay) {
+        res.status(503).json({
+            success: false,
+            error: 'Payment gateway not configured. Please contact support.',
+        })
+        return false
+    }
+    return true
+}
 
 // Create Razorpay order
 export const createOrder = async (req: Request, res: Response): Promise<void> => {
     try {
+        // Check if Razorpay is configured
+        if (!checkRazorpayConfig(res)) return
+
         const { amount, currency = 'INR', receipt, notes } = req.body
 
         logger.info('Creating Razorpay order:', { amount, currency, receipt })
@@ -49,7 +67,7 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
 
         logger.info('Razorpay order options:', options)
 
-        const order = await razorpay.orders.create(options)
+        const order = await razorpay!.orders.create(options)
 
         logger.info('Razorpay order created successfully:', { orderId: order.id, amount: order.amount })
 
@@ -75,6 +93,9 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
 // Verify Razorpay payment signature
 export const verifyPayment = async (req: Request, res: Response): Promise<void> => {
     try {
+        // Check if Razorpay is configured
+        if (!checkRazorpayConfig(res)) return
+
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body
 
         if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -97,7 +118,7 @@ export const verifyPayment = async (req: Request, res: Response): Promise<void> 
 
         if (isAuthentic) {
             // Fetch payment details from Razorpay
-            const payment = await razorpay.payments.fetch(razorpay_payment_id)
+            const payment = await razorpay!.payments.fetch(razorpay_payment_id)
 
             res.status(200).json({
                 success: true,
@@ -149,6 +170,9 @@ export const getRazorpayKey = async (_req: Request, res: Response): Promise<void
 // Refund payment
 export const refundPayment = async (req: Request, res: Response): Promise<void> => {
     try {
+        // Check if Razorpay is configured
+        if (!checkRazorpayConfig(res)) return
+
         const { paymentId, amount, notes } = req.body
 
         if (!paymentId) {
@@ -159,7 +183,7 @@ export const refundPayment = async (req: Request, res: Response): Promise<void> 
             return
         }
 
-        const refund = await razorpay.payments.refund(paymentId, {
+        const refund = await razorpay!.payments.refund(paymentId, {
             amount: amount ? Math.round(amount * 100) : undefined, // Partial refund if amount specified
             notes: notes || {},
         })

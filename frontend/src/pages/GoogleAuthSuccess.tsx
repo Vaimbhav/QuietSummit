@@ -1,68 +1,107 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAppDispatch } from '@store/hooks'
-import { setUser } from '@store/slices/userSlice'
-import Loader from '../components/common/Loader'
+import { useEffect, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useAppDispatch } from '@/store/hooks'
+import { setUser } from '@/store/slices/userSlice'
+import { getMemberProfile } from '@/services/api'
 
 export default function GoogleAuthSuccess() {
+    const [searchParams] = useSearchParams()
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
+    const [error, setError] = useState<string | null>(null)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        // Get user data from URL params
-        const params = new URLSearchParams(window.location.search)
-        const dataParam = params.get('data')
-
-        if (dataParam) {
+        const processAuth = async () => {
             try {
-                const userData = JSON.parse(decodeURIComponent(dataParam))
+                const dataParam = searchParams.get('data')
 
-                // Store user in Redux with token
-                dispatch(
-                    setUser({
-                        email: userData.email,
-                        name: userData.name,
-                        token: userData.token,
-                        isAuthenticated: true,
-                    })
-                )
+                if (!dataParam) {
+                    setError('Authentication failed - no data received')
+                    setLoading(false)
+                    return
+                }
 
-                // Store in localStorage with token
-                localStorage.setItem('quietsummit_user', JSON.stringify(userData))
+                // Parse minimal auth data (token, refreshToken, email)
+                const authData = JSON.parse(decodeURIComponent(dataParam))
 
-                // Check if there's a redirect URL
-                const redirectUrl = localStorage.getItem('redirectAfterLogin')
-                if (redirectUrl) {
-                    localStorage.removeItem('redirectAfterLogin')
-                    // Use window.location for full page reload to ensure state is loaded
-                    setTimeout(() => {
-                        window.location.href = redirectUrl
-                    }, 1000)
+                if (!authData.token || !authData.email) {
+                    setError('Invalid authentication data')
+                    setLoading(false)
+                    return
+                }
+
+                // Store tokens and email temporarily
+                const tempUserData = {
+                    email: authData.email,
+                    token: authData.token,
+                    refreshToken: authData.refreshToken,
+                }
+                localStorage.setItem('quietsummit_user', JSON.stringify(tempUserData))
+
+                // Fetch full profile using the token
+                const profileResponse = await getMemberProfile(authData.email)
+
+                if (profileResponse.success && profileResponse.data) {
+                    // Update with full user data
+                    const fullUserData = {
+                        ...profileResponse.data,
+                        token: authData.token,
+                        refreshToken: authData.refreshToken,
+                    }
+
+                    localStorage.setItem('quietsummit_user', JSON.stringify(fullUserData))
+                    dispatch(setUser(fullUserData))
+
+                    // Check for redirect path
+                    const redirectPath = localStorage.getItem('redirectAfterLogin')
+                    if (redirectPath) {
+                        localStorage.removeItem('redirectAfterLogin')
+                        navigate(redirectPath)
+                    } else {
+                        navigate('/dashboard')
+                    }
                 } else {
-                    // Redirect to dashboard
-                    setTimeout(() => {
-                        window.location.href = '/dashboard'
-                    }, 1000)
+                    setError('Failed to fetch user profile')
+                    setLoading(false)
                 }
             } catch (error) {
-                if (import.meta.env.DEV) {
-                    console.error('Error parsing user data:', error)
-                }
-                navigate('/signup?error=Authentication failed')
+                setError('Authentication failed. Please try again.')
+                setLoading(false)
             }
-        } else {
-            navigate('/signup?error=Authentication failed')
         }
-    }, [navigate, dispatch])
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-primary-50 to-accent-50">
-            <div className="text-center">
-                <Loader size="lg" />
-                <p className="mt-4 text-lg text-neutral-700">
-                    Completing sign in with Google...
-                </p>
+        processAuth()
+    }, [searchParams, navigate, dispatch])
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-neutral-50">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+                    <p className="text-neutral-600">Completing authentication...</p>
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-neutral-50">
+                <div className="text-center max-w-md mx-auto p-6">
+                    <div className="text-red-600 text-5xl mb-4">⚠️</div>
+                    <h2 className="text-2xl font-bold text-neutral-900 mb-2">Authentication Error</h2>
+                    <p className="text-neutral-600 mb-6">{error}</p>
+                    <button
+                        onClick={() => navigate('/signup')}
+                        className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                    >
+                        Return to Sign Up
+                    </button>
+                </div>
+            </div>
+        )
+    }
+
+    return null
 }

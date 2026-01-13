@@ -72,7 +72,7 @@ export default function BookingConfirmation() {
     const bookingRef = `QS${booking._id.toString().slice(-8).toUpperCase()}`
 
     return (
-        <div className="min-h-screen bg-linear-to-b from-primary-50 via-white to-neutral-50 py-20">
+        <div className="min-h-screen bg-gradient-to-b from-primary-50 via-white to-neutral-50 py-20">
             <div className="container mx-auto px-4 max-w-4xl">
                 {/* Success Header */}
                 <motion.div
@@ -94,7 +94,7 @@ export default function BookingConfirmation() {
                     <p className="text-xl text-neutral-600 mb-6">
                         Your adventure to {booking.destination} is all set!
                     </p>
-                    <div className="inline-block px-8 py-4 bg-linear-to-r from-primary-600 to-accent-600 text-white rounded-2xl shadow-lg">
+                    <div className="inline-block px-8 py-4 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-2xl shadow-lg">
                         <p className="text-sm opacity-90 mb-1">Booking Reference</p>
                         <p className="text-3xl font-black tracking-wider">{bookingRef}</p>
                     </div>
@@ -196,7 +196,7 @@ export default function BookingConfirmation() {
                 </motion.div>
 
                 {/* Next Steps */}
-                <Card className="!bg-linear-to-br from-primary-50 to-accent-50 border-2 border-primary-200 mb-8">
+                <Card className="bg-gradient-to-br! from-primary-50 to-accent-50 border-2 border-primary-200 mb-8">
                     <h2 className="text-2xl font-bold text-neutral-900 mb-6">What's Next?</h2>
                     <div className="space-y-4">
                         <div className="flex items-start gap-4">

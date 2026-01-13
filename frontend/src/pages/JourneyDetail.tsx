@@ -40,9 +40,6 @@ export default function JourneyDetail() {
                 const data = await getJourneyBySlug(id || '')
                 setJourney(data)
             } catch (err) {
-                if (import.meta.env.DEV) {
-                    console.error(err)
-                }
                 setError('Failed to load journey details. Please try again later.')
             } finally {
                 setLoading(false)
@@ -95,7 +92,7 @@ export default function JourneyDetail() {
     }
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-primary-100/50 via-primary-100/40 to-accent-100/50 pb-20 md:pb-0">
+        <div className="min-h-screen bg-gradient-to-br from-primary-100/50 via-primary-100/40 to-accent-100/50 pb-20 md:pb-0">
             {/* Hero Section with Image Gallery */}
             <section className="relative bg-neutral-900">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-6 sm:pb-8">

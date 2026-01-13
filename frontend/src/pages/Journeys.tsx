@@ -19,8 +19,14 @@ export default function Journeys() {
     const [currentPage, setCurrentPage] = useState(1)
     const [isFilterOpen, setIsFilterOpen] = useState(false)
 
-    // Extract unique regions from all journeys
-    const regions = Array.from(new Set(allJourneys.map(j => j.location.region))).sort()
+    // Extract unique regions from all journeys with null check
+    const regions = Array.from(
+        new Set(
+            allJourneys
+                .filter(j => j.location?.region) // Filter out journeys without location/region
+                .map(j => j.location.region)
+        )
+    ).sort()
 
     useEffect(() => {
         const fetchJourneys = async () => {
@@ -29,9 +35,6 @@ export default function Journeys() {
                 const data = await getJourneys()
                 setAllJourneys(data)
             } catch (err) {
-                if (import.meta.env.DEV) {
-                    console.error(err)
-                }
                 setError('Failed to load journeys. Please try again later.')
             } finally {
                 setLoading(false)
@@ -41,10 +44,10 @@ export default function Journeys() {
         fetchJourneys()
     }, [])
 
-    // Client-side filtering
+    // Client-side filtering with null checks
     const filteredJourneys = allJourneys.filter(journey => {
         const matchesDifficulty = filter === 'all' || journey.difficulty === filter
-        const matchesRegion = !selectedRegion || journey.location.region === selectedRegion
+        const matchesRegion = !selectedRegion || journey.location?.region === selectedRegion
         return matchesDifficulty && matchesRegion
     })
 
@@ -96,7 +99,7 @@ export default function Journeys() {
     return (
         <div className="min-h-screen bg-neutral-50 text-neutral-900">
             {/* Header */}
-            <section className="relative bg-linear-to-br from-primary-600 via-accent-600 to-primary-700 text-white pt-8 sm:pt-10 pb-12 sm:pb-16 overflow-hidden">
+            <section className="relative bg-gradient-to-br from-primary-600 via-accent-600 to-primary-700 text-white pt-8 sm:pt-10 pb-12 sm:pb-16 overflow-hidden">
                 {/* Animated background elements */}
                 <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-primary-500/30 rounded-full blur-3xl animate-pulse"></div>
@@ -132,7 +135,7 @@ export default function Journeys() {
                     className="w-full glass-luxury rounded-2xl px-6 py-4 flex items-center justify-between shadow-luxury hover:shadow-luxury-lg transition-all border border-primary-100 group"
                 >
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary-600 to-accent-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                             <Filter className="w-5 h-5 text-white" />
                         </div>
                         <div className="text-left">
@@ -427,7 +430,7 @@ export default function Journeys() {
                                         className="glass-luxury rounded-4xl overflow-hidden shadow-luxury-lg hover:shadow-luxury-2xl transition-all duration-500 h-full flex flex-col border-luxury"
                                     >
                                         <div className="relative h-56 sm:h-64 md:h-72 overflow-hidden">
-                                            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500 z-10"></div>
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500 z-10"></div>
                                             <img
                                                 src={journey.images[0] || '/images/placeholder.jpg'}
                                                 alt={journey.title}

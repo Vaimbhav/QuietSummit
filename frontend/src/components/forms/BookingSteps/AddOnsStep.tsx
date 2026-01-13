@@ -31,14 +31,14 @@ type AppliedCoupon = {
 
 // Color palette for coupon cards
 const colorPalette = [
-    'bg-linear-to-br from-teal-500 to-cyan-500',
-    'bg-linear-to-br from-indigo-500 to-purple-500',
-    'bg-linear-to-br from-purple-500 to-pink-500',
-    'bg-linear-to-br from-orange-500 to-red-500',
-    'bg-linear-to-br from-blue-500 to-cyan-500',
-    'bg-linear-to-br from-green-500 to-emerald-500',
-    'bg-linear-to-br from-pink-500 to-rose-500',
-    'bg-linear-to-br from-amber-500 to-orange-500',
+    'bg-gradient-to-br from-teal-500 to-cyan-500',
+    'bg-gradient-to-br from-indigo-500 to-purple-500',
+    'bg-gradient-to-br from-purple-500 to-pink-500',
+    'bg-gradient-to-br from-orange-500 to-red-500',
+    'bg-gradient-to-br from-blue-500 to-cyan-500',
+    'bg-gradient-to-br from-green-500 to-emerald-500',
+    'bg-gradient-to-br from-pink-500 to-rose-500',
+    'bg-gradient-to-br from-amber-500 to-orange-500',
 ]
 
 // Icon selection based on discount type
@@ -246,7 +246,7 @@ export default function AddOnsStep({ journey, bookingData, onNext, onBack }: Add
             </div>
 
             {/* Coupons Section */}
-            <div className="p-4 sm:p-6 bg-linear-to-br from-primary-50 to-accent-50 rounded-2xl border-2 border-primary-200">
+            <div className="p-4 sm:p-6 bg-gradient-to-br from-primary-50 to-accent-50 rounded-2xl border-2 border-primary-200">
                 <h4 className="text-lg sm:text-xl font-bold text-neutral-900 mb-4">Apply Coupon</h4>
 
                 {!appliedCoupon ? (
@@ -431,7 +431,7 @@ export default function AddOnsStep({ journey, bookingData, onNext, onBack }: Add
 
             {/* Add-Ons Summary */}
             {selectedAddOns.length > 0 && (
-                <div className="p-6 bg-linear-to-br from-primary-50 to-accent-50 rounded-2xl">
+                <div className="p-6 bg-gradient-to-br from-primary-50 to-accent-50 rounded-2xl">
                     <h4 className="font-bold text-neutral-900 mb-3">Add-Ons Summary</h4>
                     {selectedAddOns.map((addOnId) => {
                         const addOn = addOns.find((a) => a.id === addOnId)

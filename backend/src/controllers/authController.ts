@@ -371,27 +371,17 @@ export const googleCallback = async (req: Request, res: Response): Promise<void>
             { expiresIn: '30d' }
         )
 
-        // Get booking history
-        const bookings = await Booking.find({ memberEmail: user.email }).sort({ startDate: -1 })
-
-        // Store user data in a way that frontend can access
-        const userData = {
-            id: user._id,
-            name: user.name,
+        // Only pass essential data in URL to avoid length limits
+        // Frontend will fetch full profile using the token
+        const authData = {
+            token,
+            refreshToken,
             email: user.email,
-            phone: user.phone,
-            interests: user.interests,
-            subscribeToNewsletter: user.subscribeToNewsletter,
-            status: user.status,
-            memberSince: user.createdAt,
-            bookings: bookings,
-            token: token,
-            refreshToken: refreshToken,
         }
 
-        // Redirect to frontend with user data
-        const userDataEncoded = encodeURIComponent(JSON.stringify(userData))
-        res.redirect(`${config.corsOrigin}/auth/google/success?data=${userDataEncoded}`)
+        // Redirect to frontend with minimal auth data
+        const authDataEncoded = encodeURIComponent(JSON.stringify(authData))
+        res.redirect(`${config.corsOrigin}/auth/google/success?data=${authDataEncoded}`)
     } catch (error) {
         logger.error('Error in Google OAuth callback:', error)
         res.redirect(`${config.corsOrigin}/signup?error=Authentication failed`)

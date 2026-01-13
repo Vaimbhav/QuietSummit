@@ -115,14 +115,6 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
     }
 
     const handleClose = () => {
-        // Clean up history entries added by booking form
-        const stepsToRemove = currentStep // Remove all step entries
-        for (let i = 0; i < stepsToRemove; i++) {
-            if (window.history.state?.step) {
-                window.history.back()
-            }
-        }
-
         // Clear sessionStorage for this booking
         sessionStorage.removeItem(`booking_${journey._id}`)
 
@@ -227,7 +219,7 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
                             </button>
 
                             {/* Progress Bar */}
-                            <div className="px-8 pt-8 pb-6 bg-linear-to-r from-primary-50 to-accent-50">
+                            <div className="px-8 pt-8 pb-6 bg-gradient-to-r from-primary-50 to-accent-50">
                                 <h2 className="text-3xl font-black text-neutral-900 mb-2">
                                     Book Your Journey
                                 </h2>

@@ -262,7 +262,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
                                             transition={{ delay: 0.1, type: 'spring' }}
-                                            className="w-14 h-14 bg-linear-to-br from-primary-500 to-accent-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg"
+                                            className="w-14 h-14 bg-gradient-to-br from-primary-500 to-accent-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg"
                                         >
                                             <Lock className="w-7 h-7 text-white" />
                                         </motion.div>
@@ -426,7 +426,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
                                             transition={{ delay: 0.1, type: 'spring' }}
-                                            className="w-16 h-16 bg-linear-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
+                                            className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
                                         >
                                             <Mail className="w-8 h-8 text-white" />
                                         </motion.div>

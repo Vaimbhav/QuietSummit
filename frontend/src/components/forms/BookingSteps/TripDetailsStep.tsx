@@ -54,7 +54,7 @@ export default function TripDetailsStep({ journey, bookingData, onNext }: TripDe
                         value={selectedDate}
                         onChange={(e) => setSelectedDate(e.target.value)}
                         className={`w-full px-5 py-4 rounded-xl border-2 transition-all appearance-none cursor-pointer font-semibold text-base ${selectedDate
-                            ? 'border-primary-500 bg-linear-to-r from-primary-50 to-accent-50 text-primary-900'
+                            ? 'border-primary-500 bg-gradient-to-r from-primary-50 to-accent-50 text-primary-900'
                             : 'border-neutral-300 bg-white text-neutral-600 hover:border-primary-300'
                             } focus:border-primary-500 focus:ring-4 focus:ring-primary-100 focus:outline-none shadow-sm hover:shadow-md`}
                     >
@@ -171,7 +171,7 @@ export default function TripDetailsStep({ journey, bookingData, onNext }: TripDe
             </div>
 
             {/* Price Summary */}
-            <div className="p-6 bg-linear-to-br from-primary-50 to-accent-50 rounded-2xl">
+            <div className="p-6 bg-gradient-to-br from-primary-50 to-accent-50 rounded-2xl">
                 <div className="flex justify-between items-center mb-2">
                     <span className="text-neutral-700">Base Price</span>
                     <span className="font-bold text-neutral-900">

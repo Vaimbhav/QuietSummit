@@ -108,7 +108,7 @@ export default function TravelerInfoStep({
             {showLoginRequired && (
                 <div className="min-h-[400px] flex items-center justify-center">
                     <div className="text-center max-w-md p-8">
-                        <div className="w-20 h-20 bg-linear-to-br from-primary-600 to-accent-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                        <div className="w-20 h-20 bg-gradient-to-br from-primary-600 to-accent-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                             <AlertCircle className="w-10 h-10 text-white" />
                         </div>
                         <h3 className="text-2xl font-bold text-neutral-900 mb-3">Login Required to Proceed</h3>
@@ -166,7 +166,7 @@ export default function TravelerInfoStep({
                         {travelers.map((traveler, index) => (
                             <div
                                 key={index}
-                                className="p-6 bg-linear-to-br from-neutral-50 to-primary-50/30 rounded-2xl border border-neutral-200"
+                                className="p-6 bg-gradient-to-br from-neutral-50 to-primary-50/30 rounded-2xl border border-neutral-200"
                             >
                                 <div className="flex items-center gap-2 mb-4">
                                     <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold">

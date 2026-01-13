@@ -36,6 +36,19 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             return
         }
 
+        // Validate departure date is in the future
+        const departureDateTime = new Date(departureDate)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0) // Reset time to start of day for fair comparison
+
+        if (departureDateTime < today) {
+            res.status(400).json({
+                success: false,
+                error: 'Departure date must be in the future',
+            })
+            return
+        }
+
         // Find member
         const member = await SignUp.findOne({ email: userEmail.toLowerCase() })
         if (!member) {
@@ -62,6 +75,9 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
         const durationDays = typeof journey.duration === 'number' ? journey.duration : journey.duration?.days || 5
         endDate.setDate(endDate.getDate() + durationDays)
 
+        // Calculate correct subtotal (before discount was applied)
+        const subtotal = totalAmount + (discount || 0)
+
         // Create booking
         const booking = await Booking.create({
             memberId: member._id,
@@ -79,7 +95,7 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             addOns: addOns || [],
             specialRequests: specialRequests || '',
             totalAmount,
-            subtotal: totalAmount + (discount || 0),
+            subtotal,
             discount: discount || 0,
             couponDetails: couponDetails || undefined,
             bookingStatus: 'confirmed',

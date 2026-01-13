@@ -57,13 +57,13 @@ export default function Home() {
 
                     <motion.h1
                         variants={itemVariants}
-                        className="text-[2.5rem] leading-[1.1] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-5 sm:mb-8 tracking-tight drop-shadow-2xl px-2"
+                        className="text-[2.75rem] leading-[1.1] sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-6 sm:mb-8 tracking-tight drop-shadow-2xl px-2"
                     >
                         Find Your{' '}
-                        <span className="text-primary-400 relative inline-block animate-glow">
-                            Quiet
-                            <svg className="absolute -bottom-2 sm:-bottom-3 left-0 w-full h-3 sm:h-4 text-primary-300 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
-                                <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="10" fill="none" />
+                        <span className="relative inline-block">
+                            <span className="relative z-10 text-primary-300 animate-glow">Quiet</span>
+                            <svg className="absolute -bottom-2 sm:-bottom-4 left-0 w-full h-4 sm:h-5 text-primary-400/60" viewBox="0 0 100 10" preserveAspectRatio="none">
+                                <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" strokeLinecap="round" />
                             </svg>
                         </span>{' '}
                         Place
@@ -71,7 +71,7 @@ export default function Home() {
 
                     <motion.p
                         variants={itemVariants}
-                        className="text-sm leading-relaxed sm:text-lg md:text-xl lg:text-2xl text-white/95 mb-8 sm:mb-12 max-w-2xl mx-auto font-light drop-shadow-2xl px-3"
+                        className="text-base leading-relaxed sm:text-xl md:text-2xl text-white/98 mb-10 sm:mb-12 max-w-3xl mx-auto font-light drop-shadow-2xl px-4"
                     >
                         Curated journeys designed to help you disconnect from the noise and reconnect with nature, yourself, and meaningful connections.
                     </motion.p>
@@ -101,7 +101,7 @@ export default function Home() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.5, duration: 1 }}
-                    className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white hidden sm:flex"
+                    className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2 text-white"
                 >
                     <span className="text-xs uppercase tracking-widest font-semibold drop-shadow-lg">Scroll</span>
                     <motion.div
@@ -182,7 +182,7 @@ export default function Home() {
                     <motion.div variants={itemVariants}>
                         <Link to="/about">
                             <button className="px-10 py-5 text-lg font-bold rounded-3xl border-2 border-primary-400 text-white hover:bg-primary-400 hover:text-neutral-900 transition-all duration-300 shadow-luxury-lg hover:shadow-luxury-xl hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group">
-                                <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></span>
+                                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></span>
                                 <span className="relative z-10 font-extrabold">Read Our Manifesto</span>
                             </button>
                         </Link>
