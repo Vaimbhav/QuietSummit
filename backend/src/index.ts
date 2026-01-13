@@ -55,7 +55,13 @@ app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
 // Data sanitization against NoSQL injection
-app.use(mongoSanitize())
+// Use replaceWith option to avoid modifying read-only properties
+app.use(mongoSanitize({
+    replaceWith: '_',
+    onSanitize: ({ req, key }) => {
+        logger.warn(`Sanitized key: ${key} in request from ${req.ip}`)
+    }
+}))
 
 // Compression middleware - compress responses
 app.use(compression())
