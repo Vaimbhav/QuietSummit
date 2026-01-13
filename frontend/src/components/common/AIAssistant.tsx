@@ -74,9 +74,9 @@ export default function AIAssistant() {
         }
     }, [isOpen])
 
-    // Focus input when chat opens
+    // Focus input when chat opens (desktop only)
     useEffect(() => {
-        if (isOpen && inputRef.current) {
+        if (isOpen && inputRef.current && window.innerWidth >= 768) {
             inputRef.current.focus()
         }
     }, [isOpen])
@@ -240,6 +240,25 @@ export default function AIAssistant() {
         }
     }, [isOpen, dispatch])
 
+    // Hide tooltip when clicking/touching outside on mobile
+    useEffect(() => {
+        const handleClickOutside = () => {
+            if (showTooltip && window.innerWidth < 768) {
+                setShowTooltip(false)
+            }
+        }
+
+        if (showTooltip) {
+            document.addEventListener('click', handleClickOutside)
+            document.addEventListener('touchstart', handleClickOutside)
+        }
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside)
+            document.removeEventListener('touchstart', handleClickOutside)
+        }
+    }, [showTooltip])
+
     return (
         <>
             {/* Floating Chat Icon */}
@@ -270,8 +289,11 @@ export default function AIAssistant() {
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => dispatch(toggleChat())}
-                        onMouseEnter={() => setShowTooltip(true)}
+                        onClick={() => {
+                            setShowTooltip(false)
+                            dispatch(toggleChat())
+                        }}
+                        onMouseEnter={() => !isOpen && setShowTooltip(true)}
                         onMouseLeave={() => setShowTooltip(false)}
                         className="w-16 h-16 rounded-full bg-gradient-to-br from-teal-600 to-emerald-600 text-white shadow-2xl flex items-center justify-center hover:shadow-3xl transition-shadow duration-300"
                     >
@@ -371,7 +393,7 @@ export default function AIAssistant() {
                                         disabled={!inputValue.trim() || isLoading}
                                         className="p-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-shadow flex items-center justify-center min-w-[44px]"
                                     >
-                                        <svg className="w-5 h-5 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-5 h-5 -rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                                         </svg>
                                     </motion.button>
@@ -473,7 +495,7 @@ export default function AIAssistant() {
                                         disabled={!inputValue.trim() || isLoading}
                                         className="p-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[48px]"
                                     >
-                                        <svg className="w-5 h-5 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-5 h-5 -rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                                         </svg>
                                     </motion.button>
