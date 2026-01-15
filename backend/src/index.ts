@@ -3,13 +3,13 @@ import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import mongoSanitize from 'express-mongo-sanitize'
 import compression from 'compression'
+import mongoose from 'mongoose'
 import { config } from './config/environment'
 import { connectDatabase } from './config/database'
 import { corsMiddleware } from './middleware/cors'
 import { errorHandler, notFound } from './middleware/errorHandler'
 import routes from './routes'
 import logger from './utils/logger'
-import passport from './config/passport'
 
 const app: Express = express()
 
@@ -66,9 +66,6 @@ app.use(compression())
 // CORS
 app.use(corsMiddleware)
 
-// Initialize Passport
-app.use(passport.initialize())
-
 // Logging middleware
 app.use((req, _res, next) => {
     logger.http(`${req.method} ${req.path}`)
@@ -77,15 +74,35 @@ app.use((req, _res, next) => {
 
 // Health check route
 app.get('/', (_req, res) => {
-    res.json({ status: 'ok', message: 'QuietSummit API is running', environment: config.env })
+    try {
+        res.json({
+            status: 'ok',
+            message: 'QuietSummit API is running',
+            environment: config.env,
+            timestamp: new Date().toISOString()
+        })
+    } catch (error) {
+        logger.error('Error in root endpoint:', error)
+        res.status(500).json({ status: 'error', message: 'Internal server error' })
+    }
 })
 
 app.get('/health', (_req, res) => {
-    res.json({
-        status: 'healthy',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-    })
+    try {
+        const dbStatus = mongoose.connection.readyState
+        const dbStatusText = ['disconnected', 'connected', 'connecting', 'disconnecting'][dbStatus] || 'unknown'
+
+        res.json({
+            status: dbStatus === 1 ? 'healthy' : 'unhealthy',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+            database: dbStatusText,
+            environment: config.env
+        })
+    } catch (error) {
+        logger.error('Error in health endpoint:', error)
+        res.status(500).json({ status: 'error', message: 'Health check failed' })
+    }
 })
 
 // Routes
@@ -98,7 +115,18 @@ app.use(errorHandler)
 // Start server
 const startServer = async () => {
     try {
+        logger.info('Starting server initialization...')
+        logger.info(`Environment: ${config.env}`)
+        logger.info(`Port: ${config.port}`)
+
+        // Connect to database first
         await connectDatabase()
+        logger.info('✅ Database connected successfully')
+
+        // Initialize Passport after database is connected
+        const passport = await import('./config/passport')
+        app.use(passport.default.initialize())
+        logger.info('✅ Passport initialized')
 
         const server = app.listen(config.port, () => {
             logger.info(`🚀 Server running in ${config.env} mode on port ${config.port}`)
@@ -127,7 +155,18 @@ const startServer = async () => {
         process.on('SIGINT', () => gracefulShutdown('SIGINT'))
 
     } catch (error) {
-        logger.error('Failed to start server:', error)
+        logger.error('❌ Failed to start server:', error)
+        if (error instanceof Error) {
+            logger.error('Error message:', error.message)
+            logger.error('Error stack:', error.stack)
+        }
+        console.error('\n=== SERVER STARTUP FAILED ===')
+        console.error('Check the logs above for details')
+        console.error('Common issues:')
+        console.error('1. Database connection failed - check MONGODB_URI')
+        console.error('2. Missing environment variables')
+        console.error('3. Port already in use')
+        console.error('===========================\n')
         process.exit(1)
     }
 }
