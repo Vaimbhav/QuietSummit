@@ -105,13 +105,6 @@ app.get('/health', (_req, res) => {
     }
 })
 
-// Routes
-app.use('/api/v1', routes)
-
-// Error handling
-app.use(notFound)
-app.use(errorHandler)
-
 // Start server
 const startServer = async () => {
     try {
@@ -127,6 +120,14 @@ const startServer = async () => {
         const passport = await import('./config/passport')
         app.use(passport.default.initialize())
         logger.info('✅ Passport initialized')
+
+        // Routes - must be registered after Passport initialization
+        app.use('/api/v1', routes)
+        logger.info('✅ Routes registered')
+
+        // Error handling - must be last
+        app.use(notFound)
+        app.use(errorHandler)
 
         const server = app.listen(config.port, () => {
             logger.info(`🚀 Server running in ${config.env} mode on port ${config.port}`)
@@ -153,6 +154,26 @@ const startServer = async () => {
 
         process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
         process.on('SIGINT', () => gracefulShutdown('SIGINT'))
+
+        // Handle uncaught exceptions
+        process.on('uncaughtException', (error) => {
+            logger.error('❌ Uncaught Exception:', error)
+            logger.error('Stack:', error.stack)
+            // In production, we might want to restart the service
+            if (config.isProduction) {
+                gracefulShutdown('UNCAUGHT_EXCEPTION')
+            }
+        })
+
+        // Handle unhandled promise rejections
+        process.on('unhandledRejection', (reason, promise) => {
+            logger.error('❌ Unhandled Rejection at:', promise)
+            logger.error('Reason:', reason)
+            // In production, we might want to restart the service
+            if (config.isProduction) {
+                gracefulShutdown('UNHANDLED_REJECTION')
+            }
+        })
 
     } catch (error) {
         logger.error('❌ Failed to start server:', error)
