@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Check, Users, FileText, CreditCard } from 'lucide-react'
+import { X, Check, Users, FileText } from 'lucide-react'
 import { Journey } from '../../types/journey'
 import TravelerInfoStep from './BookingSteps/TravelerInfoStep'
 import ReviewStep from './BookingSteps/ReviewStep'
-import PaymentStep from './BookingSteps/PaymentStep'
 
 interface BookingFormProps {
     journey: Journey
@@ -48,7 +47,6 @@ export interface BookingData {
 const steps = [
     { id: 1, name: 'Travelers', component: TravelerInfoStep, icon: Users },
     { id: 2, name: 'Review', component: ReviewStep, icon: FileText },
-    { id: 3, name: 'Payment', component: PaymentStep, icon: CreditCard },
 ]
 
 export default function BookingForm({ journey, isOpen, onClose }: BookingFormProps) {
@@ -228,6 +226,7 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
                             <button
                                 onClick={handleClose}
                                 className="absolute top-4 right-4 p-2 rounded-full hover:bg-neutral-100 transition-colors z-10 bg-white shadow-md"
+                                aria-label="Close booking form"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -246,12 +245,12 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
                                 </div>
 
                                 {/* Steps indicator */}
-                                <div className="flex items-center justify-between max-w-2xl mx-auto md:mx-0">
+                                <div className="flex items-center justify-between max-w-3xl mx-auto px-4 md:px-0">
                                     {steps.map((step, index) => {
                                         const StepIcon = step.icon
                                         return (
-                                            <div key={step.id} className="flex items-center flex-1 last:flex-none">
-                                                <div className="flex flex-col items-center relative z-10 w-full md:w-auto">
+                                            <div key={step.id} className={`flex items-center ${index === steps.length - 1 ? 'flex-none' : 'flex-1'}`}>
+                                                <div className="flex flex-col items-center relative z-10 min-w-[60px] md:min-w-[80px]">
                                                     <div
                                                         className={`w-10 h-10 md:w-14 md:h-14 rounded-full md:rounded-2xl flex items-center justify-center font-bold text-sm transition-all duration-500 ${currentStep > step.id
                                                             ? 'bg-gradient-to-br from-primary-600 to-accent-600 text-white shadow-lg shadow-primary-200 scale-100'
@@ -286,7 +285,7 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
                             </div>
 
                             {/* Step Content */}
-                            <div className="p-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 250px)' }}>
+                            <div className="overflow-y-auto" style={{ maxHeight: 'calc(90vh - 250px)' }}>
                                 <AnimatePresence mode="wait">
                                     <motion.div
                                         key={currentStep}
