@@ -11,6 +11,7 @@ import { Journey } from '../types/journey'
 import Button from '@components/common/Button'
 import BookingForm from '@components/forms/BookingForm'
 import BookingGuard from '@components/common/BookingGuard'
+import JourneyGallery from '@components/journey/JourneyGallery'
 
 export default function JourneyDetail() {
     const { id } = useParams()
@@ -18,7 +19,6 @@ export default function JourneyDetail() {
     const [journey, setJourney] = useState<Journey | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [selectedImage, setSelectedImage] = useState(0)
     const [expandedDay, setExpandedDay] = useState<number | null>(0)
     const [isBookingOpen, setIsBookingOpen] = useState(false)
 
@@ -93,9 +93,21 @@ export default function JourneyDetail() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-primary-100/50 via-primary-100/40 to-accent-100/50 pb-20 md:pb-0">
-            {/* Hero Section with Image Gallery */}
-            <section className="relative bg-neutral-900">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-6 sm:pb-8">
+            {/* Hero Section with Navigation */}
+            <section className="relative bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800 overflow-hidden">
+                {/* Decorative background elements */}
+                <div className="absolute inset-0 opacity-10">
+                    <div className="absolute top-0 left-0 w-96 h-96 bg-primary-500 rounded-full blur-3xl"></div>
+                    <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent-500 rounded-full blur-3xl"></div>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
+                        <div className="absolute inset-0" style={{
+                            backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+                            backgroundSize: '40px 40px'
+                        }}></div>
+                    </div>
+                </div>
+
+                <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-8">
                     <button
                         type="button"
                         onClick={(e) => {
@@ -109,44 +121,20 @@ export default function JourneyDetail() {
                         Back to Journeys
                     </button>
 
-                    {/* Main Image */}
-                    <div className="relative h-64 sm:h-96 md:h-[450px] lg:h-[500px] rounded-xl sm:rounded-2xl overflow-hidden mb-3 sm:mb-4">
-                        <img
-                            src={journey.images[selectedImage] || '/images/placeholder.jpg'}
-                            alt={journey.title}
-                            className="w-full h-full object-cover"
-                        />
-                        <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-white/95 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
+                    {/* Difficulty Badge Positioned Above Gallery */}
+                    <div className="relative mb-4">
+                        <div className="absolute top-4 right-4 z-10 bg-white/95 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg">
                             <span className={`text-xs sm:text-sm font-bold tracking-wider uppercase ${getDifficultyColor(journey.difficulty)}`}>
                                 {journey.difficulty}
                             </span>
                         </div>
+                        <JourneyGallery images={journey.images} title={journey.title} />
                     </div>
-
-                    {/* Image Thumbnails */}
-                    {journey.images.length > 1 && (
-                        <div className="flex gap-2 sm:gap-3 md:gap-4 overflow-x-auto pb-3 sm:pb-4 scrollbar-thin scrollbar-thumb-primary-600 scrollbar-track-neutral-800">
-                            {journey.images.map((img, idx) => (
-                                <button
-                                    key={idx}
-                                    type="button"
-                                    onClick={(e) => {
-                                        e.preventDefault()
-                                        e.stopPropagation()
-                                        setSelectedImage(idx)
-                                    }}
-                                    className={`shrink-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg overflow-hidden border-3 transition-all ${selectedImage === idx ? 'border-primary-500 scale-105' : 'border-transparent opacity-60 hover:opacity-100'
-                                        }`}
-                                >
-                                    <img src={img} alt={`${journey.title} ${idx + 1}`} className="w-full h-full object-cover" />
-                                </button>
-                            ))}
-                        </div>
-                    )}
                 </div>
-                {/* Bottom wave effect */}
+
+                {/* Bottom decorative wave */}
                 <div className="absolute bottom-0 left-0 right-0">
-                    <svg viewBox="0 0 1440 120" className="w-full h-8 sm:h-12 fill-neutral-50">
+                    <svg viewBox="0 0 1440 120" className="w-full h-12 sm:h-16 fill-white opacity-90">
                         <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
                     </svg>
                 </div>
