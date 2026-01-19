@@ -34,7 +34,7 @@ export interface Journey {
     duration: {
         days: number;
         nights: number;
-    };
+    } | number;
     difficulty: 'easy' | 'moderate' | 'challenging';
     idealFor: string[];
     season: string[];

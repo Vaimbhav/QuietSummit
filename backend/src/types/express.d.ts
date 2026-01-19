@@ -1,5 +1,6 @@
 // Extend Express Request to allow custom user types from both JWT and Passport
 import { ISignUp } from '../models/SignUp'
+import 'multer'
 
 declare global {
     namespace Express {
@@ -11,6 +12,11 @@ declare global {
             name?: string
             iat?: number
             exp?: number
+        }
+
+        interface Request {
+            user?: User
+            requestId?: string
         }
     }
 }

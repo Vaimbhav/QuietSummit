@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Mail, CheckCircle, AlertCircle, Eye, EyeOff, Lock, ArrowLeft } from 'lucide-react'
 import { createPortal } from 'react-dom'
+import { Link } from 'react-router-dom'
 import Input from './Input'
 import Button from './Button'
 import { loginMember, getGoogleAuthUrl } from '../../services/api'
@@ -47,6 +48,8 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
             dispatch(setUser({
                 email: response.data.email,
                 name: response.data.name,
+                role: response.data.role,
+                isHost: response.data.isHost,
                 token: response.data.token,
                 isAuthenticated: true,
             }))
@@ -55,6 +58,8 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
             const userData = {
                 email: response.data.email,
                 name: response.data.name,
+                role: response.data.role,
+                isHost: response.data.isHost,
                 token: response.data.token,
                 refreshToken: response.data.refreshToken,
                 id: response.data.id,
@@ -95,7 +100,13 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
             }, 1500)
         } catch (err: any) {
             const errorMsg = err.response?.data?.error || err.message || 'Failed to login. Please try again.'
-            setError(errorMsg)
+
+            // Check if it's a rate limit error (429)
+            if (err.response?.status === 429) {
+                setError('Too many login attempts. Please try again in 15 minutes.')
+            } else {
+                setError(errorMsg)
+            }
         } finally {
             setIsLoading(false)
         }
@@ -228,7 +239,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                         Welcome Back! 🎉
                                     </h3>
                                     <p className="text-neutral-600">
-                                        Redirecting to your dashboard...
+                                        Welcome to QuietSummit! Your journey awaits...
                                     </p>
                                 </motion.div>
                             ) : resetSent ? (
@@ -321,13 +332,13 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                                 />
                                                 <span className="text-neutral-600">Remember me</span>
                                             </label>
-                                            <button
-                                                type="button"
-                                                onClick={() => setStep('forgot')}
+                                            <Link
+                                                to="/forgot-password"
+                                                onClick={() => onClose()}
                                                 className="text-primary-600 hover:text-primary-700 font-semibold transition-colors"
                                             >
                                                 Forgot password?
-                                            </button>
+                                            </Link>
                                         </div>
 
                                         {error && (

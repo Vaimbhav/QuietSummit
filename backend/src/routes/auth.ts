@@ -7,6 +7,9 @@ import {
     googleCallback,
     googleError,
     refreshAccessToken,
+    forgotPassword,
+    validateResetToken,
+    resetPassword,
 } from '../controllers/authController'
 import passport from '../config/passport'
 import { authenticateToken } from '../middleware/auth'
@@ -18,6 +21,11 @@ router.post('/refresh', refreshAccessToken)
 router.get('/check', checkMember)
 router.get('/profile', authenticateToken, getMemberProfile)
 router.put('/preferences', authenticateToken, updateMemberPreferences)
+
+// Password reset routes
+router.post('/forgot-password', forgotPassword)
+router.post('/validate-reset-token', validateResetToken)
+router.post('/reset-password', resetPassword)
 
 // Google OAuth routes
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }))

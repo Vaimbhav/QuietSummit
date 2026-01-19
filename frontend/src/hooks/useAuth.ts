@@ -52,6 +52,8 @@ export function useAuth() {
                         dispatch(setUser({
                             email: userData.email,
                             name: userData.name,
+                            role: userData.role,
+                            isHost: userData.isHost,
                             token: userData.token,
                             isAuthenticated: true,
                         }))
@@ -128,6 +130,8 @@ export function useAuth() {
         currentUser = {
             email: user.email,
             name: user.name,
+            role: user.role,
+            isHost: user.isHost,
             token: user.token,
         }
     }

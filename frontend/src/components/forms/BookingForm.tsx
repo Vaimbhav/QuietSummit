@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Check } from 'lucide-react'
+import { X, Check, Users, FileText, CreditCard } from 'lucide-react'
 import { Journey } from '../../types/journey'
-import TripDetailsStep from './BookingSteps/TripDetailsStep'
 import TravelerInfoStep from './BookingSteps/TravelerInfoStep'
-import AddOnsStep from './BookingSteps/AddOnsStep'
 import ReviewStep from './BookingSteps/ReviewStep'
 import PaymentStep from './BookingSteps/PaymentStep'
 
@@ -39,14 +37,18 @@ export interface BookingData {
         code: string
         discount: number
     }
+    // Razorpay payment fields
+    paymentId?: string
+    orderId?: string
+    razorpay_payment_id?: string
+    razorpay_order_id?: string
+    razorpay_signature?: string
 }
 
 const steps = [
-    { id: 1, name: 'Trip Details', component: TripDetailsStep },
-    { id: 2, name: 'Travelers', component: TravelerInfoStep },
-    { id: 3, name: 'Add-Ons', component: AddOnsStep },
-    { id: 4, name: 'Review', component: ReviewStep },
-    { id: 5, name: 'Payment', component: PaymentStep },
+    { id: 1, name: 'Travelers', component: TravelerInfoStep, icon: Users },
+    { id: 2, name: 'Review', component: ReviewStep, icon: FileText },
+    { id: 3, name: 'Payment', component: PaymentStep, icon: CreditCard },
 ]
 
 export default function BookingForm({ journey, isOpen, onClose }: BookingFormProps) {
@@ -167,11 +169,17 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden'
+            document.body.style.position = 'fixed'
+            document.body.style.width = '100%'
         } else {
-            document.body.style.overflow = 'unset'
+            document.body.style.overflow = ''
+            document.body.style.position = ''
+            document.body.style.width = ''
         }
         return () => {
-            document.body.style.overflow = 'unset'
+            document.body.style.overflow = ''
+            document.body.style.position = ''
+            document.body.style.width = ''
         }
     }, [isOpen])
 
@@ -198,6 +206,12 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998] overflow-hidden"
+                        onClick={(e) => {
+                            // Only close if clicking backdrop directly
+                            if (e.target === e.currentTarget) {
+                                handleClose()
+                            }
+                        }}
                     />
 
                     {/* Modal */}
@@ -219,47 +233,55 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
                             </button>
 
                             {/* Progress Bar */}
-                            <div className="px-8 pt-8 pb-6 bg-gradient-to-r from-primary-50 to-accent-50">
-                                <h2 className="text-3xl font-black text-neutral-900 mb-2">
-                                    Book Your Journey
-                                </h2>
-                                <p className="text-neutral-600 mb-6">
-                                    {journey.title} • {journey.destination}
-                                </p>
+                            <div className="px-6 md:px-10 pt-8 pb-8 bg-white/80 backdrop-blur-xl border-b border-neutral-100 sticky top-0 z-20">
+                                <div className="mb-8 text-center md:text-left">
+                                    <h2 className="text-2xl md:text-3xl font-black text-neutral-900 mb-2 tracking-tight">
+                                        Book Your Journey
+                                    </h2>
+                                    <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-600 text-sm md:text-base flex-wrap">
+                                        <span className="font-bold text-primary-600">{journey.title}</span>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-neutral-300 hidden md:block"></span>
+                                        <span className="hidden md:block">{journey.destination}</span>
+                                    </div>
+                                </div>
 
                                 {/* Steps indicator */}
-                                <div className="flex items-center justify-between">
-                                    {steps.map((step, index) => (
-                                        <div key={step.id} className="flex items-center flex-1">
-                                            <div className="flex flex-col items-center relative">
-                                                <div
-                                                    className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${currentStep > step.id
-                                                        ? 'bg-primary-600 text-white'
-                                                        : currentStep === step.id
-                                                            ? 'bg-primary-600 text-white ring-4 ring-primary-100'
-                                                            : 'bg-neutral-200 text-neutral-500'
-                                                        }`}
-                                                >
-                                                    {currentStep > step.id ? (
-                                                        <Check className="w-5 h-5" />
-                                                    ) : (
-                                                        step.id
-                                                    )}
+                                <div className="flex items-center justify-between max-w-2xl mx-auto md:mx-0">
+                                    {steps.map((step, index) => {
+                                        const StepIcon = step.icon
+                                        return (
+                                            <div key={step.id} className="flex items-center flex-1 last:flex-none">
+                                                <div className="flex flex-col items-center relative z-10 w-full md:w-auto">
+                                                    <div
+                                                        className={`w-10 h-10 md:w-14 md:h-14 rounded-full md:rounded-2xl flex items-center justify-center font-bold text-sm transition-all duration-500 ${currentStep > step.id
+                                                            ? 'bg-gradient-to-br from-primary-600 to-accent-600 text-white shadow-lg shadow-primary-200 scale-100'
+                                                            : currentStep === step.id
+                                                                ? 'bg-gradient-to-br from-primary-600 to-accent-600 text-white ring-4 ring-primary-100 shadow-xl shadow-primary-200 scale-110'
+                                                                : 'bg-white border-2 border-neutral-200 text-neutral-400'
+                                                            }`}
+                                                    >
+                                                        {currentStep > step.id ? (
+                                                            <Check className="w-5 h-5 md:w-6 md:h-6" />
+                                                        ) : (
+                                                            <StepIcon className="w-5 h-5 md:w-6 md:h-6" />
+                                                        )}
+                                                    </div>
+                                                    <span className={`text-[10px] md:text-xs font-bold mt-2 tracking-wide uppercase transition-colors duration-300 ${currentStep === step.id ? 'text-primary-600' : 'text-neutral-400'
+                                                        }`}>
+                                                        {step.name}
+                                                    </span>
                                                 </div>
-                                                <span className="text-xs font-medium mt-2 text-neutral-700 hidden md:block">
-                                                    {step.name}
-                                                </span>
+                                                {index < steps.length - 1 && (
+                                                    <div className="flex-1 mx-2 md:mx-4 h-1 rounded-full bg-neutral-100 overflow-hidden relative">
+                                                        <div
+                                                            className={`absolute inset-0 bg-gradient-to-r from-primary-600 to-accent-600 transition-transform duration-500 origin-left ${currentStep > step.id ? 'scale-x-100' : 'scale-x-0'
+                                                                }`}
+                                                        />
+                                                    </div>
+                                                )}
                                             </div>
-                                            {index < steps.length - 1 && (
-                                                <div
-                                                    className={`flex-1 h-1 mx-2 rounded transition-all ${currentStep > step.id
-                                                        ? 'bg-primary-600'
-                                                        : 'bg-neutral-200'
-                                                        }`}
-                                                />
-                                            )}
-                                        </div>
-                                    ))}
+                                        )
+                                    })}
                                 </div>
                             </div>
 

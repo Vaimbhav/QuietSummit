@@ -1,7 +1,14 @@
 import { Request, Response } from 'express'
+import crypto from 'crypto'
+import { config } from '../config/environment'
 import Booking from '../models/Booking'
 import Journey from '../models/Journey'
+import { Property } from '../models/Property' // Import Property model
 import SignUp from '../models/SignUp'
+import {
+    sendBookingConfirmationEmail,
+    sendNewBookingNotificationToHost,
+} from '../services/emailService'
 import logger from '../utils/logger'
 import { applyCoupon } from './couponController'
 
@@ -9,9 +16,11 @@ import { applyCoupon } from './couponController'
 export const createBooking = async (req: Request, res: Response): Promise<void> => {
     try {
         const {
-            email,
+
             journeyId,
             departureDate,
+            checkIn,
+            checkOut,
             numberOfTravelers,
             travelers,
             roomPreference,
@@ -22,29 +31,20 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             orderId,
             discount,
             couponDetails,
+            razorpay_order_id,
+            razorpay_payment_id,
+            razorpay_signature,
         } = req.body
 
-        // Get email from token if authenticated, otherwise use request body
-        const userEmail = (req.user as any)?.email || email
+        // SECURITY: Always use authenticated user's email, ignore body email
+        const userEmail = (req.user as any)?.email
+
 
         // Validate required fields
-        if (!userEmail || !journeyId || !departureDate || !numberOfTravelers || !totalAmount) {
+        if (!userEmail || !journeyId || !numberOfTravelers || !totalAmount) {
             res.status(400).json({
                 success: false,
                 error: 'Missing required booking information',
-            })
-            return
-        }
-
-        // Validate departure date is in the future
-        const departureDateTime = new Date(departureDate)
-        const today = new Date()
-        today.setHours(0, 0, 0, 0) // Reset time to start of day for fair comparison
-
-        if (departureDateTime < today) {
-            res.status(400).json({
-                success: false,
-                error: 'Departure date must be in the future',
             })
             return
         }
@@ -59,35 +59,159 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             return
         }
 
-        // Find journey
-        const journey = await Journey.findById(journeyId)
+        // Find journey or property
+        let journey: any = await Journey.findById(journeyId)
+        let isProperty = false
+
+        if (!journey) {
+            journey = await Property.findById(journeyId)
+            isProperty = !!journey
+        }
+
         if (!journey) {
             res.status(404).json({
                 success: false,
-                error: 'Journey not found',
+                error: 'Journey/Property not found',
             })
             return
         }
 
-        // Calculate end date based on journey duration
-        const startDate = new Date(departureDate)
-        const endDate = new Date(startDate)
-        const durationDays = typeof journey.duration === 'number' ? journey.duration : journey.duration?.days || 5
-        endDate.setDate(endDate.getDate() + durationDays)
+        // Handle Property-specific validation
+        if (isProperty) {
+            if (!checkIn || !checkOut) {
+                res.status(400).json({
+                    success: false,
+                    error: 'Check-in and check-out dates are required for property bookings',
+                })
+                return
+            }
+
+            const checkInDate = new Date(checkIn)
+            const checkOutDate = new Date(checkOut)
+            const today = new Date()
+            today.setHours(0, 0, 0, 0)
+
+            // Validate dates
+            if (checkInDate < today) {
+                res.status(400).json({
+                    success: false,
+                    error: 'Check-in date must be in the future',
+                })
+                return
+            }
+
+            if (checkOutDate <= checkInDate) {
+                res.status(400).json({
+                    success: false,
+                    error: 'Check-out date must be after check-in date',
+                })
+                return
+            }
+
+            // Validate guest capacity
+            if (numberOfTravelers > journey.capacity?.guests) {
+                res.status(400).json({
+                    success: false,
+                    error: `This property can accommodate maximum ${journey.capacity.guests} guests`,
+                })
+                return
+            }
+        } else {
+            // Journey validation
+            if (!departureDate) {
+                res.status(400).json({
+                    success: false,
+                    error: 'Departure date is required for journey bookings',
+                })
+                return
+            }
+
+            const departureDateTime = new Date(departureDate)
+            const today = new Date()
+            today.setHours(0, 0, 0, 0)
+
+            if (departureDateTime < today) {
+                res.status(400).json({
+                    success: false,
+                    error: 'Departure date must be in the future',
+                })
+                return
+            }
+        }
+
+        // Calculate dates and duration
+        let startDate: Date
+        let endDate: Date
+        let durationDays: number
+
+        if (isProperty) {
+            startDate = new Date(checkIn)
+            endDate = new Date(checkOut)
+            durationDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+        } else {
+            startDate = new Date(departureDate)
+            endDate = new Date(startDate)
+            durationDays = typeof journey.duration === 'number'
+                ? journey.duration
+                : (journey.duration?.days || 5)
+            endDate.setDate(endDate.getDate() + durationDays)
+        }
 
         // Calculate correct subtotal (before discount was applied)
         const subtotal = totalAmount + (discount || 0)
 
+
+
+        // Set initial status to pending (unless verified payment below)
+        let finalStatus = 'pending'
+        let finalPaymentStatus = 'pending'
+        let paidAt = undefined
+
+        // Verify Payment (if provided)
+        logger.info(`Payment verification - received razorpay_payment_id: ${razorpay_payment_id ? 'YES' : 'NO'}, razorpay_order_id: ${razorpay_order_id ? 'YES' : 'NO'}, razorpay_signature: ${razorpay_signature ? 'YES' : 'NO'}`)
+
+        if (razorpay_payment_id && razorpay_order_id && razorpay_signature) {
+            try {
+                const body = razorpay_order_id + '|' + razorpay_payment_id
+                const expectedSignature = crypto
+                    .createHmac('sha256', config.razorpay.keySecret)
+                    .update(body.toString())
+                    .digest('hex')
+
+                logger.info(`Payment signature match: ${expectedSignature === razorpay_signature}`)
+
+                if (expectedSignature === razorpay_signature) {
+                    finalStatus = 'confirmed'
+                    finalPaymentStatus = 'paid'
+                    paidAt = new Date()
+                    logger.info(`✓ Payment verified successfully for booking request - Setting status to CONFIRMED`)
+                } else {
+                    logger.warn(`✗ Invalid payment signature for order ${razorpay_order_id} - Expected: ${expectedSignature.substring(0, 10)}..., Got: ${razorpay_signature.substring(0, 10)}...`)
+                    // We still create the booking but as PENDING/UNPAID
+                }
+            } catch (err) {
+                logger.error('Error verifying payment signature:', err)
+            }
+        } else {
+            logger.info(`No payment details provided - creating booking with PENDING status`)
+        }
+
         // Create booking
         const booking = await Booking.create({
             memberId: member._id,
+            // Also save user and hostId fields for robust querying
+            user: member._id,
+            hostId: isProperty ? journey.host : undefined,
             memberEmail: member.email,
             memberName: member.name,
             journeyId: journey._id,
+            journeyModel: isProperty ? 'Property' : 'Journey',
             journeyTitle: journey.title,
-            destination: journey.destination || journey.location?.region || 'Adventure',
+            destination: journey.destination || journey.location?.region || (journey.address ? `${journey.address.city}, ${journey.address.country}` : 'Adventure'),
             startDate,
             endDate,
+            checkIn: isProperty ? new Date(checkIn) : undefined,
+            checkOut: isProperty ? new Date(checkOut) : undefined,
             duration: durationDays,
             numberOfTravelers,
             travelers: travelers || [],
@@ -98,14 +222,14 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             subtotal,
             discount: discount || 0,
             couponDetails: couponDetails || undefined,
-            bookingStatus: 'confirmed',
-            paymentStatus: paymentId ? 'paid' : 'pending',
+            bookingStatus: finalStatus,
+            paymentStatus: finalPaymentStatus,
             paymentDetails: {
-                razorpayOrderId: orderId || '',
-                razorpayPaymentId: paymentId || '',
+                razorpayOrderId: razorpay_order_id || orderId || '',
+                razorpayPaymentId: razorpay_payment_id || paymentId || '',
                 amount: totalAmount,
                 currency: 'INR',
-                paidAt: paymentId ? new Date() : undefined,
+                paidAt: paidAt,
             },
         }) as any
 
@@ -114,23 +238,30 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             await applyCoupon(couponDetails.couponId)
         }
 
-        logger.info(`Booking created: ${booking._id} for member: ${member.email}`)
+        logger.info(`Booking created successfully: ${booking._id} for member: ${member.email} | Status: ${finalStatus} | Payment Status: ${finalPaymentStatus} | Journey Model: ${isProperty ? 'Property' : 'Journey'}`)
+
+        // Send email notification to host if it's a Property with a host
+        if (journey.host) {
+            const host = await SignUp.findById(journey.host);
+            if (host) {
+                await sendNewBookingNotificationToHost(host.email, {
+                    hostName: host.name,
+                    propertyName: journey.title,
+                    guestName: (req.user as any)?.name || member.name,
+                    guestEmail: (req.user as any)?.email || member.email,
+                    checkIn: new Date(startDate).toLocaleDateString(),
+                    checkOut: new Date(endDate).toLocaleDateString(),
+                    totalPrice: totalAmount,
+                    guests: numberOfTravelers
+                }).catch(err => logger.error('Failed to send new booking email to host:', err));
+            }
+        }
 
         res.status(201).json({
             success: true,
-            message: 'Booking confirmed successfully!',
-            data: {
-                bookingId: booking._id,
-                bookingReference: `QS${booking._id.toString().slice(-8).toUpperCase()}`,
-                journey: journey.title,
-                destination: journey.destination || journey.location?.region,
-                startDate: booking.startDate,
-                endDate: booking.endDate,
-                travelers: numberOfTravelers,
-                totalAmount: booking.totalAmount,
-                status: booking.bookingStatus,
-                paymentStatus: booking.paymentStatus,
-            },
+            bookingId: booking._id,
+            booking: booking,
+            data: booking,
         })
     } catch (error: any) {
         logger.error('Error creating booking:', error)
@@ -194,7 +325,12 @@ export const getMemberBookings = async (req: Request, res: Response): Promise<vo
             return
         }
 
-        const bookings = await Booking.find({ memberId: member._id })
+        const bookings = await Booking.find({
+            $or: [
+                { memberId: member._id },
+                { user: member._id }
+            ]
+        })
             .populate('journeyId')
             .sort({ createdAt: -1 })
 
@@ -323,3 +459,78 @@ export const calculatePrice = async (req: Request, res: Response): Promise<void>
         })
     }
 }
+
+// Update booking status
+export const updateBookingStatus = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params
+        const { status } = req.body
+
+        const validStatuses = ['pending', 'confirmed', 'cancelled', 'completed']
+        if (!validStatuses.includes(status)) {
+            res.status(400).json({
+                success: false,
+                error: 'Invalid status',
+            })
+            return
+        }
+
+        const booking = await Booking.findById(id)
+        if (!booking) {
+            res.status(404).json({
+                success: false,
+                error: 'Booking not found',
+            })
+            return
+        }
+
+        const previousStatus = booking.bookingStatus
+        booking.bookingStatus = status
+
+        // If status changed to confirmed, ensure payment logic (if needed)
+        // If status changed to cancelled, handle refunds logic (placeholder)
+
+        await booking.save()
+
+        logger.info(`Booking ${id} status updated from ${previousStatus} to ${status}`)
+
+        // Send email based on status change
+        if (status === 'confirmed') {
+            // Populate guest details to send email
+            await booking.populate('memberId', 'name email');
+            await booking.populate({
+                path: 'journeyId',
+                populate: { path: 'host', select: 'name email' }
+            });
+
+            const guest = booking.memberId as any;
+            const journey = booking.journeyId as any;
+            const host = journey.host as any;
+
+            if (guest && guest.email) {
+                await sendBookingConfirmationEmail(guest.email, {
+                    guestName: guest.name,
+                    propertyName: journey.title,
+                    checkIn: new Date(booking.startDate).toLocaleDateString(),
+                    checkOut: new Date(booking.endDate).toLocaleDateString(),
+                    totalPrice: booking.totalAmount,
+                    hostName: host?.name || 'QuietSummit Team',
+                    hostEmail: host?.email || 'support@quietsummit.com'
+                }).catch(err => logger.error('Failed to send confirmation email to guest:', err));
+            }
+        }
+
+        res.json({
+            success: true,
+            message: `Booking ${status}`,
+            data: booking
+        })
+    } catch (error: any) {
+        logger.error('Error updating booking status:', error)
+        res.status(500).json({
+            success: false,
+            error: 'Failed to update booking status',
+        })
+    }
+}
+

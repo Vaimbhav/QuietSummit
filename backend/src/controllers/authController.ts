@@ -3,7 +3,9 @@ import SignUp from '../models/SignUp'
 import Booking from '../models/Booking'
 import logger from '../utils/logger'
 import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
 import { config } from '../config/environment'
+import { sendPasswordResetEmail } from '../services/emailService'
 
 // Login with email and password
 export const loginMember = async (req: Request, res: Response): Promise<void> => {
@@ -71,7 +73,11 @@ export const loginMember = async (req: Request, res: Response): Promise<void> =>
 
         // Generate JWT token (expires in 7 days for persistent login)
         const token = jwt.sign(
-            { id: member._id, email: member.email },
+            {
+                id: member._id,
+                email: member.email,
+                role: member.role || 'member'
+            },
             config.jwtSecret,
             { expiresIn: '7d' }
         )
@@ -101,6 +107,8 @@ export const loginMember = async (req: Request, res: Response): Promise<void> =>
                 interests: member.interests,
                 subscribeToNewsletter: member.subscribeToNewsletter,
                 status: member.status,
+                role: member.role || 'member',
+                isHost: member.isHost || false,
                 memberSince: member.createdAt,
                 bookings: bookings,
                 token: token,
@@ -274,6 +282,8 @@ export const getMemberProfile = async (req: Request, res: Response): Promise<voi
                 subscribeToNewsletter: member.subscribeToNewsletter,
                 status: member.status,
                 memberSince: member.createdAt,
+                role: member.role || 'member',
+                isHost: member.isHost || false,
                 stats: {
                     completedTrips,
                     upcomingTrips,
@@ -394,3 +404,155 @@ export const googleError = async (_req: Request, res: Response): Promise<void> =
     res.redirect(`${config.corsOrigin}/signup?error=Authentication failed`)
 }
 
+// Forgot password - request reset link
+export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { email } = req.body
+
+        if (!email) {
+            res.status(400).json({
+                success: false,
+                error: 'Email is required',
+            })
+            return
+        }
+
+        const member = await SignUp.findOne({ email: email.toLowerCase() })
+
+        // Always return success for security (don't reveal if email exists)
+        if (!member) {
+            res.json({
+                success: true,
+                message: 'If the email exists, a password reset link will be sent.',
+            })
+            return
+        }
+
+        // Generate reset token
+        const resetToken = crypto.randomBytes(32).toString('hex')
+        const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex')
+
+        // Set token expiry to 1 hour
+        member.resetPasswordToken = hashedToken
+        member.resetPasswordTokenExpiry = new Date(Date.now() + 60 * 60 * 1000)
+        await member.save()
+
+        // Send reset email
+        try {
+            await sendPasswordResetEmail(member.email, member.name, resetToken)
+            logger.info(`Password reset email sent to: ${member.email}`)
+        } catch (emailError) {
+            logger.error('Failed to send password reset email:', emailError)
+            // Still return success to user for security
+        }
+
+        res.json({
+            success: true,
+            message: 'If the email exists, a password reset link will be sent.',
+        })
+    } catch (error) {
+        logger.error('Error in forgot password:', error)
+        res.status(500).json({
+            success: false,
+            error: 'Failed to process password reset request',
+        })
+    }
+}
+
+// Validate reset token
+export const validateResetToken = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { token } = req.body
+
+        if (!token) {
+            res.status(400).json({
+                success: false,
+                error: 'Token is required',
+            })
+            return
+        }
+
+        const hashedToken = crypto.createHash('sha256').update(token).digest('hex')
+
+        const member = await SignUp.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordTokenExpiry: { $gt: Date.now() },
+        })
+
+        if (!member) {
+            res.status(400).json({
+                success: false,
+                error: 'Invalid or expired token',
+            })
+            return
+        }
+
+        res.json({
+            success: true,
+            message: 'Token is valid',
+        })
+    } catch (error) {
+        logger.error('Error validating reset token:', error)
+        res.status(500).json({
+            success: false,
+            error: 'Failed to validate token',
+        })
+    }
+}
+
+// Reset password with token
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { token, password } = req.body
+
+        if (!token || !password) {
+            res.status(400).json({
+                success: false,
+                error: 'Token and password are required',
+            })
+            return
+        }
+
+        if (password.length < 8) {
+            res.status(400).json({
+                success: false,
+                error: 'Password must be at least 8 characters long',
+            })
+            return
+        }
+
+        const hashedToken = crypto.createHash('sha256').update(token).digest('hex')
+
+        const member = await SignUp.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordTokenExpiry: { $gt: Date.now() },
+        }).select('+password')
+
+        if (!member) {
+            res.status(400).json({
+                success: false,
+                error: 'Invalid or expired token',
+            })
+            return
+        }
+
+        // Update password and clear reset token
+        member.password = password
+        member.resetPasswordToken = undefined
+        member.resetPasswordTokenExpiry = undefined
+        await member.save()
+
+        logger.info(`Password reset successful for: ${member.email}`)
+
+        res.json({
+            success: true,
+            message: 'Password has been reset successfully',
+        })
+    } catch (error) {
+        logger.error('Error resetting password:', error)
+        res.status(500).json({
+            success: false,
+            error: 'Failed to reset password',
+        })
+    }
+}

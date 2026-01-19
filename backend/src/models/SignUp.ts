@@ -12,9 +12,22 @@ export interface ISignUp extends Document {
     status: 'pending' | 'confirmed' | 'unsubscribed'
     confirmationToken?: string
     confirmationTokenExpiry?: Date
+    resetPasswordToken?: string
+    resetPasswordTokenExpiry?: Date
     createdAt: Date
     confirmedAt?: Date
     googleId?: string
+    isHost?: boolean
+    role?: 'member' | 'host' | 'admin'
+    hostProfile?: {
+        bio: string
+        languages: string[]
+        responseRate?: number
+        responseTime?: string
+        isSuperhost?: boolean
+        verifications?: string[]
+    }
+    profileImage?: string
     comparePassword(candidatePassword: string): Promise<boolean>
 }
 
@@ -30,8 +43,21 @@ const SignUpSchema = new Schema<ISignUp>(
         status: { type: String, enum: ['pending', 'confirmed', 'unsubscribed'], default: 'confirmed' },
         confirmationToken: String,
         confirmationTokenExpiry: Date,
+        resetPasswordToken: String,
+        resetPasswordTokenExpiry: Date,
         confirmedAt: Date,
         googleId: { type: String, sparse: true, unique: true },
+        isHost: { type: Boolean, default: false },
+        role: { type: String, enum: ['member', 'host', 'admin'], default: 'member' },
+        hostProfile: {
+            bio: String,
+            languages: [String],
+            responseRate: Number,
+            responseTime: String,
+            isSuperhost: { type: Boolean, default: false },
+            verifications: [String],
+        },
+        profileImage: String,
     },
     {
         timestamps: true,

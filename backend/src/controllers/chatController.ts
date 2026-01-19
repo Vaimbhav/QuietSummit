@@ -38,7 +38,7 @@ export const handleChat = async (req: ChatRequest, res: Response, next: NextFunc
 
         // Initialize the Gemini model
         const model = genAI.getGenerativeModel({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-1.5-flash',
             systemInstruction: `You are the official AI travel assistant for QuietSummit - a premium travel company specializing in transformative mountain and nature journeys across India.
 
 ${getCompanyContext()}
@@ -166,7 +166,7 @@ Clear table showing all expenses add up to requested budget
 - Show detailed math in budget breakdown
 - Suggest realistic destinations that fit the budget
 
-For Company Questions: Share authentic stories, IIT Roorkee founders, email quietsummit07@gmail.com
+For Company Questions: Share authentic stories, IIT Roorkee founders, email quietsummit79@gmail.com
 
 For Journey Recommendations: Only suggest from provided context, explain WHY each matches preferences
 

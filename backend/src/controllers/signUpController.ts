@@ -3,6 +3,7 @@ import SignUp from '../models/SignUp'
 import logger from '../utils/logger'
 import jwt from 'jsonwebtoken'
 import { config } from '../config/environment'
+import { sendWelcomeEmail } from '../services/emailService'
 
 export const createSignUp = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -53,6 +54,12 @@ export const createSignUp = async (req: Request, res: Response): Promise<void> =
             config.jwtSecret,
             { expiresIn: '7d' }
         )
+
+        // Send welcome email (non-blocking)
+        sendWelcomeEmail(signUp.email, signUp.name).catch((error) => {
+            logger.error('Failed to send welcome email:', error)
+            // Don't fail registration if email fails
+        })
 
         // Return without password but with token
         res.status(201).json({

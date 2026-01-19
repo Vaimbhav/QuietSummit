@@ -8,6 +8,7 @@ import { config } from './config/environment'
 import { connectDatabase } from './config/database'
 import { corsMiddleware } from './middleware/cors'
 import { errorHandler, notFound } from './middleware/errorHandler'
+import { requestId, requestLogger } from './middleware/requestId'
 import routes from './routes'
 import logger from './utils/logger'
 
@@ -15,6 +16,10 @@ const app: Express = express()
 
 // Trust proxy - required when behind reverse proxy (nginx, load balancers)
 app.set('trust proxy', 1)
+
+// Request ID and logging - FIRST middleware to track all requests
+app.use(requestId)
+app.use(requestLogger)
 
 // Security Middleware
 // Helmet - sets various HTTP headers for security
@@ -31,8 +36,10 @@ const limiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     skip: (req) => {
-        // Skip rate limiting for health check
-        return req.path === '/' || req.path === '/health'
+        // Skip rate limiting for health check and OAuth
+        return req.path === '/' ||
+            req.path === '/health' ||
+            req.path.includes('/auth/google')
     }
 })
 
@@ -63,14 +70,12 @@ app.use(mongoSanitize({
 // Compression middleware - compress responses
 app.use(compression())
 
+// Serve static files from uploads directory
+import path from 'path'
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
+
 // CORS
 app.use(corsMiddleware)
-
-// Logging middleware
-app.use((req, _res, next) => {
-    logger.http(`${req.method} ${req.path}`)
-    next()
-})
 
 // Health check route
 app.get('/', (_req, res) => {

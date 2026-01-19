@@ -3,8 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
     MapPin, Calendar, Users, TrendingUp, Check, X,
-    Clock, ChevronDown, ChevronUp, Star, ArrowLeft,
-    Sun, Cloud, Snowflake, Leaf
+    Clock, ChevronDown, ChevronUp, ArrowLeft,
+    Sun, Cloud, Snowflake, Leaf, Star
 } from 'lucide-react'
 import { getJourneyBySlug } from '../services/api'
 import { Journey } from '../types/journey'
@@ -171,27 +171,43 @@ export default function JourneyDetail() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="grid grid-cols-2 gap-5 sm:gap-6"
+                            className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5"
                         >
-                            <div className="glass-luxury rounded-3xl p-6 sm:p-7 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
-                                <Calendar className="w-9 h-9 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
-                                <div className="text-3xl font-black text-neutral-900 text-premium gradient-text-premium">{journey.duration.days}</div>
-                                <div className="text-sm font-bold text-neutral-600 mt-2 uppercase tracking-wide">Days / {journey.duration.nights} Nights</div>
+                            <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
+                                <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
+                                <div className="text-2xl sm:text-3xl font-black text-neutral-900 text-premium gradient-text-premium">
+                                    {typeof journey.duration === 'number' ? journey.duration : journey.duration.days}
+                                </div>
+                                <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">
+                                    Days / {typeof journey.duration === 'number' ? journey.duration - 1 : journey.duration.nights} Nights
+                                </div>
                             </div>
-                            <div className="glass-luxury rounded-3xl p-6 sm:p-7 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
-                                <Users className="w-9 h-9 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
-                                <div className="text-3xl font-black text-neutral-900 text-premium gradient-text-premium">{journey.maxGroupSize}</div>
-                                <div className="text-sm font-bold text-neutral-600 mt-2 uppercase tracking-wide">Max Group Size</div>
+                            {journey.departureDates && journey.departureDates.length > 0 && (
+                                <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
+                                    <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
+                                    <div className="text-xl sm:text-2xl font-black text-neutral-900 text-premium gradient-text-premium">
+                                        {new Date(journey.departureDates[0]).toLocaleDateString('en-US', {
+                                            month: 'short',
+                                            day: 'numeric'
+                                        })}
+                                    </div>
+                                    <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">Departure Date</div>
+                                </div>
+                            )}
+                            <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
+                                <Users className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
+                                <div className="text-2xl sm:text-3xl font-black text-neutral-900 text-premium gradient-text-premium">{journey.maxGroupSize}</div>
+                                <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">Max Group Size</div>
                             </div>
-                            <div className="glass-luxury rounded-3xl p-6 sm:p-7 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
-                                <TrendingUp className="w-9 h-9 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
-                                <div className="text-3xl font-black text-neutral-900 capitalize text-premium gradient-text-premium">{journey.difficulty}</div>
-                                <div className="text-sm font-bold text-neutral-600 mt-2 uppercase tracking-wide">Difficulty Level</div>
+                            <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
+                                <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
+                                <div className="text-2xl sm:text-3xl font-black text-neutral-900 capitalize text-premium gradient-text-premium">{journey.difficulty}</div>
+                                <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">Difficulty Level</div>
                             </div>
-                            <div className="glass-luxury rounded-3xl p-6 sm:p-7 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
-                                <Clock className="w-9 h-9 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
-                                <div className="text-3xl font-black text-neutral-900 text-premium gradient-text-premium">{journey.season.length}</div>
-                                <div className="text-sm font-bold text-neutral-600 mt-2 uppercase tracking-wide">Best Seasons</div>
+                            <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
+                                <Clock className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
+                                <div className="text-2xl sm:text-3xl font-black text-neutral-900 text-premium gradient-text-premium">{journey.season.length}</div>
+                                <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">Best Seasons</div>
                             </div>
                         </motion.div>
 
@@ -409,8 +425,22 @@ export default function JourneyDetail() {
                             <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-7 md:mb-8">
                                 <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
                                     <span className="text-sm sm:text-base text-neutral-700 font-medium">Duration</span>
-                                    <span className="text-sm sm:text-base text-neutral-900 font-bold">{journey.duration.days} Days</span>
+                                    <span className="text-sm sm:text-base text-neutral-900 font-bold">
+                                        {typeof journey.duration === 'number' ? journey.duration : journey.duration.days} Days / {typeof journey.duration === 'number' ? journey.duration - 1 : journey.duration.nights} Nights
+                                    </span>
                                 </div>
+                                {journey.departureDates && journey.departureDates.length > 0 && (
+                                    <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
+                                        <span className="text-sm sm:text-base text-neutral-700 font-medium">Departure</span>
+                                        <span className="text-sm sm:text-base text-neutral-900 font-bold">
+                                            {new Date(journey.departureDates[0]).toLocaleDateString('en-US', {
+                                                month: 'short',
+                                                day: 'numeric',
+                                                year: 'numeric'
+                                            })}
+                                        </span>
+                                    </div>
+                                )}
                                 <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
                                     <span className="text-sm sm:text-base text-neutral-700 font-medium">Group Size</span>
                                     <span className="text-sm sm:text-base text-neutral-900 font-bold">Max {journey.maxGroupSize}</span>

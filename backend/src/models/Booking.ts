@@ -23,13 +23,18 @@ export interface ICouponDetails {
 
 export interface IBooking extends Document {
     memberId: mongoose.Types.ObjectId
+    user?: mongoose.Types.ObjectId // For backward compatibility/manual entries
+    hostId?: mongoose.Types.ObjectId // Direct reference to host
     memberEmail: string
     memberName: string
     journeyId?: mongoose.Types.ObjectId
+    journeyModel?: 'Journey' | 'Property'
     journeyTitle: string
     destination: string
     startDate: Date
     endDate: Date
+    checkIn?: Date
+    checkOut?: Date
     duration: number
     numberOfTravelers: number
     travelers: ITraveler[]
@@ -52,11 +57,19 @@ const BookingSchema = new Schema<IBooking>(
         memberId: { type: Schema.Types.ObjectId, ref: 'SignUp', required: true },
         memberEmail: { type: String, required: true },
         memberName: { type: String, required: true },
-        journeyId: { type: Schema.Types.ObjectId, ref: 'Journey' },
+        journeyId: { type: Schema.Types.ObjectId, refPath: 'journeyModel' },
+        journeyModel: {
+            type: String,
+            required: true,
+            enum: ['Journey', 'Property'],
+            default: 'Journey'
+        },
         journeyTitle: { type: String, required: true },
         destination: { type: String, required: true },
         startDate: { type: Date, required: true },
         endDate: { type: Date, required: true },
+        checkIn: { type: Date },
+        checkOut: { type: Date },
         duration: { type: Number, required: true },
         numberOfTravelers: { type: Number, required: true, default: 1 },
         travelers: [{

@@ -23,32 +23,30 @@ export default function About() {
     return (
         <div className="min-h-screen bg-neutral-50">
             {/* Hero Section */}
-            <section className="relative bg-gradient-to-br from-primary-600 via-accent-600 to-primary-700 text-white pt-16 pb-16 md:pt-20 md:pb-20 overflow-hidden">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-20 left-10 text-7xl">🏔️</div>
-                    <div className="absolute bottom-20 right-10 text-7xl">🌲</div>
-                    <div className="absolute top-40 right-1/4 text-5xl">✨</div>
-                </div>
+            <section className="relative bg-primary-600 text-white py-20 md:py-24 overflow-hidden">
                 <motion.div
-                    initial={{ opacity: 0, y: 40 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="container mx-auto px-4 text-center relative z-10"
+                    transition={{ duration: 0.5 }}
+                    className="container mx-auto px-6 sm:px-8 text-center relative z-10"
                 >
-                    <div className="inline-block px-5 py-2 bg-white/20 backdrop-blur-sm rounded-full text-xs font-semibold mb-6 tracking-wide uppercase">
+                    <div className="inline-block px-6 py-2 bg-white/10 backdrop-blur-sm rounded-full text-xs font-medium mb-6 tracking-wide border border-white/20">
                         Who We Are
                     </div>
                     <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 tracking-tight leading-tight">
                         We Create Journeys<br />That Transform
                     </h1>
-                    <p className="text-lg sm:text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed font-light">
+                    <p className="text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
                         More than a travel company—we're your partners in discovering the extraordinary within the ordinary.
                     </p>
                 </motion.div>
             </section>
 
-            {/* Team Section - Founders */}
-            <section className="bg-white py-12 md:py-20">
+            {/* Team Section - Founders - PREMIUM */}
+            <section className="relative bg-white py-12 md:py-20">
+                {/* Enhanced gradient fade from hero */}
+                <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary-700/20 via-primary-700/5 to-transparent pointer-events-none" />
+
                 <div className="container mx-auto px-4 -mt-24 relative z-20">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -62,20 +60,20 @@ export default function About() {
                             viewport={{ once: true }}
                             variants={containerVariants}
                         >
-                            <motion.div variants={itemVariants} className="text-center mb-12">
+                            <motion.div variants={itemVariants} className="text-center mb-16">
                                 <div className="mb-4 inline-flex items-center gap-2 text-primary-600">
                                     <Users className="w-4 h-4" />
                                     <span className="font-medium tracking-wide uppercase text-xs">The Founders</span>
                                 </div>
                                 <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4 tracking-tight">
-                                    Meet the Team
+                                    Meet the Visionaries
                                 </h2>
                                 <p className="text-base md:text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed font-light">
                                     IIT Roorkee alumni united by a shared vision: making travel meaningful and intentional.
                                 </p>
                             </motion.div>
 
-                            <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                                 {[
                                     {
                                         name: 'Nagendra Rajput',
@@ -98,35 +96,55 @@ export default function About() {
                                         image: '/images/founders/Mihir.jpg',
                                         bio: 'IIT Roorkee alumnus with a passion for building meaningful digital experiences. Combines technical expertise with a love for the mountains.',
                                         passion: 'Building technology that connects people to nature'
+                                    },
+                                    {
+                                        name: 'Vaibhav Yadav',
+                                        role: 'Co-Founder & Technology Lead',
+                                        image: '/images/vaibhav-founder.jpg',
+                                        bio: 'IIT Roorkee graduate and visionary technologist. Bridges the gap between digital innovation and organic connection.',
+                                        passion: 'Creating seamless digital experiences'
                                     }
                                 ].map((member, index) => (
                                     <motion.div
                                         key={index}
                                         variants={itemVariants}
-                                        className="bg-neutral-50 rounded-2xl p-7 hover:shadow-lg transition-all duration-300"
+                                        className="group relative h-full"
                                     >
-                                        <div className="w-32 h-32 mx-auto mb-5 rounded-2xl overflow-hidden shadow-md">
-                                            <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
-                                        </div>
+                                        <div className="relative bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-neutral-100 h-full flex flex-col">
+                                            {/* Premium Image with Gradient Overlay */}
+                                            <div className="relative aspect-[3/4] overflow-hidden bg-neutral-100 flex-shrink-0">
+                                                <img
+                                                    src={member.image}
+                                                    alt={member.name}
+                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                                        <h3 className="text-xl font-bold text-neutral-900 mb-2 text-center">
-                                            {member.name}
-                                        </h3>
-
-                                        <div className="px-3 py-1.5 bg-neutral-900 text-white text-center text-xs font-medium uppercase tracking-wider rounded-lg mb-4 inline-block w-full">
-                                            {member.role}
-                                        </div>
-
-                                        <p className="text-neutral-600 leading-relaxed mb-4 text-center text-sm">
-                                            {member.bio}
-                                        </p>
-
-                                        <div className="pt-4 border-t border-neutral-200 text-center">
-                                            <div className="text-xs text-neutral-500 font-medium uppercase tracking-wide mb-2">
-                                                Passionate About
+                                                {/* Name overlay on image */}
+                                                <div className="absolute bottom-6 left-6 right-6 text-white">
+                                                    <h3 className="text-2xl font-bold mb-1">
+                                                        {member.name}
+                                                    </h3>
+                                                    <div className="text-xs font-semibold uppercase tracking-widest text-primary-300">
+                                                        {member.role}
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="text-sm font-medium text-neutral-900 italic">
-                                                "{member.passion}"
+
+                                            {/* Content - Flex grow to fill remaining space */}
+                                            <div className="p-6 flex flex-col flex-grow">
+                                                <p className="text-neutral-600 leading-relaxed mb-5 text-sm flex-grow">
+                                                    {member.bio}
+                                                </p>
+
+                                                <div className="pt-4 border-t border-neutral-200 mt-auto">
+                                                    <div className="text-xs text-neutral-500 font-medium uppercase tracking-wide mb-2">
+                                                        Passionate About
+                                                    </div>
+                                                    <div className="text-sm font-medium text-primary-700 italic">
+                                                        "{member.passion}"
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </motion.div>
@@ -135,9 +153,15 @@ export default function About() {
                         </motion.div>
                     </motion.div>
                 </div>
+
+                {/* Enhanced gradient fade to next section */}
+                <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-transparent via-neutral-900/5 to-neutral-900/20 pointer-events-none" />
             </section>
 
-            <section className="py-12 md:py-20 bg-neutral-900 text-white">
+            <section className="relative py-12 md:py-20 bg-neutral-900 text-white">
+                {/* Enhanced gradient fade from previous section */}
+                <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none" />
+
                 <div className="container mx-auto px-4">
                     {/* Origin Story Card */}
                     <motion.div
@@ -168,10 +192,15 @@ export default function About() {
                         </div>
                     </motion.div>
                 </div>
+
+                {/* Enhanced gradient fade to next section */}
+                <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-transparent via-white/5 to-white/20 pointer-events-none" />
             </section>
 
             {/* What Makes Us Different */}
-            <section className="py-12 md:py-20 bg-white">
+            <section className="relative py-12 md:py-20 bg-white">
+                {/* Enhanced gradient fade from previous section */}
+                <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-neutral-900/20 via-neutral-900/5 to-transparent pointer-events-none" />
                 <div className="container mx-auto px-4 max-w-6xl">
                     <motion.div
                         initial="hidden"
@@ -246,10 +275,15 @@ export default function About() {
                         </div>
                     </motion.div>
                 </div>
+
+                {/* Gradient fade to next section */}
+                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-neutral-900/10 pointer-events-none" />
             </section>
 
             {/* Core Values */}
-            <section className="py-12 md:py-20 bg-neutral-900 text-white">
+            <section className="relative py-12 md:py-20 bg-neutral-900 text-white">
+                {/* Gradient fade from previous section */}
+                <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
                 <div className="container mx-auto px-4 max-w-6xl">
                     <motion.div
                         initial="hidden"
@@ -307,10 +341,15 @@ export default function About() {
                         </div>
                     </motion.div>
                 </div>
+
+                {/* Gradient fade to next section */}
+                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-white/10 pointer-events-none" />
             </section>
 
             {/* Impact Stats */}
-            <section className="py-12 md:py-20 bg-white">
+            <section className="relative py-12 md:py-20 bg-white">
+                {/* Gradient fade from previous section */}
+                <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-neutral-900/10 to-transparent pointer-events-none" />
                 <div className="container mx-auto px-4 max-w-6xl">
                     <motion.div
                         initial="hidden"
@@ -361,10 +400,15 @@ export default function About() {
                         </motion.div>
                     </motion.div>
                 </div>
+
+                {/* Gradient fade to next section */}
+                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-primary-700/10 pointer-events-none" />
             </section>
 
             {/* CTA Section */}
-            <section className="py-12 md:py-20 bg-primary-700 text-white">
+            <section className="relative py-12 md:py-20 bg-primary-700 text-white">
+                {/* Gradient fade from previous section */}
+                <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
                 <div className="container mx-auto px-4 max-w-4xl text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 40 }}

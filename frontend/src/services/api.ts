@@ -32,6 +32,21 @@ const api = axios.create({
     timeout: 30000, // 30 seconds timeout
 });
 
+// Track if we're currently refreshing to avoid multiple refresh attempts
+let isRefreshing = false;
+let failedQueue: Array<{ resolve: (value?: any) => void; reject: (reason?: any) => void }> = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+    failedQueue.forEach((prom) => {
+        if (error) {
+            prom.reject(error);
+        } else {
+            prom.resolve(token);
+        }
+    });
+    failedQueue = [];
+};
+
 // Request interceptor: Attach JWT token to all requests
 api.interceptors.request.use(
     (config) => {
@@ -55,23 +70,81 @@ api.interceptors.request.use(
     }
 );
 
-// Response interceptor: Handle token expiration
+// Response interceptor: Handle token expiration with refresh and retry
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
-        if (error.response?.status === 401 && error.response?.data?.expired) {
-            // Token expired - clear auth and redirect to login
-            localStorage.removeItem('quietsummit_user');
+    async (error) => {
+        const originalRequest = error.config;
 
-            // Dispatch custom event for auth state change
-            window.dispatchEvent(new CustomEvent('auth:expired'));
+        // If 401 and token expired, try to refresh
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            if (isRefreshing) {
+                // Wait for the refresh to complete
+                return new Promise((resolve, reject) => {
+                    failedQueue.push({ resolve, reject });
+                })
+                    .then((token) => {
+                        originalRequest.headers.Authorization = `Bearer ${token}`;
+                        return api(originalRequest);
+                    })
+                    .catch((err) => {
+                        return Promise.reject(err);
+                    });
+            }
 
-            // Store current path for redirect after login
-            const currentPath = window.location.pathname + window.location.search;
-            if (currentPath !== '/signup' && currentPath !== '/') {
-                localStorage.setItem('redirectAfterLogin', currentPath);
+            originalRequest._retry = true;
+            isRefreshing = true;
+
+            try {
+                const userDataStr = localStorage.getItem('quietsummit_user');
+                if (!userDataStr) {
+                    throw new Error('No user data');
+                }
+
+                const userData = JSON.parse(userDataStr);
+                if (!userData.refreshToken) {
+                    throw new Error('No refresh token');
+                }
+
+                // Attempt to refresh token
+                const response = await axios.post(`${API_URL}/auth/refresh`, {
+                    refreshToken: userData.refreshToken,
+                });
+
+                const { token: newToken, refreshToken: newRefreshToken } = response.data.data;
+
+                // Update stored tokens
+                userData.token = newToken;
+                userData.refreshToken = newRefreshToken;
+                localStorage.setItem('quietsummit_user', JSON.stringify(userData));
+
+                // Update auth header for this request
+                originalRequest.headers.Authorization = `Bearer ${newToken}`;
+
+                // Process queued requests with new token
+                processQueue(null, newToken);
+
+                isRefreshing = false;
+
+                // Retry original request
+                return api(originalRequest);
+            } catch (refreshError) {
+                // Refresh failed - clear auth and redirect
+                processQueue(refreshError, null);
+                isRefreshing = false;
+
+                localStorage.removeItem('quietsummit_user');
+                window.dispatchEvent(new CustomEvent('auth:expired'));
+
+                const currentPath = window.location.pathname + window.location.search;
+                if (currentPath !== '/signup' && currentPath !== '/') {
+                    localStorage.setItem('redirectAfterLogin', currentPath);
+                }
+
+                return Promise.reject(refreshError);
             }
         }
+
         return Promise.reject(error);
     }
 );
@@ -226,11 +299,35 @@ export interface BookingFormData {
     totalAmount: number;
     paymentId?: string;
     orderId?: string;
+    // Razorpay payment verification fields
+    razorpay_payment_id?: string;
+    razorpay_order_id?: string;
+    razorpay_signature?: string;
+    discount?: number;
+    couponDetails?: {
+        couponId: string;
+        code: string;
+        discount: number;
+    };
 }
 
 export const createBooking = async (data: Partial<BookingFormData>): Promise<any> => {
     try {
+        logger.info('Creating booking with data:', {
+            ...data,
+            razorpay_signature: data.razorpay_signature ? data.razorpay_signature.substring(0, 10) + '...' : 'MISSING',
+            razorpay_payment_id: data.razorpay_payment_id || 'MISSING',
+            razorpay_order_id: data.razorpay_order_id || 'MISSING'
+        });
+        logger.info('Full payment fields:', {
+            razorpay_payment_id: data.razorpay_payment_id,
+            razorpay_order_id: data.razorpay_order_id,
+            razorpay_signature: data.razorpay_signature?.substring(0, 20) + '...',
+            paymentId: data.paymentId,
+            orderId: data.orderId
+        });
         const response = await api.post('/bookings', data);
+        logger.info('Booking response:', response.data);
         return response.data;
     } catch (error) {
         logger.error('Error creating booking:', error);

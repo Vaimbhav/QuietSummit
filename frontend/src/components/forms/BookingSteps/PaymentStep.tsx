@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { CreditCard, CheckCircle, Smartphone, Building2, Wallet, Banknote } from 'lucide-react'
+import { CreditCard, CheckCircle, Smartphone, Building2, Wallet, Banknote, Shield } from 'lucide-react'
 import Button from '../../common/Button'
 import { Journey } from '../../../types/journey'
 import { BookingData } from '../BookingForm'
@@ -113,19 +113,22 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                             journeyId: journey._id,
                             paymentId: response.razorpay_payment_id,
                             orderId: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
                         })
 
-                        setBookingReference(bookingResponse.data.bookingReference)
+                        setBookingReference(bookingResponse.bookingId)
                         setIsSuccess(true)
                         setIsProcessing(false)
 
                         // Redirect to confirmation after 3 seconds
                         setTimeout(() => {
-                            navigate(`/booking-confirmation/${bookingResponse.data.bookingId}`)
+                            navigate(`/booking-confirmation/${bookingResponse.bookingId}`)
                             onClose()
                         }, 3000)
                     } catch (error) {
-                        console.error('Booking creation failed:', error)
+                        console.error('✗ Booking creation failed:', error)
                         alert('Payment successful but booking creation failed. Please contact support.')
                         setIsProcessing(false)
                     }
@@ -200,126 +203,127 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
     }
 
     return (
-        <div className="space-y-4 sm:space-y-6">
-            <div>
-                <h3 className="text-xl sm:text-2xl font-bold text-neutral-900 mb-2">Payment</h3>
-                <p className="text-sm sm:text-base text-neutral-600">Secure payment powered by Razorpay</p>
+        <div className="space-y-8 pb-8">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <div>
+                    <h3 className="text-3xl md:text-4xl font-black text-neutral-900 mb-2 tracking-tight">
+                        Complete Payment
+                    </h3>
+                    <p className="text-neutral-600 text-base md:text-lg">Secure checkout powered by Razorpay</p>
+                </div>
+                <div className="p-4 bg-gradient-to-br from-primary-50 to-primary-100/50 rounded-2xl shadow-sm">
+                    <Shield className="w-9 h-9 text-primary-600" />
+                </div>
             </div>
 
-            {/* Payment Summary */}
-            <div className="p-5 sm:p-6 md:p-8 bg-gradient-to-br from-primary-600 via-accent-600 to-primary-700 text-white rounded-2xl sm:rounded-3xl shadow-lg">
-                <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                        <CreditCard className="w-5 h-5 sm:w-6 sm:h-6" />
+            {/* Payment Summary Card */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 text-white rounded-[2.5rem] p-10 md:p-14 shadow-2xl">
+                {/* Enhanced Abstract Patterns */}
+                <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-white/10 to-transparent rounded-full -mr-40 -mt-40 blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-primary-500/20 to-transparent rounded-full -ml-40 -mb-40 blur-3xl"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-br from-transparent via-white/5 to-transparent blur-2xl"></div>
+
+                <div className="relative z-10">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-10">
+                        <div className="flex items-center gap-5">
+                            <div className="w-16 h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/20 shadow-2xl">
+                                <CreditCard className="w-8 h-8 text-white" />
+                            </div>
+                            <div>
+                                <p className="text-white/70 text-xs uppercase tracking-[0.2em] font-bold mb-2">Amount Payable</p>
+                                <p className="text-5xl md:text-6xl font-black tracking-tight">
+                                    ₹{bookingData.totalAmount?.toLocaleString()}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="bg-white/10 backdrop-blur-xl rounded-2xl px-6 py-3 border border-white/20 self-start md:self-center shadow-lg">
+                            <span className="text-sm font-bold text-white tracking-wide">🔒 Secured Transaction</span>
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-white/80 text-xs sm:text-sm">Total Amount</p>
-                        <p className="text-2xl sm:text-3xl md:text-4xl font-black">
-                            ₹{bookingData.totalAmount?.toLocaleString()}
-                        </p>
-                    </div>
-                </div>
-                <div className="space-y-2 text-xs sm:text-sm">
-                    <div className="flex justify-between items-start gap-2">
-                        <span className="text-white/80">{journey.title}</span>
-                        <span className="font-bold text-right">
-                            {bookingData.numberOfTravelers} {bookingData.numberOfTravelers === 1 ? 'traveler' : 'travelers'}
-                        </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                        <span className="text-white/80">Departure</span>
-                        <span className="font-bold text-right">
-                            {new Date(bookingData.departureDate || '').toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric',
-                            })}
-                        </span>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-8 border-t border-white/20">
+                        <div className="flex justify-between items-center bg-white/10 backdrop-blur-md rounded-2xl p-4 px-5 border border-white/10">
+                            <span className="text-white/70 text-sm font-medium">Journey</span>
+                            <span className="font-bold text-white text-lg truncate max-w-[180px]">{journey.title}</span>
+                        </div>
+                        <div className="flex justify-between items-center bg-white/10 backdrop-blur-md rounded-2xl p-4 px-5 border border-white/10">
+                            <span className="text-white/70 text-sm font-medium">Travelers</span>
+                            <span className="font-bold text-white text-lg">
+                                {bookingData.numberOfTravelers} {bookingData.numberOfTravelers === 1 ? 'Person' : 'People'}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Payment Methods */}
-            <div className="p-4 sm:p-6 bg-neutral-50 rounded-xl sm:rounded-2xl">
-                <h4 className="text-base sm:text-lg font-bold text-neutral-900 mb-3 sm:mb-4">Accepted Payment Methods</h4>
-                <div className="flex flex-col gap-2 sm:gap-3">
-                    <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-neutral-200 hover:border-primary-300 transition-colors">
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
-                            <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-                        </div>
-                        <div className="min-w-0">
-                            <p className="text-sm sm:text-base font-bold text-neutral-900">Cards</p>
-                            <p className="text-xs sm:text-sm text-neutral-600">Credit/Debit</p>
-                        </div>
+            <div className="bg-gradient-to-br from-white to-neutral-50/50 rounded-[2.5rem] p-8 md:p-10 border-2 border-neutral-200/80 shadow-2xl">
+                <h4 className="text-xl md:text-2xl font-black text-neutral-900 mb-8 flex items-center gap-3">
+                    <div className="p-2 bg-neutral-100 rounded-xl">
+                        <Wallet className="w-6 h-6 md:w-7 md:h-7 text-neutral-700" />
                     </div>
+                    <span>Payment Methods</span>
+                </h4>
 
-                    <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-neutral-200 hover:border-primary-300 transition-colors">
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-purple-100 rounded-lg flex items-center justify-center shrink-0">
-                            <Smartphone className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
-                        </div>
-                        <div className="min-w-0">
-                            <p className="text-sm sm:text-base font-bold text-neutral-900">UPI</p>
-                            <p className="text-xs sm:text-sm text-neutral-600">GPay, PhonePe</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-neutral-200 hover:border-primary-300 transition-colors">
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
-                            <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
-                        </div>
-                        <div className="min-w-0">
-                            <p className="text-sm sm:text-base font-bold text-neutral-900">Net Banking</p>
-                            <p className="text-xs sm:text-sm text-neutral-600">All Banks</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-neutral-200 hover:border-primary-300 transition-colors">
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-amber-100 rounded-lg flex items-center justify-center shrink-0">
-                            <Wallet className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
-                        </div>
-                        <div className="min-w-0">
-                            <p className="text-sm sm:text-base font-bold text-neutral-900">Wallets</p>
-                            <p className="text-xs sm:text-sm text-neutral-600">Paytm, etc.</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-neutral-200 hover:border-primary-300 transition-colors">
-                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-indigo-100 rounded-lg flex items-center justify-center shrink-0">
-                            <Banknote className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
-                        </div>
-                        <div className="min-w-0">
-                            <p className="text-sm sm:text-base font-bold text-neutral-900">EMI</p>
-                            <p className="text-xs sm:text-sm text-neutral-600">0% Interest</p>
-                        </div>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {[
+                        { icon: CreditCard, color: 'text-blue-600', bg: 'bg-blue-100', gradient: 'from-blue-50 to-blue-100/50', name: 'Cards', sub: 'Credit/Debit' },
+                        { icon: Smartphone, color: 'text-purple-600', bg: 'bg-purple-100', gradient: 'from-purple-50 to-purple-100/50', name: 'UPI', sub: 'GPay, PhonePe, Paytm' },
+                        { icon: Building2, color: 'text-green-600', bg: 'bg-green-100', gradient: 'from-green-50 to-green-100/50', name: 'Net Banking', sub: 'All Major Banks' },
+                        { icon: Banknote, color: 'text-indigo-600', bg: 'bg-indigo-100', gradient: 'from-indigo-50 to-indigo-100/50', name: 'EMI', sub: 'Easy Installments' }
+                    ].map((method, idx) => (
+                        <motion.div
+                            key={idx}
+                            whileHover={{ scale: 1.02, y: -2 }}
+                            className={`group flex items-center gap-5 p-5 md:p-6 bg-gradient-to-br ${method.gradient} rounded-2xl border-2 border-neutral-200 hover:border-primary-400 hover:shadow-xl transition-all duration-300 cursor-default`}
+                        >
+                            <div className={`w-14 h-14 ${method.bg} rounded-2xl flex items-center justify-center shrink-0 shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300`}>
+                                <method.icon className={`w-7 h-7 ${method.color}`} />
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-lg font-black text-neutral-900 group-hover:text-primary-700 transition-colors mb-0.5">{method.name}</p>
+                                <p className="text-sm text-neutral-600 font-medium">{method.sub}</p>
+                            </div>
+                            <div className="ml-auto opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                <div className="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg"></div>
+                            </div>
+                        </motion.div>
+                    ))}
                 </div>
             </div>
 
             {/* Security Notice */}
-            <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 bg-green-50 rounded-xl border border-green-200">
-                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 shrink-0 mt-0.5" />
-                <div className="text-xs sm:text-sm">
-                    <p className="font-bold text-green-900 mb-1">Secure Payment</p>
-                    <p className="text-green-700">
-                        Your payment information is encrypted and secure. We never store your card
-                        details.
+            <div className="flex items-start gap-5 p-6 md:p-7 bg-gradient-to-br from-green-50 to-emerald-50/50 rounded-2xl border-2 border-green-200/80 shadow-lg">
+                <div className="p-3 bg-gradient-to-br from-green-100 to-green-200 rounded-xl shrink-0 shadow-md">
+                    <CheckCircle className="w-6 h-6 text-green-700" />
+                </div>
+                <div>
+                    <p className="font-black text-green-900 mb-2 text-lg">Bank-Grade Security</p>
+                    <p className="text-green-800/90 leading-relaxed text-base">
+                        Your payment is processed securely with industry-leading 256-bit encryption to protect your financial information.
                     </p>
                 </div>
             </div>
 
-            {/* Navigation */}
-            <div className="flex flex-col gap-3 pt-4">
+            {/* Navigation Buttons */}
+            <div className="flex flex-col md:flex-row gap-4 pt-6">
+                <Button
+                    variant="outline"
+                    onClick={onBack}
+                    disabled={isProcessing}
+                    className="flex-1 py-6 text-lg font-bold rounded-2xl border-2 border-neutral-300 hover:bg-neutral-50 hover:border-neutral-400 transition-all duration-300 order-2 md:order-1"
+                >
+                    Back
+                </Button>
                 <Button
                     onClick={handlePayment}
                     size="lg"
                     isLoading={isProcessing}
-                    leftIcon={<CreditCard className="w-5 h-5" />}
-                    className="w-full"
+                    leftIcon={!isProcessing && <CreditCard className="w-5 h-5" />}
+                    className="flex-[2] py-6 text-lg font-black rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 hover:from-black hover:via-neutral-900 hover:to-black order-1 md:order-2"
                 >
-                    {isProcessing ? 'Processing...' : 'Pay Now'}
-                </Button>
-                <Button variant="outline" onClick={onBack} disabled={isProcessing} className="w-full font-semibold">
-                    ← Back
+                    {isProcessing ? 'Processing Payment...' : `Pay ₹${bookingData.totalAmount?.toLocaleString()}`}
                 </Button>
             </div>
         </div>

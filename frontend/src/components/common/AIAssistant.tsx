@@ -103,7 +103,7 @@ export default function AIAssistant() {
         let messageCreated = false
 
         try {
-            const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api/v1'
+            const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1'
             const response = await fetch(`${baseURL}/chat`, {
                 method: 'POST',
                 headers: {

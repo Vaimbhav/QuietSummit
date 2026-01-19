@@ -35,17 +35,17 @@ export default function Footer() {
                         </p>
                         <div className="flex space-x-4">
                             {[
-                                { icon: MessageCircle, href: 'https://wa.me/918505097594', label: 'WhatsApp' },
+                                { icon: MessageCircle, href: 'https://wa.me/919968086660', label: 'WhatsApp' },
                                 { icon: Instagram, href: 'https://instagram.com/quietsummit.in', label: 'Instagram' },
-                                { icon: Mail, href: 'mailto:quietsummit07@gmail.com', label: 'Email' }
+                                { icon: Mail, href: 'mailto:Nagendrarajput9753@gmail.com', label: 'Email' }
                             ].map((social, index) => (
                                 <motion.a
                                     key={index}
                                     href={social.href}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    whileHover={{ scale: 1.15, y: -3 }}
-                                    className="p-3 bg-linear-to-br from-neutral-800 to-neutral-900 rounded-xl hover:from-primary-600 hover:to-accent-600 hover:text-white transition-all duration-300 shadow-lg hover:shadow-primary-500/50"
+                                    whileHover={{ scale: 1.05 }}
+                                    className="p-3 bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-xl hover:bg-primary-600 hover:text-white transition-all duration-200 shadow-sm hover:shadow-md"
                                     aria-label={social.label}
                                 >
                                     <social.icon className="w-5 h-5" />

@@ -4,6 +4,8 @@ interface UserState {
     isAuthenticated: boolean
     email: string | null
     name: string | null
+    role: 'member' | 'host' | 'admin' | null
+    isHost: boolean
     token: string | null
     tokenExpiry: number | null
     preferences: {
@@ -16,6 +18,8 @@ const initialState: UserState = {
     isAuthenticated: false,
     email: null,
     name: null,
+    role: null,
+    isHost: false,
     token: null,
     tokenExpiry: null,
     preferences: {
@@ -33,12 +37,16 @@ const userSlice = createSlice({
             action: PayloadAction<{
                 email: string
                 name: string
+                role?: 'member' | 'host' | 'admin'
+                isHost?: boolean
                 token: string
                 isAuthenticated: boolean
             }>
         ) => {
             state.email = action.payload.email
             state.name = action.payload.name
+            state.role = action.payload.role || 'member'
+            state.isHost = action.payload.isHost || false
             state.token = action.payload.token
             state.isAuthenticated = action.payload.isAuthenticated
 
@@ -60,6 +68,8 @@ const userSlice = createSlice({
             state.isAuthenticated = false
             state.email = null
             state.name = null
+            state.role = null
+            state.isHost = false
             state.token = null
             state.tokenExpiry = null
         },

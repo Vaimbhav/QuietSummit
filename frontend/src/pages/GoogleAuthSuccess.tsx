@@ -48,6 +48,7 @@ export default function GoogleAuthSuccess() {
                         ...profileResponse.data,
                         token: authData.token,
                         refreshToken: authData.refreshToken,
+                        isAuthenticated: true,
                     }
 
                     localStorage.setItem('quietsummit_user', JSON.stringify(fullUserData))

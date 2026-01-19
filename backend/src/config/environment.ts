@@ -46,11 +46,11 @@ export const config = {
     mongoUri: process.env.MONGODB_URI!,
     jwtSecret: process.env.JWT_SECRET!,
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
-    corsOrigin: (process.env.CORS_ORIGIN || 'http://localhost:5173').replace(/\/$/, ''),
+    corsOrigin: (process.env.CORS_ORIGIN || (isProduction ? '' : 'http://localhost:5173')).replace(/\/$/, ''),
     google: {
         clientId: process.env.GOOGLE_CLIENT_ID!,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        callbackUrl: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:5000/api/v1/auth/google/callback',
+        callbackUrl: process.env.GOOGLE_CALLBACK_URL || (isProduction ? '' : 'http://localhost:5000/api/v1/auth/google/callback'),
     },
     razorpay: {
         keyId: process.env.RAZORPAY_KEY_ID!,
@@ -59,4 +59,14 @@ export const config = {
     gemini: {
         apiKey: process.env.GEMINI_API_KEY!,
     },
+    cloudinary: {
+        cloudName: process.env.CLOUDINARY_CLOUD_NAME!,
+        apiKey: process.env.CLOUDINARY_API_KEY!,
+        apiSecret: process.env.CLOUDINARY_API_SECRET!,
+    },
+    email: {
+        user: process.env.EMAIL_USER!,
+        password: process.env.EMAIL_PASSWORD!,
+    },
+    clientUrl: process.env.CLIENT_URL || (isProduction ? '' : 'http://localhost:5173'),
 }

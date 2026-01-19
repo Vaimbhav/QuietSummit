@@ -16,7 +16,7 @@ export interface IJourney extends Document {
     duration: {
         days: number
         nights: number
-    }
+    } | number
     difficulty: 'easy' | 'moderate' | 'challenging'
     idealFor: string[]
     season: string[]
@@ -63,8 +63,8 @@ const JourneySchema = new Schema<IJourney>(
             },
         },
         duration: {
-            days: { type: Number, required: true },
-            nights: { type: Number, required: true },
+            type: Schema.Types.Mixed,
+            required: true,
         },
         difficulty: { type: String, enum: ['easy', 'moderate', 'challenging'], required: true },
         idealFor: [String],
@@ -100,8 +100,25 @@ const JourneySchema = new Schema<IJourney>(
     },
     {
         timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
     }
 )
+
+// Transform duration to always return days/nights format
+JourneySchema.methods.toJSON = function () {
+    const obj = this.toObject()
+
+    // Handle duration field - convert number to {days, nights} format
+    if (typeof obj.duration === 'number') {
+        obj.duration = {
+            days: obj.duration,
+            nights: obj.duration - 1
+        }
+    }
+
+    return obj
+}
 
 JourneySchema.index({ slug: 1 }, { unique: true })
 JourneySchema.index({ status: 1 })

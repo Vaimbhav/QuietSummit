@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	html {
+		scroll-behavior: smooth;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	body {
+		@apply text-neutral-900 bg-white;
+	}
+
+	::selection {
+		@apply bg-primary-600 text-white;
+	}
+}
+
+@layer components {
+	.glass-effect {
+		background: rgba(255, 255, 255, 0.8);
+		backdrop-filter: blur(20px);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+	}
+
+	.glass-luxury {
+		background: rgba(255, 255, 255, 0.95);
+		backdrop-filter: blur(24px);
+		-webkit-backdrop-filter: blur(24px);
+	}
+
+	.gradient-text {
+		@apply bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent;
+	}
+
+	.gradient-premium {
+		@apply bg-primary-600;
+	}
+
+	.border-luxury {
+		@apply border-neutral-100;
+	}
+
+	.text-balance {
+		text-wrap: balance;
+	}
+}
+
+@keyframes blob {
+	0% {
+		transform: translate(0px, 0px) scale(1);
+	}
+
+	33% {
+		transform: translate(30px, -50px) scale(1.1);
+	}
+
+	66% {
+		transform: translate(-20px, 20px) scale(0.9);
+	}
+
+	100% {
+		transform: translate(0px, 0px) scale(1);
+	}
+}
+
+.animate-blob {
+	animation: blob 7s infinite;
+}
+
+.animation-delay-1000 {
+	animation-delay: 1s;
+}
+
+.animation-delay-2000 {
+	animation-delay: 2s;
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fade-in {
+	animation: fade-in 0.5s ease-out;
+}

@@ -10,8 +10,8 @@ export const companyKnowledge = {
         tagline: 'Transformative mountain and nature journeys across India',
         mission: 'Creating journeys that honor depth over distance, connection over collection',
         contact: {
-            email: 'quietsummit07@gmail.com',
-            supportEmail: 'quietsummit07@gmail.com'
+            email: 'quietsummit79@gmail.com',
+            supportEmail: 'quietsummit79@gmail.com'
         }
     },
 

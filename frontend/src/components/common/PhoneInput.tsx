@@ -25,22 +25,18 @@ export default function PhoneInput({
         countries.find(c => c.code === defaultCountry) || countries[0]
     )
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-    const [phoneNumber, setPhoneNumber] = useState(value)
-    const [isValid, setIsValid] = useState(false)
+    const isValid = validatePhoneNumber(value || '', selectedCountry.code)
 
     const handleCountryChange = (country: Country) => {
         setSelectedCountry(country)
         setIsDropdownOpen(false)
-        const valid = validatePhoneNumber(phoneNumber, country.code)
-        setIsValid(valid)
-        onChange(phoneNumber, country.code, valid)
+        const valid = validatePhoneNumber(value || '', country.code)
+        onChange(value || '', country.code, valid)
     }
 
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value
-        setPhoneNumber(newValue)
         const valid = validatePhoneNumber(newValue, selectedCountry.code)
-        setIsValid(valid)
         onChange(newValue, selectedCountry.code, valid)
     }
 
@@ -95,20 +91,20 @@ export default function PhoneInput({
                     </div>
                     <input
                         type="tel"
-                        value={phoneNumber}
+                        value={value || ''}
                         onChange={handlePhoneChange}
                         placeholder={placeholder || selectedCountry.placeholder}
                         required={required}
                         className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2 ${error
                             ? 'border-red-300 focus:ring-red-500'
-                            : phoneNumber && !isValid
+                            : value && !isValid
                                 ? 'border-amber-300 focus:ring-amber-500'
-                                : phoneNumber && isValid
+                                : value && isValid
                                     ? 'border-green-300 focus:ring-green-500'
                                     : 'border-neutral-300 focus:ring-primary-500'
                             }`}
                     />
-                    {phoneNumber && (
+                    {value && (
                         <div className="absolute right-3 top-1/2 -translate-y-1/2">
                             {isValid ? (
                                 <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center">
@@ -129,7 +125,7 @@ export default function PhoneInput({
             </div>
 
             {/* Helper Text */}
-            {phoneNumber && !isValid && !error && (
+            {value && !isValid && !error && (
                 <p className="text-xs text-amber-600 mt-1">
                     Please enter a valid {selectedCountry.name} phone number (Format: {selectedCountry.format})
                 </p>
@@ -137,9 +133,9 @@ export default function PhoneInput({
             {error && (
                 <p className="text-xs text-red-600 mt-1">{error}</p>
             )}
-            {phoneNumber && isValid && (
+            {value && isValid && (
                 <p className="text-xs text-green-600 mt-1">
-                    ✓ Valid phone number: {selectedCountry.dialCode} {phoneNumber}
+                    ✓ Valid phone number: {selectedCountry.dialCode} {value}
                 </p>
             )}
         </div>

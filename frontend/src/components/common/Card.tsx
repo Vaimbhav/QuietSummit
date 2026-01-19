@@ -25,23 +25,19 @@ export default function Card({
     }
 
     const variantClasses = {
-        default: 'bg-white border border-neutral-100 shadow-luxury hover:shadow-luxury-lg',
-        luxury: 'glass-luxury border-luxury shadow-luxury-lg hover:shadow-luxury-xl',
-        premium: 'bg-linear-to-br from-white via-luxury-50 to-white border border-luxury-200 shadow-luxury-xl hover:shadow-luxury-2xl',
-        glass: 'glass-effect border border-white/40 shadow-luxury hover:shadow-luxury-lg'
+        default: 'bg-white border border-neutral-100 shadow-sm hover:shadow-md',
+        luxury: 'bg-white border border-neutral-100 shadow-md hover:shadow-lg',
+        premium: 'bg-white border border-neutral-100 shadow-md hover:shadow-lg',
+        glass: 'bg-white/80 backdrop-blur-md border border-neutral-200/50 shadow-sm hover:shadow-md'
     }
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-            whileHover={hoverable ? {
-                y: -8,
-                scale: 1.01,
-                transition: { duration: 0.3, ease: 'easeOut' }
-            } : {}}
-            className={`rounded-3xl transition-all duration-300 overflow-hidden ${paddingClasses[padding]} ${variantClasses[variant]} ${hoverable ? 'hover-lift cursor-pointer' : ''} ${className}`}
+            transition={{ duration: 0.3 }}
+            whileHover={hoverable ? { y: -4 } : {}}
+            className={`rounded-2xl transition-all duration-200 ${paddingClasses[padding]} ${variantClasses[variant]} ${className}`}
         >
             {children}
         </motion.div>
