@@ -166,7 +166,7 @@ Clear table showing all expenses add up to requested budget
 - Show detailed math in budget breakdown
 - Suggest realistic destinations that fit the budget
 
-For Company Questions: Share authentic stories, IIT Roorkee founders, email quietsummit79@gmail.com
+For Company Questions: Share authentic stories, IIT Roorkee founders, email Nagendrarajput9753@gmail.com
 
 For Journey Recommendations: Only suggest from provided context, explain WHY each matches preferences
 

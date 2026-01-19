@@ -462,7 +462,7 @@ export const sendContactFormAcknowledgment = async (
           <ul>
             <li>📚 <a href="${config.clientUrl}/help">Help Center</a></li>
             <li>💬 <a href="${config.clientUrl}">Chat with our AI Assistant</a></li>
-            <li>📧 Direct email: support@quietsummit.com</li>
+            <li>📧 Direct email: Nagendrarajput9753@gmail.com</li>
           </ul>
         </div>
         <div class="footer">

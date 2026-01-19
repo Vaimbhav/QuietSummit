@@ -515,7 +515,7 @@ export const updateBookingStatus = async (req: Request, res: Response): Promise<
                     checkOut: new Date(booking.endDate).toLocaleDateString(),
                     totalPrice: booking.totalAmount,
                     hostName: host?.name || 'QuietSummit Team',
-                    hostEmail: host?.email || 'support@quietsummit.com'
+                    hostEmail: host?.email || 'Nagendrarajput9753@gmail.com'
                 }).catch(err => logger.error('Failed to send confirmation email to guest:', err));
             }
         }
