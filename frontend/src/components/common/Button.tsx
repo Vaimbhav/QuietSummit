@@ -20,7 +20,7 @@ export default function Button({
     className = '',
     ...props
 }: ButtonProps) {
-    const baseClasses = 'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed select-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2'
+    const baseClasses = 'relative inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed select-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2'
 
     const variants = {
         primary: `
@@ -75,12 +75,13 @@ export default function Button({
 
     return (
         <button
+            {...props}
+            type={props.type || "button"}
             className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
             disabled={disabled || isLoading}
-            {...props}
         >
             {/* Shimmer effect on hover */}
-            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></span>
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none"></span>
 
             {isLoading && (
                 <svg className="animate-spin h-4 w-4 relative z-10" fill="none" viewBox="0 0 24 24">

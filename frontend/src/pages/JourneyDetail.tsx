@@ -83,7 +83,7 @@ export default function JourneyDetail() {
                 <div className="text-6xl mb-6">😔</div>
                 <h2 className="text-3xl font-bold text-neutral-900 mb-4">Journey Not Found</h2>
                 <p className="text-neutral-600 mb-8">{error || 'The journey you are looking for does not exist.'}</p>
-                <Button onClick={() => navigate('/journeys')} variant="primary">
+                <Button onClick={(e) => { e.stopPropagation(); navigate('/journeys') }} variant="primary">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back to Journeys
                 </Button>
@@ -97,7 +97,12 @@ export default function JourneyDetail() {
             <section className="relative bg-neutral-900">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-6 sm:pb-8">
                     <button
-                        onClick={() => navigate('/journeys')}
+                        type="button"
+                        onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            navigate('/journeys')
+                        }}
                         className="flex items-center gap-2 text-white/80 hover:text-white mb-4 sm:mb-6 transition-colors font-medium text-sm sm:text-base"
                     >
                         <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -124,7 +129,12 @@ export default function JourneyDetail() {
                             {journey.images.map((img, idx) => (
                                 <button
                                     key={idx}
-                                    onClick={() => setSelectedImage(idx)}
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        setSelectedImage(idx)
+                                    }}
                                     className={`shrink-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg overflow-hidden border-3 transition-all ${selectedImage === idx ? 'border-primary-500 scale-105' : 'border-transparent opacity-60 hover:opacity-100'
                                         }`}
                                 >
@@ -316,7 +326,12 @@ export default function JourneyDetail() {
                                             className="border border-neutral-200 rounded-lg sm:rounded-xl overflow-hidden transition-all hover:border-primary-300"
                                         >
                                             <button
-                                                onClick={() => setExpandedDay(expandedDay === idx ? null : idx)}
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.preventDefault()
+                                                    e.stopPropagation()
+                                                    setExpandedDay(expandedDay === idx ? null : idx)
+                                                }}
                                                 className="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 bg-neutral-50 hover:bg-neutral-100 transition-colors"
                                             >
                                                 <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
@@ -454,7 +469,10 @@ export default function JourneyDetail() {
                             <BookingGuard onAuthenticated={() => setIsBookingOpen(true)}>
                                 {(openBooking) => (
                                     <Button
-                                        onClick={openBooking}
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            openBooking()
+                                        }}
                                         variant="primary"
                                         size="lg"
                                         className="w-full mb-3 sm:mb-4 text-base sm:text-lg font-bold py-3 sm:py-4"
@@ -465,7 +483,10 @@ export default function JourneyDetail() {
                             </BookingGuard>
 
                             <Button
-                                onClick={() => navigate('/contact')}
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    navigate('/contact')
+                                }}
                                 variant="ghost"
                                 size="lg"
                                 className="w-full font-semibold text-sm sm:text-base py-3 sm:py-4"
@@ -494,7 +515,10 @@ export default function JourneyDetail() {
                     <BookingGuard onAuthenticated={() => setIsBookingOpen(true)}>
                         {(openBooking) => (
                             <Button
-                                onClick={openBooking}
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    openBooking()
+                                }}
                                 variant="primary"
                                 size="lg"
                                 className="px-8 py-3 text-base font-bold"

@@ -177,7 +177,7 @@ export default function Home() {
                         <motion.div variants={itemVariants}>
                             <Link to="/about">
                                 <button className="px-10 py-5 text-lg font-bold rounded-3xl border-2 border-primary-400 text-white hover:bg-primary-400 hover:text-neutral-900 transition-all duration-300 shadow-luxury-lg hover:shadow-luxury-xl hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group">
-                                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></span>
+                                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 pointer-events-none"></span>
                                     <span className="relative z-10 font-extrabold">Read Our Manifesto</span>
                                 </button>
                             </Link>

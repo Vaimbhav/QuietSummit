@@ -427,7 +427,7 @@ export default function About() {
                                 onClick={() => navigate('/journeys')}
                                 className="w-full sm:w-auto px-10 sm:px-12 py-5 sm:py-6 text-base sm:text-lg font-extrabold rounded-3xl gradient-premium text-white shadow-luxury-2xl hover:shadow-luxury-xl hover:-translate-y-1 active:translate-y-0 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 inline-flex items-center justify-center gap-3 group relative overflow-hidden"
                             >
-                                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></span>
+                                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 pointer-events-none"></span>
                                 <span className="relative z-10">Explore Journeys</span>
                                 <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 relative z-10 group-hover:translate-x-2 transition-transform" />
                             </button>
@@ -435,7 +435,7 @@ export default function About() {
                                 onClick={() => navigate('/contact')}
                                 className="w-full sm:w-auto px-10 sm:px-12 py-5 sm:py-6 text-base sm:text-lg font-extrabold rounded-3xl glass-luxury text-primary-700 shadow-luxury-lg hover:shadow-luxury-xl hover:-translate-y-1 active:translate-y-0 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 inline-flex items-center justify-center gap-2 relative overflow-hidden group"
                             >
-                                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700"></span>
+                                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 pointer-events-none"></span>
                                 <span className="relative z-10">Let's Talk</span>
                             </button>
                         </div>

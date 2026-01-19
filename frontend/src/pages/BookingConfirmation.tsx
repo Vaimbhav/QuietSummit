@@ -412,13 +412,13 @@ export default function BookingConfirmation() {
                     <p className="text-gray-600 mb-4 font-medium">Need help or have questions?</p>
                     <div className="flex flex-wrap justify-center gap-6">
                         <a
-                            href="mailto:quietsummit79@gmail.com"
+                            href="mailto:Nagendrarajput9753@gmail.com"
                             className="flex items-center gap-2 text-primary-600 hover:text-primary-700 font-semibold transition-colors group"
                         >
                             <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center group-hover:bg-primary-200 transition-colors">
                                 <Mail className="w-5 h-5" />
                             </div>
-                            quietsummit79@gmail.com
+                            Nagendrarajput9753@gmail.com
                         </a>
                         <a
                             href="tel:+919968086660"

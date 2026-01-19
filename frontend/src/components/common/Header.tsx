@@ -169,7 +169,7 @@ export default function Header() {
                                                 onClick={() => setShowUserDropdown(false)}
                                                 className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all duration-300 group relative overflow-hidden"
                                             >
-                                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/0 via-primary-500/5 to-primary-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/0 via-primary-500/5 to-primary-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 pointer-events-none"></div>
                                                 <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-500/30 group-hover:shadow-xl group-hover:shadow-primary-500/40 group-hover:scale-110 transition-all duration-300">
                                                     <User className="w-5 h-5 text-white" />
                                                 </div>
@@ -189,7 +189,7 @@ export default function Header() {
                                                 }}
                                                 className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100/50 transition-all duration-300 group relative overflow-hidden"
                                             >
-                                                <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                                                <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 pointer-events-none"></div>
                                                 <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-lg shadow-red-500/30 group-hover:shadow-xl group-hover:shadow-red-500/40 group-hover:scale-110 transition-all duration-300">
                                                     <LogOut className="w-5 h-5 text-white" />
                                                 </div>
@@ -266,7 +266,7 @@ export default function Header() {
                                                 }}
                                                 className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all duration-300 group relative overflow-hidden"
                                             >
-                                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/0 via-primary-500/5 to-primary-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                                                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/0 via-primary-500/5 to-primary-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 pointer-events-none"></div>
                                                 <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-500/30 group-hover:shadow-xl group-hover:shadow-primary-500/40 group-hover:scale-110 transition-all duration-300">
                                                     <User className="w-5 h-5 text-white" />
                                                 </div>
@@ -284,7 +284,7 @@ export default function Header() {
                                                 onClick={() => setShowUserDropdown(false)}
                                                 className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl hover:bg-gradient-to-r hover:from-accent-50 hover:to-accent-100/50 transition-all duration-300 group relative overflow-hidden"
                                             >
-                                                <div className="absolute inset-0 bg-gradient-to-r from-accent-500/0 via-accent-500/5 to-accent-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                                                <div className="absolute inset-0 bg-gradient-to-r from-accent-500/0 via-accent-500/5 to-accent-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 pointer-events-none"></div>
                                                 <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-accent-500 to-accent-600 flex items-center justify-center shadow-lg shadow-accent-500/30 group-hover:shadow-xl group-hover:shadow-accent-500/40 group-hover:scale-110 transition-all duration-300">
                                                     <User className="w-5 h-5 text-white" />
                                                 </div>
@@ -387,7 +387,7 @@ export default function Header() {
 
                                             <Link to="/dashboard" onClick={() => dispatch(toggleMenu())}>
                                                 <button className="w-full px-5 py-3 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 text-white rounded-xl text-sm font-semibold shadow-[0_4px_14px_0_rgba(74,139,112,0.39)] hover:shadow-[0_6px_20px_rgba(74,139,112,0.45)] flex items-center justify-center gap-2 relative overflow-hidden group transition-all mb-4">
-                                                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+                                                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"></span>
                                                     <User className="w-4 h-4 relative z-10" />
                                                     <span className="relative z-10">Dashboard</span>
                                                 </button>
@@ -416,7 +416,7 @@ export default function Header() {
                                             </button>
                                             <Link to="/signup" onClick={() => dispatch(toggleMenu())}>
                                                 <button className="w-full px-5 py-3 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 text-white rounded-xl text-sm font-semibold shadow-[0_4px_14px_0_rgba(74,139,112,0.39)] hover:shadow-[0_6px_20px_rgba(74,139,112,0.45)] relative overflow-hidden group transition-all">
-                                                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+                                                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"></span>
                                                     <span className="relative z-10">Become a Member</span>
                                                 </button>
                                             </Link>
