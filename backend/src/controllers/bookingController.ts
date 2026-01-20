@@ -257,6 +257,28 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             }
         }
 
+        // Send booking confirmation email to guest with detailed receipt
+        await sendBookingConfirmationEmail(member.email, {
+            guestName: member.name,
+            propertyName: journey.title,
+            checkIn: isProperty ? new Date(checkIn).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
+            checkOut: isProperty ? new Date(checkOut).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
+            totalPrice: totalAmount,
+            hostName: journey.host ? (await SignUp.findById(journey.host))?.name : undefined,
+            hostEmail: journey.host ? (await SignUp.findById(journey.host))?.email : undefined,
+            bookingReference: booking._id.toString(),
+            numberOfTravelers,
+            travelers: travelers || [],
+            duration: durationDays,
+            destination: booking.destination,
+            departureDate: isProperty ? '' : new Date(departureDate).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }),
+            roomPreference: roomPreference || 'double',
+            subtotal,
+            discount: discount || 0,
+            paymentMethod: 'Razorpay',
+            transactionId: razorpay_payment_id || paymentId || ''
+        }).catch(err => logger.error('Failed to send booking confirmation email to guest:', err));
+
         res.status(201).json({
             success: true,
             bookingId: booking._id,

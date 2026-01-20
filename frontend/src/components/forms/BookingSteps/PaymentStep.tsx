@@ -117,19 +117,30 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                             razorpay_signature: response.razorpay_signature,
                         })
 
-                        setBookingReference(bookingResponse.bookingId)
+                        const bookingId = bookingResponse.data?.bookingId || bookingResponse.bookingId
+
+                        // Update state first
+                        setBookingReference(bookingId)
                         setIsSuccess(true)
                         setIsProcessing(false)
 
-                        // Redirect to confirmation after 3 seconds
-                        setTimeout(() => {
-                            navigate(`/booking-confirmation/${bookingResponse.bookingId}`)
-                            onClose()
-                        }, 3000)
+                        // Use requestAnimationFrame for smoother transition on mobile
+                        requestAnimationFrame(() => {
+                            setTimeout(() => {
+                                try {
+                                    navigate(`/booking-confirmation/${bookingId}`)
+                                    onClose()
+                                } catch (navError) {
+                                    console.error('Navigation error:', navError)
+                                    // Fallback: try direct window navigation
+                                    window.location.href = `/booking-confirmation/${bookingId}`
+                                }
+                            }, 2000)
+                        })
                     } catch (error) {
                         console.error('✗ Booking creation failed:', error)
-                        alert('Payment successful but booking creation failed. Please contact support.')
                         setIsProcessing(false)
+                        alert('Payment successful but booking creation failed. Please contact support with your payment ID: ' + response.razorpay_payment_id)
                     }
                 },
                 prefill: {

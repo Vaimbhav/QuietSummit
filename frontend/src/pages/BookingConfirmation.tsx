@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, MapPin, Users, Mail, Phone, Download, Share2, Sparkles, Clock, Home } from 'lucide-react';
 import { getBookingById } from '../services/api';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default function BookingConfirmation() {
     const { id } = useParams();
@@ -10,6 +12,8 @@ export default function BookingConfirmation() {
     const [booking, setBooking] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isDownloading, setIsDownloading] = useState(false);
+    const receiptRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const fetchBooking = async () => {
@@ -70,8 +74,46 @@ export default function BookingConfirmation() {
 
     const bookingRef = `QS${booking._id.toString().slice(-8).toUpperCase()}`;
 
-    const handleDownload = () => {
-        window.print();
+    const handleDownload = async () => {
+        if (!receiptRef.current || isDownloading) return;
+
+        setIsDownloading(true);
+
+        try {
+            // Create a clone of the receipt element for PDF generation
+            const element = receiptRef.current;
+
+            // Configure canvas options for better quality
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff',
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+            });
+
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = canvas.width;
+            const imgHeight = canvas.height;
+            const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+            const imgX = (pdfWidth - imgWidth * ratio) / 2;
+            const imgY = 10;
+
+            pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+            pdf.save(`QuietSummit-Receipt-${bookingRef}.pdf`);
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            alert('Failed to download receipt. Please try again.');
+        } finally {
+            setIsDownloading(false);
+        }
     };
 
     const handleShare = async () => {
@@ -108,7 +150,7 @@ export default function BookingConfirmation() {
                 <div className="absolute top-16 right-1/3 w-3 h-3 bg-green-400 rounded-full animate-float animation-delay-3000"></div>
             </div>
 
-            <div className="container mx-auto px-4 py-12 md:py-20 relative z-10 max-w-5xl">
+            <div className="container mx-auto px-4 py-12 md:py-20 relative z-10 max-w-5xl" ref={receiptRef}>
                 {/* Hero Section */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -250,10 +292,11 @@ export default function BookingConfirmation() {
                             <div className="space-y-3">
                                 <button
                                     onClick={handleDownload}
-                                    className="w-full px-4 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-all hover:scale-105 flex items-center justify-center gap-2"
+                                    disabled={isDownloading}
+                                    className="w-full px-4 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-all hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                                 >
                                     <Download className="w-5 h-5" />
-                                    Download Receipt
+                                    {isDownloading ? 'Generating PDF...' : 'Download Receipt'}
                                 </button>
                                 <button
                                     onClick={handleShare}

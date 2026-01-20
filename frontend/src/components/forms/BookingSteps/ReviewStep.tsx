@@ -114,18 +114,30 @@ export default function ReviewStep({ journey, bookingData, onBack, onClose }: Re
                             razorpay_signature: response.razorpay_signature,
                         })
 
+                        const bookingId = bookingResponse.data?.bookingId || bookingResponse.bookingId
+
                         // Clear session storage on success
                         sessionStorage.removeItem(`booking_${journey._id}`)
+                        setIsProcessing(false)
 
-                        // Redirect to confirmation after success
-                        const bookingId = bookingResponse.data?.bookingId || bookingResponse.bookingId
-                        navigate(`/booking-confirmation/${bookingId}`)
-                        if (onClose) onClose()
+                        // Use requestAnimationFrame for smoother transition on mobile
+                        requestAnimationFrame(() => {
+                            setTimeout(() => {
+                                try {
+                                    navigate(`/booking-confirmation/${bookingId}`)
+                                    if (onClose) onClose()
+                                } catch (navError) {
+                                    console.error('Navigation error:', navError)
+                                    // Fallback: try direct window navigation
+                                    window.location.href = `/booking-confirmation/${bookingId}`
+                                }
+                            }, 1000)
+                        })
 
                     } catch (error) {
                         console.error('✗ Booking creation failed:', error)
-                        alert('Payment successful but booking creation failed. Please contact support.')
                         setIsProcessing(false)
+                        alert('Payment successful but booking creation failed. Please contact support with your payment ID: ' + response.razorpay_payment_id)
                     }
                 },
                 prefill: {

@@ -104,7 +104,7 @@ export const sendWelcomeEmail = async (
 };
 
 /**
- * Send booking confirmation email to guest
+ * Send booking confirmation email to guest with detailed receipt
  */
 export const sendBookingConfirmationEmail = async (
     email: string,
@@ -114,40 +114,107 @@ export const sendBookingConfirmationEmail = async (
         checkIn: string;
         checkOut: string;
         totalPrice: number;
-        hostName: string;
-        hostEmail: string;
+        hostName?: string;
+        hostEmail?: string;
+        bookingReference?: string;
+        numberOfTravelers?: number;
+        travelers?: Array<{ name: string; age: number; gender: string }>;
+        duration?: number;
+        destination?: string;
+        departureDate?: string;
+        roomPreference?: string;
+        subtotal?: number;
+        discount?: number;
+        paymentMethod?: string;
+        transactionId?: string;
     }
 ): Promise<void> => {
+    const bookingRef = bookingDetails.bookingReference || `QS${Date.now().toString().slice(-8).toUpperCase()}`;
+    const travelers = bookingDetails.travelers || [];
+    const isJourney = !!bookingDetails.departureDate;
+
     const html = `
     <!DOCTYPE html>
     <html>
     <head>
       <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: #10b981; color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-        .content { background: #f9f9f9; padding: 30px; }
-        .booking-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
-        .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .button { display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
-        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f5f5f5; }
+        .container { max-width: 650px; margin: 0 auto; background: white; }
+        .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 40px 30px; text-align: center; }
+        .header h1 { margin: 0 0 10px 0; font-size: 32px; }
+        .header p { margin: 0; font-size: 16px; opacity: 0.95; }
+        .thank-you { background: #f0fdf4; padding: 25px 30px; border-left: 4px solid #10b981; }
+        .thank-you h2 { margin: 0 0 10px 0; color: #059669; font-size: 24px; }
+        .content { padding: 30px; }
+        .reference-card { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; padding: 20px; border-radius: 12px; text-align: center; margin: 25px 0; }
+        .reference-card .label { font-size: 12px; opacity: 0.9; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .reference-card .value { font-size: 28px; font-weight: bold; letter-spacing: 2px; }
+        .section-title { font-size: 18px; font-weight: bold; color: #1f2937; margin: 25px 0 15px 0; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+        .booking-details { background: #f9fafb; padding: 20px; border-radius: 8px; margin: 15px 0; }
+        .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e5e7eb; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-row strong { color: #4b5563; font-weight: 600; }
+        .detail-row span { color: #1f2937; text-align: right; max-width: 60%; }
+        .traveler-card { background: white; border: 1px solid #e5e7eb; padding: 15px; border-radius: 8px; margin: 10px 0; display: flex; align-items: center; gap: 15px; }
+        .traveler-number { width: 40px; height: 40px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .traveler-info { flex: 1; }
+        .traveler-name { font-weight: bold; color: #1f2937; margin-bottom: 3px; }
+        .traveler-details { font-size: 13px; color: #6b7280; }
+        .price-summary { background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .price-row { display: flex; justify-content: space-between; padding: 10px 0; color: #4b5563; }
+        .price-total { border-top: 2px solid #10b981; margin-top: 10px; padding-top: 15px; font-size: 18px; font-weight: bold; color: #059669; }
+        .button { display: inline-block; background: #10b981; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; margin-top: 20px; font-weight: 600; transition: background 0.3s; }
+        .button:hover { background: #059669; }
+        .timeline { margin: 20px 0; }
+        .timeline-item { display: flex; gap: 15px; margin-bottom: 20px; }
+        .timeline-dot { width: 32px; height: 32px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .timeline-content h4 { margin: 0 0 5px 0; color: #1f2937; }
+        .timeline-content p { margin: 0; color: #6b7280; font-size: 14px; }
+        .footer { background: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb; }
+        .footer-links { margin: 15px 0; }
+        .footer-links a { color: #6366f1; text-decoration: none; margin: 0 15px; }
+        .footer p { margin: 5px 0; color: #6b7280; font-size: 13px; }
+        .badge { display: inline-block; background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; margin: 5px 0; }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <h1>✓ Booking Confirmed!</h1>
+          <h1>🎉 Booking Confirmed!</h1>
+          <p>Your adventure awaits</p>
         </div>
+        
+        <div class="thank-you">
+          <h2>Thank You, ${bookingDetails.guestName}! 🙏</h2>
+          <p>We're thrilled to have you join us. Your booking has been successfully confirmed, and we can't wait to provide you with an unforgettable experience.</p>
+        </div>
+
         <div class="content">
-          <h2>Great news, ${bookingDetails.guestName}!</h2>
-          <p>Your booking has been confirmed. We can't wait to welcome you!</p>
-          
+          <div class="reference-card">
+            <div class="label">Booking Reference</div>
+            <div class="value">${bookingRef}</div>
+          </div>
+
+          <h3 class="section-title">${isJourney ? 'Journey' : 'Booking'} Details</h3>
           <div class="booking-details">
-            <h3>Booking Details</h3>
             <div class="detail-row">
-              <strong>Property:</strong>
+              <strong>${isJourney ? 'Journey' : 'Property'}:</strong>
               <span>${bookingDetails.propertyName}</span>
             </div>
+            ${bookingDetails.destination ? `
+            <div class="detail-row">
+              <strong>Destination:</strong>
+              <span>${bookingDetails.destination}</span>
+            </div>` : ''}
+            ${isJourney ? `
+            <div class="detail-row">
+              <strong>Departure Date:</strong>
+              <span>${bookingDetails.departureDate}</span>
+            </div>
+            <div class="detail-row">
+              <strong>Duration:</strong>
+              <span>${bookingDetails.duration} days</span>
+            </div>` : `
             <div class="detail-row">
               <strong>Check-in:</strong>
               <span>${bookingDetails.checkIn}</span>
@@ -155,11 +222,17 @@ export const sendBookingConfirmationEmail = async (
             <div class="detail-row">
               <strong>Check-out:</strong>
               <span>${bookingDetails.checkOut}</span>
-            </div>
+            </div>`}
             <div class="detail-row">
-              <strong>Total Price:</strong>
-              <span>$${bookingDetails.totalPrice}</span>
+              <strong>Number of Travelers:</strong>
+              <span>${bookingDetails.numberOfTravelers || 1} ${(bookingDetails.numberOfTravelers || 1) === 1 ? 'Person' : 'People'}</span>
             </div>
+            ${bookingDetails.roomPreference ? `
+            <div class="detail-row">
+              <strong>Room Preference:</strong>
+              <span style="text-transform: capitalize;">${bookingDetails.roomPreference}</span>
+            </div>` : ''}
+            ${bookingDetails.hostName ? `
             <div class="detail-row">
               <strong>Host:</strong>
               <span>${bookingDetails.hostName}</span>
@@ -167,21 +240,105 @@ export const sendBookingConfirmationEmail = async (
             <div class="detail-row">
               <strong>Host Contact:</strong>
               <span>${bookingDetails.hostEmail}</span>
+            </div>` : ''}
+          </div>
+
+          ${travelers.length > 0 ? `
+          <h3 class="section-title">Travelers</h3>
+          ${travelers.map((traveler, index) => `
+          <div class="traveler-card">
+            <div class="traveler-number">${index + 1}</div>
+            <div class="traveler-info">
+              <div class="traveler-name">${traveler.name}</div>
+              <div class="traveler-details">${traveler.age} years • ${traveler.gender}</div>
+            </div>
+          </div>`).join('')}
+          ` : ''}
+
+          <h3 class="section-title">Payment Summary</h3>
+          <div class="price-summary">
+            ${bookingDetails.subtotal ? `
+            <div class="price-row">
+              <span>Subtotal:</span>
+              <span>₹${bookingDetails.subtotal.toLocaleString()}</span>
+            </div>` : ''}
+            ${bookingDetails.discount && bookingDetails.discount > 0 ? `
+            <div class="price-row" style="color: #059669;">
+              <span>Discount:</span>
+              <span>- ₹${bookingDetails.discount.toLocaleString()}</span>
+            </div>` : ''}
+            <div class="price-row price-total">
+              <span>Total Paid:</span>
+              <span>₹${bookingDetails.totalPrice.toLocaleString()}</span>
+            </div>
+            ${bookingDetails.paymentMethod ? `
+            <div class="price-row" style="border-top: 1px solid #e5e7eb; margin-top: 10px; padding-top: 10px; font-size: 13px;">
+              <span>Payment Method:</span>
+              <span>${bookingDetails.paymentMethod}</span>
+            </div>` : ''}
+            ${bookingDetails.transactionId ? `
+            <div class="price-row" style="font-size: 13px;">
+              <span>Transaction ID:</span>
+              <span>${bookingDetails.transactionId}</span>
+            </div>` : ''}
+          </div>
+
+          <h3 class="section-title">What's Next? 🚀</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot">✓</div>
+              <div class="timeline-content">
+                <h4>Confirmation Received</h4>
+                <p>Your booking is confirmed and payment has been processed successfully</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot">2</div>
+              <div class="timeline-content">
+                <h4>Pre-Trip Information</h4>
+                <p>We'll send you detailed information 30 days before ${isJourney ? 'departure' : 'check-in'}</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot">3</div>
+              <div class="timeline-content">
+                <h4>Final Details</h4>
+                <p>Our team will contact you 7 days before with final instructions</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot">🎯</div>
+              <div class="timeline-content">
+                <h4>Enjoy Your ${isJourney ? 'Journey' : 'Stay'}!</h4>
+                <p>Have an amazing experience at ${bookingDetails.destination || bookingDetails.propertyName}</p>
+              </div>
             </div>
           </div>
-          
-          <p><strong>What's Next?</strong></p>
-          <ul>
-            <li>Check your email 24 hours before check-in for directions</li>
-            <li>Contact your host if you have any questions</li>
-            <li>Review cancellation policy in your dashboard</li>
-          </ul>
-          
-          <a href="${config.clientUrl}/dashboard" class="button">View Booking Details</a>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${config.clientUrl}/booking-confirmation/${bookingDetails.bookingReference}" class="button">View Booking Details</a>
+          </div>
+
+          <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 4px; margin: 20px 0;">
+            <strong style="color: #92400e;">📋 Important Reminders:</strong>
+            <ul style="margin: 10px 0; padding-left: 20px; color: #78350f;">
+              <li>Save this email for your records</li>
+              <li>Check your spam folder for future communications</li>
+              ${bookingDetails.hostEmail ? `<li>Contact your host at ${bookingDetails.hostEmail} for any queries</li>` : ''}
+              <li>Review cancellation policy in your dashboard</li>
+            </ul>
+          </div>
         </div>
+
         <div class="footer">
-          <p>Have questions? Contact your host at ${bookingDetails.hostEmail}</p>
-          <p>QuietSummit - Find Your Peace</p>
+          <div class="footer-links">
+            <a href="${config.clientUrl}/dashboard">My Bookings</a>
+            <a href="${config.clientUrl}/support">Help & Support</a>
+            <a href="${config.clientUrl}/contact">Contact Us</a>
+          </div>
+          <p style="margin-top: 20px; font-weight: 600; color: #1f2937;">QuietSummit - Find Your Peace 🏔️</p>
+          <p>Thank you for choosing QuietSummit for your journey!</p>
+          <p>Questions? Reply to this email or reach us at ${config.email.user}</p>
         </div>
       </div>
     </body>
@@ -190,8 +347,9 @@ export const sendBookingConfirmationEmail = async (
 
     await sendEmail({
         to: email,
-        subject: `Booking Confirmed: ${bookingDetails.propertyName}`,
+        subject: `🎉 Booking Confirmed - ${bookingDetails.propertyName} | ${bookingRef}`,
         html,
+        text: `Thank you for your booking!\n\nBooking Reference: ${bookingRef}\n${isJourney ? 'Journey' : 'Property'}: ${bookingDetails.propertyName}\n${isJourney ? 'Departure' : 'Check-in'}: ${isJourney ? bookingDetails.departureDate : bookingDetails.checkIn}\nTotal: ₹${bookingDetails.totalPrice}\n\nView details: ${config.clientUrl}/booking-confirmation/${bookingDetails.bookingReference}`,
     });
 };
 
