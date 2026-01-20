@@ -196,7 +196,15 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             logger.info(`No payment details provided - creating booking with PENDING status`)
         }
 
-        // Create booking
+        // Create booking with detailed logging
+        logger.info('Creating booking with data:', {
+            memberId: member._id,
+            journeyId: journey._id,
+            status: finalStatus,
+            paymentStatus: finalPaymentStatus,
+            amount: totalAmount,
+        })
+
         const booking = await Booking.create({
             memberId: member._id,
             // Also save user and hostId fields for robust querying
@@ -240,53 +248,74 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
 
         logger.info(`Booking created successfully: ${booking._id} for member: ${member.email} | Status: ${finalStatus} | Payment Status: ${finalPaymentStatus} | Journey Model: ${isProperty ? 'Property' : 'Journey'}`)
 
-        // Send email notification to host if it's a Property with a host
-        if (journey.host) {
-            const host = await SignUp.findById(journey.host);
-            if (host) {
-                await sendNewBookingNotificationToHost(host.email, {
-                    hostName: host.name,
-                    propertyName: journey.title,
-                    guestName: (req.user as any)?.name || member.name,
-                    guestEmail: (req.user as any)?.email || member.email,
-                    checkIn: new Date(startDate).toLocaleDateString(),
-                    checkOut: new Date(endDate).toLocaleDateString(),
-                    totalPrice: totalAmount,
-                    guests: numberOfTravelers
-                }).catch(err => logger.error('Failed to send new booking email to host:', err));
-            }
-        }
-
-        // Send booking confirmation email to guest with detailed receipt
-        await sendBookingConfirmationEmail(member.email, {
-            guestName: member.name,
-            propertyName: journey.title,
-            checkIn: isProperty ? new Date(checkIn).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
-            checkOut: isProperty ? new Date(checkOut).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
-            totalPrice: totalAmount,
-            hostName: journey.host ? (await SignUp.findById(journey.host))?.name : undefined,
-            hostEmail: journey.host ? (await SignUp.findById(journey.host))?.email : undefined,
-            bookingReference: booking._id.toString(),
-            numberOfTravelers,
-            travelers: travelers || [],
-            duration: durationDays,
-            destination: booking.destination,
-            departureDate: isProperty ? '' : new Date(departureDate).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }),
-            roomPreference: roomPreference || 'double',
-            subtotal,
-            discount: discount || 0,
-            paymentMethod: 'Razorpay',
-            transactionId: razorpay_payment_id || paymentId || ''
-        }).catch(err => logger.error('Failed to send booking confirmation email to guest:', err));
-
+        // IMPORTANT: Send response FIRST before email operations to prevent timeout/failure
         res.status(201).json({
             success: true,
             bookingId: booking._id,
             booking: booking,
             data: booking,
         })
+
+        // Send emails asynchronously in background (won't block response)
+        // This prevents booking creation from failing if email sending has issues
+        setImmediate(async () => {
+            try {
+                // Get host info once if needed
+                let hostInfo = null;
+                if (journey.host) {
+                    hostInfo = await SignUp.findById(journey.host);
+
+                    // Send email notification to host
+                    if (hostInfo) {
+                        await sendNewBookingNotificationToHost(hostInfo.email, {
+                            hostName: hostInfo.name,
+                            propertyName: journey.title,
+                            guestName: (req.user as any)?.name || member.name,
+                            guestEmail: (req.user as any)?.email || member.email,
+                            checkIn: new Date(startDate).toLocaleDateString(),
+                            checkOut: new Date(endDate).toLocaleDateString(),
+                            totalPrice: totalAmount,
+                            guests: numberOfTravelers
+                        }).catch(err => logger.error('Failed to send new booking email to host:', err));
+                    }
+                }
+
+                // Send booking confirmation email to guest with detailed receipt
+                await sendBookingConfirmationEmail(member.email, {
+                    guestName: member.name,
+                    propertyName: journey.title,
+                    checkIn: isProperty ? new Date(checkIn).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
+                    checkOut: isProperty ? new Date(checkOut).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
+                    totalPrice: totalAmount,
+                    hostName: hostInfo?.name,
+                    hostEmail: hostInfo?.email,
+                    bookingReference: booking._id.toString(),
+                    numberOfTravelers,
+                    travelers: travelers || [],
+                    duration: durationDays,
+                    destination: booking.destination,
+                    departureDate: isProperty ? '' : new Date(departureDate).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }),
+                    roomPreference: roomPreference || 'double',
+                    subtotal,
+                    discount: discount || 0,
+                    paymentMethod: 'Razorpay',
+                    transactionId: razorpay_payment_id || paymentId || ''
+                }).catch(err => logger.error('Failed to send booking confirmation email to guest:', err));
+
+                logger.info(`Email notifications sent successfully for booking: ${booking._id}`);
+            } catch (emailError) {
+                logger.error('Error in background email sending:', emailError);
+            }
+        })
     } catch (error: any) {
-        logger.error('Error creating booking:', error)
+        logger.error('Error creating booking:', {
+            error: error.message,
+            stack: error.stack,
+            email: (req.user as any)?.email,
+            journeyId: req.body.journeyId,
+            razorpayPaymentId: req.body.razorpay_payment_id,
+            razorpayOrderId: req.body.razorpay_order_id,
+        })
         res.status(500).json({
             success: false,
             error: 'Failed to create booking',
