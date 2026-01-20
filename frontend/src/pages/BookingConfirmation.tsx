@@ -105,18 +105,38 @@ export default function BookingConfirmation() {
                         Authorization: `Bearer ${token}`,
                     },
                     responseType: 'blob',
+                    timeout: 60000,
                 }
             );
 
-            // Create blob link to download
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `QuietSummit-Receipt-${bookingRef}.pdf`);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            window.URL.revokeObjectURL(url);
+            // Create blob with proper PDF type
+            const blob = new Blob([response.data], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            const filename = `QuietSummit-Receipt-${bookingRef}.pdf`;
+
+            // Detect if mobile device
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                // For mobile: open in new tab instead of downloading
+                window.open(url, '_blank');
+                setTimeout(() => {
+                    alert('Receipt opened in new tab. Tap the share icon to save or download.');
+                }, 500);
+            } else {
+                // For desktop: download directly
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+            }
+
+            // Clean up
+            setTimeout(() => {
+                window.URL.revokeObjectURL(url);
+            }, 1000);
         } catch (error: any) {
             console.error('Error downloading receipt:', error);
             alert('Failed to download receipt. Please try again.');

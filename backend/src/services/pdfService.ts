@@ -179,7 +179,10 @@ export const generateBookingReceiptPDF = async (bookingDetails: BookingPDFData):
 
     let browser;
     try {
-        browser = await puppeteer.launch({
+        // Production-ready Puppeteer configuration
+        const isProduction = process.env.NODE_ENV === 'production';
+        
+        const launchOptions: any = {
             headless: true,
             args: [
                 '--no-sandbox',
@@ -187,10 +190,48 @@ export const generateBookingReceiptPDF = async (bookingDetails: BookingPDFData):
                 '--disable-dev-shm-usage',
                 '--disable-accelerated-2d-canvas',
                 '--disable-gpu',
-                '--disable-web-security'
+                '--disable-web-security',
+                '--no-first-run',
+                '--no-zygote',
+                '--single-process', // Important for serverless/container environments
+                '--disable-extensions'
             ],
             timeout: 60000 // 60 seconds timeout
+        };
+
+        // For production (Render, Railway, etc.), use system Chrome if available
+        if (isProduction) {
+            // Try to find Chrome executable in common locations
+            const possiblePaths = [
+                '/usr/bin/chromium-browser',
+                '/usr/bin/chromium',
+                '/usr/bin/google-chrome-stable',
+                '/usr/bin/google-chrome',
+                process.env.CHROME_BIN,
+                process.env.PUPPETEER_EXECUTABLE_PATH
+            ].filter(Boolean);
+
+            for (const path of possiblePaths) {
+                try {
+                    const fs = require('fs');
+                    if (path && fs.existsSync(path)) {
+                        launchOptions.executablePath = path;
+                        console.log(`Using Chrome at: ${path}`);
+                        break;
+                    }
+                } catch (err) {
+                    continue;
+                }
+            }
+        }
+
+        console.log('Launching Puppeteer with options:', { 
+            headless: launchOptions.headless,
+            executablePath: launchOptions.executablePath || 'default',
+            argsCount: launchOptions.args.length
         });
+
+        browser = await puppeteer.launch(launchOptions);
 
         const page = await browser.newPage();
         await page.setContent(html, { 
@@ -211,6 +252,7 @@ export const generateBookingReceiptPDF = async (bookingDetails: BookingPDFData):
         });
 
         await browser.close();
+        console.log('PDF generated successfully, size:', pdf.length, 'bytes');
         return Buffer.from(pdf);
     } catch (error: any) {
         if (browser) {
@@ -220,7 +262,11 @@ export const generateBookingReceiptPDF = async (bookingDetails: BookingPDFData):
                 console.error('Error closing browser:', closeError);
             }
         }
-        console.error('PDF generation error:', error.message);
+        console.error('PDF generation error:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        });
         throw new Error(`Failed to generate PDF: ${error.message}`);
     }
 };
