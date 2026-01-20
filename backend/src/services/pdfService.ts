@@ -181,11 +181,22 @@ export const generateBookingReceiptPDF = async (bookingDetails: BookingPDFData):
     try {
         browser = await puppeteer.launch({
             headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--disable-gpu',
+                '--disable-web-security'
+            ],
+            timeout: 60000 // 60 seconds timeout
         });
 
         const page = await browser.newPage();
-        await page.setContent(html, { waitUntil: 'networkidle0' });
+        await page.setContent(html, { 
+            waitUntil: 'networkidle0',
+            timeout: 30000 // 30 seconds timeout
+        });
 
         const pdf = await page.pdf({
             format: 'A4',
@@ -195,15 +206,21 @@ export const generateBookingReceiptPDF = async (bookingDetails: BookingPDFData):
                 right: '20px',
                 bottom: '20px',
                 left: '20px'
-            }
+            },
+            timeout: 30000 // 30 seconds timeout
         });
 
         await browser.close();
         return Buffer.from(pdf);
-    } catch (error) {
+    } catch (error: any) {
         if (browser) {
-            await browser.close();
+            try {
+                await browser.close();
+            } catch (closeError) {
+                console.error('Error closing browser:', closeError);
+            }
         }
-        throw error;
+        console.error('PDF generation error:', error.message);
+        throw new Error(`Failed to generate PDF: ${error.message}`);
     }
 };

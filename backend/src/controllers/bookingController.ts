@@ -600,12 +600,14 @@ export const updateBookingStatus = async (req: Request, res: Response): Promise<
 export const downloadBookingReceipt = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params
+        logger.info(`PDF download request for booking: ${id}`)
 
         const booking = await Booking.findById(id)
             .populate('memberId', 'name email')
             .populate('journeyId')
 
         if (!booking) {
+            logger.warn(`Booking not found for PDF download: ${id}`)
             res.status(404).json({
                 success: false,
                 error: 'Booking not found',
@@ -637,18 +639,30 @@ export const downloadBookingReceipt = async (req: Request, res: Response): Promi
             transactionId: booking.paymentDetails?.razorpayPaymentId || ''
         }
 
-        // Generate PDF
+        logger.info(`Generating PDF for booking: ${id}`)
+        
+        // Generate PDF with timeout handling
         const pdfBuffer = await generateBookingReceiptPDF(bookingDetails)
+        
+        logger.info(`PDF generated successfully for booking: ${id}, size: ${pdfBuffer.length} bytes`)
 
-        // Set response headers for PDF download
+        // Set response headers for PDF download with CORS support
         const bookingRef = `QS${booking._id.toString().slice(-8).toUpperCase()}`
         res.setHeader('Content-Type', 'application/pdf')
         res.setHeader('Content-Disposition', `attachment; filename=QuietSummit-Receipt-${bookingRef}.pdf`)
         res.setHeader('Content-Length', pdfBuffer.length)
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+        res.setHeader('Pragma', 'no-cache')
+        res.setHeader('Expires', '0')
 
         res.send(pdfBuffer)
+        logger.info(`PDF sent successfully for booking: ${id}`)
     } catch (error: any) {
-        logger.error('Error generating booking receipt PDF:', error)
+        logger.error('Error generating booking receipt PDF:', {
+            error: error.message,
+            stack: error.stack,
+            bookingId: req.params.id
+        })
         res.status(500).json({
             success: false,
             error: 'Failed to generate receipt',
