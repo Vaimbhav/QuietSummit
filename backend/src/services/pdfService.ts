@@ -1,4 +1,265 @@
-import puppeteer from 'puppeteer';
+// import PDFDocument from 'pdfkit';
+// import { config } from '../config/environment';
+
+// interface BookingPDFData {
+//     guestName: string;
+//     propertyName: string;
+//     checkIn?: string;
+//     checkOut?: string;
+//     totalPrice: number;
+//     hostName?: string;
+//     hostEmail?: string;
+//     bookingReference: string;
+//     numberOfTravelers: number;
+//     travelers: Array<{
+//         name: string;
+//         age: number;
+//         gender: string;
+//     }>;
+//     duration?: number;
+//     destination?: string;
+//     departureDate?: string;
+//     roomPreference?: string;
+//     subtotal?: number;
+//     discount?: number;
+//     paymentMethod?: string;
+//     transactionId?: string;
+// }
+
+// export const generateBookingReceiptPDF = async (bookingDetails: BookingPDFData): Promise<Buffer> => {
+//     return new Promise((resolve, reject) => {
+//         try {
+//             const doc = new PDFDocument({
+//                 size: 'A4',
+//                 margin: 0,
+//                 bufferPages: true
+//             });
+
+//             const chunks: Buffer[] = [];
+
+//             doc.on('data', (chunk) => chunks.push(chunk));
+//             doc.on('end', () => resolve(Buffer.concat(chunks)));
+//             doc.on('error', reject);
+
+//             const isJourney = !!bookingDetails.departureDate;
+//             const travelers = bookingDetails.travelers || [];
+//             const bookingRef = bookingDetails.bookingReference;
+//             const currencySymbol = 'Rs.';
+
+//             // --- COLOR PALETTE ---
+//             const colors = {
+//                 primaryGreen: '#10b981',
+//                 darkGreen: '#059669',
+//                 primaryPurple: '#6366f1',
+//                 textDark: '#1f2937',
+//                 textMedium: '#6b7280',
+//                 textLight: '#9ca3af',
+//                 bgLight: '#f9fafb',
+//                 bgSection: '#f3f4f6',
+//                 border: '#e5e7eb',
+//                 white: '#ffffff'
+//             };
+
+//             // --- HELPER FUNCTIONS ---
+
+//             const drawSectionHeader = (text: string, y: number) => {
+//                 doc.fontSize(14).font('Helvetica-Bold').fillColor(colors.textDark).text(text, 30, y);
+//                 doc.moveTo(30, y + 20)
+//                     .lineTo(doc.page.width - 30, y + 20)
+//                     .lineWidth(2)
+//                     .stroke(colors.primaryGreen);
+//                 return y + 35;
+//             };
+
+//             const drawInfoBox = (x: number, y: number, label: string, value: string, width: number) => {
+//                 doc.roundedRect(x, y, width, 44, 6)
+//                     .fillAndStroke(colors.bgLight, colors.border);
+
+//                 doc.fontSize(8).font('Helvetica-Bold').fillColor(colors.textMedium)
+//                     .text(label.toUpperCase(), x + 12, y + 8);
+
+//                 doc.fontSize(11).font('Helvetica').fillColor(colors.textDark)
+//                     .text(value, x + 12, y + 24, {
+//                         width: width - 24,
+//                         lineBreak: false,
+//                         ellipsis: true
+//                     });
+//             };
+
+//             // --- HEADER SECTION ---
+//             doc.rect(0, 0, doc.page.width, 100).fill(colors.primaryGreen);
+//             doc.fontSize(10).font('Courier').fillColor(colors.white)
+//                 .text('QUIETSUMMIT', 30, 30, { characterSpacing: 2 });
+//             doc.fontSize(24).font('Helvetica-Bold').fillColor(colors.white)
+//                 .text('Booking Confirmed', 30, 48);
+//             doc.fontSize(12).font('Helvetica').fillColor(colors.white)
+//                 .text(`Thank you, ${bookingDetails.guestName}!`, 30, 78);
+
+//             // --- BOOKING REFERENCE CARD ---
+//             let yPos = 120;
+//             const cardHeight = 60;
+
+//             doc.roundedRect(30, yPos, doc.page.width - 60, cardHeight, 8)
+//                 .fill(colors.primaryPurple);
+
+//             doc.fontSize(9).font('Helvetica').fillColor(colors.white)
+//                 .text('BOOKING REFERENCE', 30, yPos + 12, {
+//                     align: 'center',
+//                     width: doc.page.width - 60,
+//                     characterSpacing: 1
+//                 });
+
+//             doc.fontSize(18).font('Courier-Bold').fillColor(colors.white)
+//                 .text(bookingRef, 30, yPos + 30, {
+//                     align: 'center',
+//                     width: doc.page.width - 60,
+//                     characterSpacing: 2
+//                 });
+
+//             // --- JOURNEY/PROPERTY DETAILS ---
+//             yPos += 90;
+//             yPos = drawSectionHeader(`${isJourney ? 'Journey' : 'Booking'} Details`, yPos);
+
+//             const col1X = 30;
+//             const gap = 15;
+//             const boxWidth = (doc.page.width - 60 - gap) / 2;
+//             const col2X = col1X + boxWidth + gap;
+//             const rowHeight = 55;
+
+//             drawInfoBox(col1X, yPos, isJourney ? 'Journey' : 'Property', bookingDetails.propertyName, boxWidth);
+//             if (bookingDetails.destination) {
+//                 drawInfoBox(col2X, yPos, 'Destination', bookingDetails.destination, boxWidth);
+//             }
+
+//             yPos += rowHeight;
+//             if (isJourney) {
+//                 drawInfoBox(col1X, yPos, 'Departure Date', bookingDetails.departureDate || '-', boxWidth);
+//                 drawInfoBox(col2X, yPos, 'Duration', `${bookingDetails.duration} days`, boxWidth);
+//             } else {
+//                 drawInfoBox(col1X, yPos, 'Check-in', bookingDetails.checkIn || '-', boxWidth);
+//                 drawInfoBox(col2X, yPos, 'Check-out', bookingDetails.checkOut || '-', boxWidth);
+//             }
+
+//             yPos += rowHeight;
+//             drawInfoBox(col1X, yPos, 'Travelers', `${bookingDetails.numberOfTravelers} ${bookingDetails.numberOfTravelers === 1 ? 'Guest' : 'Guests'}`, boxWidth);
+//             if (bookingDetails.roomPreference) {
+//                 const roomText = bookingDetails.roomPreference.charAt(0).toUpperCase() + bookingDetails.roomPreference.slice(1);
+//                 drawInfoBox(col2X, yPos, 'Room', roomText, boxWidth);
+//             }
+
+//             // --- TRAVELERS SECTION ---
+//             if (travelers.length > 0) {
+//                 yPos += 80;
+//                 yPos = drawSectionHeader('Travelers', yPos);
+
+//                 travelers.forEach((traveler, index) => {
+//                     doc.roundedRect(30, yPos, doc.page.width - 60, 45, 6)
+//                         .fillAndStroke(colors.bgLight, colors.border);
+
+//                     const circleX = 55;
+//                     const circleY = yPos + 22.5;
+//                     doc.circle(circleX, circleY, 12).fill(colors.primaryPurple);
+//                     doc.fontSize(10).font('Helvetica-Bold').fillColor(colors.white)
+//                         .text(`${index + 1}`, circleX - 12, circleY - 4, { width: 24, align: 'center' });
+
+//                     doc.fontSize(11).font('Helvetica-Bold').fillColor(colors.textDark)
+//                         .text(traveler.name, 85, yPos + 10);
+
+//                     doc.fontSize(9).font('Helvetica').fillColor(colors.textMedium)
+//                         .text(`${traveler.age} years • ${traveler.gender}`, 85, yPos + 26);
+
+//                     yPos += 55;
+//                 });
+//             }
+
+//             // --- PAYMENT SUMMARY ---
+//             yPos += 30;
+
+//             if (yPos > doc.page.height - 250) {
+//                 doc.addPage();
+//                 yPos = 50;
+//             }
+
+//             yPos = drawSectionHeader('Payment Summary', yPos);
+
+//             const summaryBoxY = yPos;
+//             const summaryContentX = 45;
+//             const summaryValueX = doc.page.width - 45;
+
+//             // Removed unused 'summaryWidth' here
+
+//             doc.roundedRect(30, summaryBoxY, doc.page.width - 60, 180, 8)
+//                 .fill(colors.bgSection);
+
+//             let currentLineY = summaryBoxY + 20;
+
+//             const drawSummaryLine = (label: string, value: string, isBold = false, color = colors.textDark, fontSize = 11) => {
+//                 doc.font(isBold ? 'Helvetica-Bold' : 'Helvetica').fontSize(fontSize).fillColor(color === colors.textDark && !isBold ? colors.textMedium : color);
+//                 doc.text(label, summaryContentX, currentLineY);
+//                 doc.text(value, 30, currentLineY, { align: 'right', width: doc.page.width - 75 });
+//                 currentLineY += 24;
+//             };
+
+//             if (bookingDetails.subtotal) {
+//                 drawSummaryLine('Subtotal', `${currencySymbol} ${bookingDetails.subtotal.toLocaleString('en-IN')}`);
+//             }
+
+//             if (bookingDetails.discount && bookingDetails.discount > 0) {
+//                 drawSummaryLine('Discount', `- ${currencySymbol} ${bookingDetails.discount.toLocaleString('en-IN')}`, false, colors.darkGreen);
+//             }
+
+//             currentLineY += 5;
+//             doc.moveTo(summaryContentX, currentLineY - 12)
+//                 .lineTo(summaryValueX, currentLineY - 12)
+//                 .lineWidth(1)
+//                 .stroke(colors.primaryGreen);
+//             currentLineY += 5;
+
+//             drawSummaryLine('Total Paid', `${currencySymbol} ${bookingDetails.totalPrice.toLocaleString('en-IN')}`, true, colors.darkGreen, 16);
+
+//             currentLineY += 10;
+
+//             drawSummaryLine('Payment Method', bookingDetails.paymentMethod || 'Razorpay', false, colors.textMedium, 10);
+
+//             if (bookingDetails.transactionId) {
+//                 doc.font('Helvetica').fontSize(10).fillColor(colors.textMedium).text('Transaction ID', summaryContentX, currentLineY);
+//                 doc.font('Courier').text(bookingDetails.transactionId, 30, currentLineY, { align: 'right', width: doc.page.width - 75 });
+//                 currentLineY += 24;
+//             }
+
+//             const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+//             drawSummaryLine('Date', dateStr, false, colors.textMedium, 10);
+
+//             doc.font('Helvetica').fontSize(10).fillColor(colors.textMedium).text('Status', summaryContentX, currentLineY);
+//             doc.font('Helvetica-Bold').fillColor(colors.darkGreen).text('PAID', 30, currentLineY, { align: 'right', width: doc.page.width - 75 });
+
+//             // --- FOOTER ---
+//             let footerY = Math.max(yPos + 200, doc.page.height - 100);
+
+//             doc.rect(0, footerY, doc.page.width, 100).fill(colors.bgSection);
+
+//             doc.fontSize(12).font('Helvetica-Bold').fillColor(colors.textDark)
+//                 .text('QuietSummit', 0, footerY + 25, { align: 'center' });
+
+//             doc.fontSize(9).font('Helvetica').fillColor(colors.textMedium)
+//                 .text('Find Your Peace, Discover Yourself', 0, footerY + 42, { align: 'center' });
+
+//             if (config.email && config.email.user) {
+//                 doc.fontSize(9).text(`Support: ${config.email.user}`, 0, footerY + 56, { align: 'center' });
+//             }
+
+//             doc.end();
+
+//         } catch (error) {
+//             console.error('PDF Generation Error:', error);
+//             reject(error);
+//         }
+//     });
+// };
+
+
+
+import PDFDocument from 'pdfkit';
 import { config } from '../config/environment';
 
 interface BookingPDFData {
@@ -27,246 +288,245 @@ interface BookingPDFData {
 }
 
 export const generateBookingReceiptPDF = async (bookingDetails: BookingPDFData): Promise<Buffer> => {
-    const isJourney = !!bookingDetails.departureDate;
-    const travelers = bookingDetails.travelers || [];
-    const bookingRef = bookingDetails.bookingReference;
+    return new Promise((resolve, reject) => {
+        try {
+            const doc = new PDFDocument({
+                size: 'A4',
+                margin: 0,
+                bufferPages: true
+            });
 
-    const html = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.4; color: #333; margin: 0; padding: 12px; background: white; font-size: 13px; }
-        .container { max-width: 700px; margin: 0 auto; background: white; }
-        .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 20px 18px; text-align: center; }
-        .header h1 { margin: 0 0 4px 0; font-size: 24px; }
-        .header p { margin: 0; font-size: 14px; opacity: 0.95; }
-        .logo-text { font-size: 12px; font-weight: 600; letter-spacing: 2px; opacity: 0.9; margin-bottom: 8px; }
-        .content { padding: 18px; }
-        .reference-card { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; padding: 12px; border-radius: 8px; text-align: center; margin: 12px 0; }
-        .reference-card .label { font-size: 11px; opacity: 0.9; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
-        .reference-card .value { font-size: 22px; font-weight: bold; letter-spacing: 2px; }
-        .section-title { font-size: 15px; font-weight: bold; color: #1f2937; margin: 16px 0 8px 0; padding-bottom: 4px; border-bottom: 2px solid #10b981; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
-        .info-item { background: #f9fafb; padding: 8px; border-radius: 5px; }
-        .info-item strong { display: block; color: #6b7280; font-size: 11px; margin-bottom: 3px; text-transform: uppercase; }
-        .info-item span { color: #1f2937; font-weight: 600; font-size: 13px; }
-        .traveler-card { background: #f9fafb; padding: 8px; border-radius: 5px; margin: 6px 0; display: flex; align-items: center; gap: 10px; }
-        .traveler-number { width: 28px; height: 28px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; font-size: 13px; }
-        .traveler-info { flex: 1; }
-        .traveler-name { font-weight: bold; color: #1f2937; font-size: 13px; }
-        .traveler-details { font-size: 11px; color: #6b7280; }
-        .price-summary { background: #f3f4f6; padding: 12px; border-radius: 8px; margin: 12px 0; }
-        .price-row { display: flex; justify-content: space-between; padding: 6px 0; color: #4b5563; font-size: 13px; }
-        .price-total { border-top: 2px solid #10b981; margin-top: 8px; padding-top: 10px; font-size: 18px; font-weight: bold; color: #059669; }
-        .footer { background: #f9fafb; padding: 12px; text-align: center; border-top: 2px solid #e5e7eb; margin-top: 16px; }
-        .footer p { margin: 4px 0; color: #6b7280; font-size: 11px; }
-        .footer .brand { font-weight: 700; color: #1f2937; font-size: 14px; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <div class="logo-text">QUIETSUMMIT</div>
-          <h1>Booking Confirmed</h1>
-          <p>Thank you, ${bookingDetails.guestName}!</p>
-        </div>
+            const chunks: Buffer[] = [];
 
-        <div class="content">
-          <div class="reference-card">
-            <div class="label">Booking Reference</div>
-            <div class="value">${bookingRef}</div>
-          </div>
+            doc.on('data', (chunk) => chunks.push(chunk));
+            doc.on('end', () => resolve(Buffer.concat(chunks)));
+            doc.on('error', reject);
 
-          <h3 class="section-title">${isJourney ? 'Journey' : 'Booking'} Details</h3>
-          <div class="info-grid">
-            <div class="info-item">
-              <strong>${isJourney ? 'Journey' : 'Property'}</strong>
-              <span>${bookingDetails.propertyName}</span>
-            </div>
-            ${bookingDetails.destination ? `
-            <div class="info-item">
-              <strong>Destination</strong>
-              <span>${bookingDetails.destination}</span>
-            </div>` : ''}
-            ${isJourney ? `
-            <div class="info-item">
-              <strong>Departure Date</strong>
-              <span>${bookingDetails.departureDate}</span>
-            </div>
-            <div class="info-item">
-              <strong>Duration</strong>
-              <span>${bookingDetails.duration} days</span>
-            </div>` : `
-            <div class="info-item">
-              <strong>Check-in</strong>
-              <span>${bookingDetails.checkIn}</span>
-            </div>
-            <div class="info-item">
-              <strong>Check-out</strong>
-              <span>${bookingDetails.checkOut}</span>
-            </div>`}
-            <div class="info-item">
-              <strong>Travelers</strong>
-              <span>${bookingDetails.numberOfTravelers || 1} ${(bookingDetails.numberOfTravelers || 1) === 1 ? 'Guest' : 'Guests'}</span>
-            </div>
-            ${bookingDetails.roomPreference ? `
-            <div class="info-item">
-              <strong>Room</strong>
-              <span style="text-transform: capitalize;">${bookingDetails.roomPreference}</span>
-            </div>` : ''}
-          </div>
+            const isJourney = !!bookingDetails.departureDate;
+            const travelers = bookingDetails.travelers || [];
+            const bookingRef = bookingDetails.bookingReference;
+            const currencySymbol = 'Rs.';
 
-          ${travelers.length > 0 ? `
-          <h3 class="section-title">Travelers</h3>
-          ${travelers.map((traveler, index) => `
-          <div class="traveler-card">
-            <div class="traveler-number">${index + 1}</div>
-            <div class="traveler-info">
-              <div class="traveler-name">${traveler.name}</div>
-              <div class="traveler-details">${traveler.age} years • ${traveler.gender.charAt(0).toUpperCase() + traveler.gender.slice(1)}</div>
-            </div>
-          </div>`).join('')}
-          ` : ''}
+            const colors = {
+                primaryGreen: '#10b981',
+                darkGreen: '#059669',
+                primaryPurple: '#6366f1',
+                textDark: '#1f2937',
+                textMedium: '#6b7280',
+                textLight: '#9ca3af',
+                bgLight: '#f9fafb',
+                bgSection: '#f3f4f6',
+                border: '#e5e7eb',
+                white: '#ffffff'
+            };
 
-          <h3 class="section-title">Payment Summary</h3>
-          <div class="price-summary">
-            ${bookingDetails.subtotal ? `
-            <div class="price-row">
-              <span>Subtotal</span>
-              <span>₹${bookingDetails.subtotal.toLocaleString('en-IN')}</span>
-            </div>` : ''}
-            ${bookingDetails.discount && bookingDetails.discount > 0 ? `
-            <div class="price-row" style="color: #059669;">
-              <span>Discount</span>
-              <span>- ₹${bookingDetails.discount.toLocaleString('en-IN')}</span>
-            </div>` : ''}
-            <div class="price-row price-total">
-              <span>Total Paid</span>
-              <span>₹${bookingDetails.totalPrice.toLocaleString('en-IN')}</span>
-            </div>
-            ${bookingDetails.paymentMethod ? `
-            <div class="price-row" style="border-top: 1px solid #e5e7eb; margin-top: 8px; padding-top: 8px; font-size: 11px;">
-              <span>Payment Method</span>
-              <span>${bookingDetails.paymentMethod}</span>
-            </div>` : ''}
-            ${bookingDetails.transactionId ? `
-            <div class="price-row" style="font-size: 11px;">
-              <span>Transaction ID</span>
-              <span style="font-family: monospace;">${bookingDetails.transactionId}</span>
-            </div>` : ''}
-            <div class="price-row" style="font-size: 11px;">
-              <span>Date</span>
-              <span>${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-            </div>
-            <div class="price-row" style="font-size: 11px;">
-              <span>Status</span>
-              <span style="color: #059669; font-weight: 700;">✓ PAID</span>
-            </div>
-          </div>
-        </div>
+            // --- HELPER: SECTION HEADERS ---
+            // Reduced bottom padding from 35 to 28 to save space
+            const drawSectionHeader = (text: string, y: number) => {
+                doc.fontSize(14).font('Helvetica-Bold').fillColor(colors.textDark).text(text, 30, y);
+                doc.moveTo(30, y + 20)
+                    .lineTo(doc.page.width - 30, y + 20)
+                    .lineWidth(2)
+                    .stroke(colors.primaryGreen);
+                return y + 28;
+            };
 
-        <div class="footer">
-          <p class="brand">QuietSummit</p>
-          <p>Find Your Peace, Discover Yourself</p>
-          <p style="margin-top: 8px;">For support, contact us at ${config.email.user}</p>
-          <p style="margin-top: 8px; font-size: 10px; color: #9ca3af;">This is an official booking receipt from QuietSummit</p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
+            // --- HELPER: INFO BOXES ---
+            const drawInfoBox = (x: number, y: number, label: string, value: string, width: number) => {
+                // Reduced height from 44 to 40
+                doc.roundedRect(x, y, width, 40, 5)
+                    .fillAndStroke(colors.bgLight, colors.border);
 
-    let browser;
-    try {
-        // Production-ready Puppeteer configuration
-        const isProduction = process.env.NODE_ENV === 'production';
-        
-        const launchOptions: any = {
-            headless: true,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--disable-accelerated-2d-canvas',
-                '--disable-gpu',
-                '--disable-web-security',
-                '--no-first-run',
-                '--no-zygote',
-                '--single-process', // Important for serverless/container environments
-                '--disable-extensions'
-            ],
-            timeout: 60000 // 60 seconds timeout
-        };
+                doc.fontSize(8).font('Helvetica-Bold').fillColor(colors.textMedium)
+                    .text(label.toUpperCase(), x + 10, y + 8);
 
-        // For production (Render, Railway, etc.), use system Chrome if available
-        if (isProduction) {
-            // Try to find Chrome executable in common locations
-            const possiblePaths = [
-                '/usr/bin/chromium-browser',
-                '/usr/bin/chromium',
-                '/usr/bin/google-chrome-stable',
-                '/usr/bin/google-chrome',
-                process.env.CHROME_BIN,
-                process.env.PUPPETEER_EXECUTABLE_PATH
-            ].filter(Boolean);
+                doc.fontSize(10).font('Helvetica').fillColor(colors.textDark)
+                    .text(value, x + 10, y + 22, {
+                        width: width - 20,
+                        lineBreak: false,
+                        ellipsis: true
+                    });
+            };
 
-            for (const path of possiblePaths) {
-                try {
-                    const fs = require('fs');
-                    if (path && fs.existsSync(path)) {
-                        launchOptions.executablePath = path;
-                        console.log(`Using Chrome at: ${path}`);
-                        break;
-                    }
-                } catch (err) {
-                    continue;
-                }
+            // --- HEADER (Compact) ---
+            // Reduced header height from 100 to 85
+            doc.rect(0, 0, doc.page.width, 85).fill(colors.primaryGreen);
+
+            doc.fontSize(10).font('Courier').fillColor(colors.white)
+                .text('QUIETSUMMIT', 30, 25, { characterSpacing: 2 });
+            doc.fontSize(22).font('Helvetica-Bold').fillColor(colors.white)
+                .text('Booking Confirmed', 30, 42);
+            doc.fontSize(11).font('Helvetica').fillColor(colors.white)
+                .text(`Thank you, ${bookingDetails.guestName}!`, 30, 68);
+
+            // --- BOOKING REFERENCE (Compact) ---
+            let yPos = 100; // Moved up from 120
+            const cardHeight = 50; // Reduced from 60
+
+            doc.roundedRect(30, yPos, doc.page.width - 60, cardHeight, 6)
+                .fill(colors.primaryPurple);
+
+            doc.fontSize(8).font('Helvetica').fillColor(colors.white)
+                .text('BOOKING REFERENCE', 30, yPos + 10, {
+                    align: 'center',
+                    width: doc.page.width - 60,
+                    characterSpacing: 1
+                });
+
+            doc.fontSize(16).font('Courier-Bold').fillColor(colors.white)
+                .text(bookingRef, 30, yPos + 25, {
+                    align: 'center',
+                    width: doc.page.width - 60,
+                    characterSpacing: 2
+                });
+
+            // --- JOURNEY DETAILS ---
+            yPos += 75; // Reduced gap (was 90)
+            yPos = drawSectionHeader(`${isJourney ? 'Journey' : 'Booking'} Details`, yPos);
+
+            const col1X = 30;
+            const gap = 15;
+            const boxWidth = (doc.page.width - 60 - gap) / 2;
+            const col2X = col1X + boxWidth + gap;
+            const rowHeight = 48; // Reduced from 55
+
+            // Row 1
+            drawInfoBox(col1X, yPos, isJourney ? 'Journey' : 'Property', bookingDetails.propertyName, boxWidth);
+            if (bookingDetails.destination) {
+                drawInfoBox(col2X, yPos, 'Destination', bookingDetails.destination, boxWidth);
             }
-        }
 
-        console.log('Launching Puppeteer with options:', { 
-            headless: launchOptions.headless,
-            executablePath: launchOptions.executablePath || 'default',
-            argsCount: launchOptions.args.length
-        });
-
-        browser = await puppeteer.launch(launchOptions);
-
-        const page = await browser.newPage();
-        await page.setContent(html, { 
-            waitUntil: 'networkidle0',
-            timeout: 30000 // 30 seconds timeout
-        });
-
-        const pdf = await page.pdf({
-            format: 'A4',
-            printBackground: true,
-            margin: {
-                top: '20px',
-                right: '20px',
-                bottom: '20px',
-                left: '20px'
-            },
-            timeout: 30000 // 30 seconds timeout
-        });
-
-        await browser.close();
-        console.log('PDF generated successfully, size:', pdf.length, 'bytes');
-        return Buffer.from(pdf);
-    } catch (error: any) {
-        if (browser) {
-            try {
-                await browser.close();
-            } catch (closeError) {
-                console.error('Error closing browser:', closeError);
+            // Row 2
+            yPos += rowHeight;
+            if (isJourney) {
+                drawInfoBox(col1X, yPos, 'Departure Date', bookingDetails.departureDate || '-', boxWidth);
+                drawInfoBox(col2X, yPos, 'Duration', `${bookingDetails.duration} days`, boxWidth);
+            } else {
+                drawInfoBox(col1X, yPos, 'Check-in', bookingDetails.checkIn || '-', boxWidth);
+                drawInfoBox(col2X, yPos, 'Check-out', bookingDetails.checkOut || '-', boxWidth);
             }
+
+            // Row 3
+            yPos += rowHeight;
+            drawInfoBox(col1X, yPos, 'Travelers', `${bookingDetails.numberOfTravelers} ${bookingDetails.numberOfTravelers === 1 ? 'Guest' : 'Guests'}`, boxWidth);
+            if (bookingDetails.roomPreference) {
+                const roomText = bookingDetails.roomPreference.charAt(0).toUpperCase() + bookingDetails.roomPreference.slice(1);
+                drawInfoBox(col2X, yPos, 'Room', roomText, boxWidth);
+            }
+
+            // --- TRAVELERS ---
+            // Much tighter gap here (was 80, now 25)
+            if (travelers.length > 0) {
+                yPos += 55;
+                yPos = drawSectionHeader('Travelers', yPos);
+
+                travelers.forEach((traveler, index) => {
+                    // Traveler Card
+                    doc.roundedRect(30, yPos, doc.page.width - 60, 40, 5)
+                        .fillAndStroke(colors.bgLight, colors.border);
+
+                    const circleX = 50;
+                    const circleY = yPos + 20;
+                    doc.circle(circleX, circleY, 11).fill(colors.primaryPurple);
+                    doc.fontSize(10).font('Helvetica-Bold').fillColor(colors.white)
+                        .text(`${index + 1}`, circleX - 10, circleY - 4, { width: 20, align: 'center' });
+
+                    doc.fontSize(11).font('Helvetica-Bold').fillColor(colors.textDark)
+                        .text(traveler.name, 75, yPos + 8);
+
+                    doc.fontSize(9).font('Helvetica').fillColor(colors.textMedium)
+                        .text(`${traveler.age} years • ${traveler.gender}`, 75, yPos + 24);
+
+                    yPos += 48; // Reduced traveler row spacing
+                });
+            }
+
+            // --- PAYMENT SUMMARY ---
+            // Gap before payment (was 30, now 20)
+            yPos += 15;
+
+            // Check for overflow (unlikely now with compression, but good safety)
+            if (yPos > doc.page.height - 200) {
+                doc.addPage();
+                yPos = 50;
+            }
+
+            yPos = drawSectionHeader('Payment Summary', yPos);
+
+            const summaryBoxY = yPos;
+            const summaryHeight = 150; // Reduced from 180
+            const summaryContentX = 45;
+
+            doc.roundedRect(30, summaryBoxY, doc.page.width - 60, summaryHeight, 6)
+                .fill(colors.bgSection);
+
+            let currentLineY = summaryBoxY + 15;
+
+            const drawSummaryLine = (label: string, value: string, isBold = false, color = colors.textDark, fontSize = 10) => {
+                doc.font(isBold ? 'Helvetica-Bold' : 'Helvetica').fontSize(fontSize).fillColor(color === colors.textDark && !isBold ? colors.textMedium : color);
+                doc.text(label, summaryContentX, currentLineY);
+                doc.text(value, 30, currentLineY, { align: 'right', width: doc.page.width - 75 });
+                currentLineY += 20; // Tighter line spacing
+            };
+
+            if (bookingDetails.subtotal) {
+                drawSummaryLine('Subtotal', `${currencySymbol} ${bookingDetails.subtotal.toLocaleString('en-IN')}`);
+            }
+
+            if (bookingDetails.discount && bookingDetails.discount > 0) {
+                drawSummaryLine('Discount', `- ${currencySymbol} ${bookingDetails.discount.toLocaleString('en-IN')}`, false, colors.darkGreen);
+            }
+
+            // Separator
+            currentLineY += 5;
+            doc.moveTo(summaryContentX, currentLineY - 10)
+                .lineTo(doc.page.width - 45, currentLineY - 10)
+                .lineWidth(1)
+                .stroke(colors.primaryGreen);
+            currentLineY += 5;
+
+            drawSummaryLine('Total Paid', `${currencySymbol} ${bookingDetails.totalPrice.toLocaleString('en-IN')}`, true, colors.darkGreen, 14);
+            currentLineY += 8;
+
+            drawSummaryLine('Payment Method', bookingDetails.paymentMethod || 'Razorpay', false, colors.textMedium);
+
+            if (bookingDetails.transactionId) {
+                doc.font('Helvetica').fontSize(10).fillColor(colors.textMedium).text('Transaction ID', summaryContentX, currentLineY);
+                doc.font('Courier').text(bookingDetails.transactionId, 30, currentLineY, { align: 'right', width: doc.page.width - 75 });
+                currentLineY += 20;
+            }
+
+            const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            drawSummaryLine('Date', dateStr, false, colors.textMedium);
+
+            doc.font('Helvetica').fontSize(10).fillColor(colors.textMedium).text('Status', summaryContentX, currentLineY);
+            doc.font('Helvetica-Bold').fillColor(colors.darkGreen).text('PAID', 30, currentLineY, { align: 'right', width: doc.page.width - 75 });
+
+            // --- FOOTER ---
+            // Place footer at the absolute bottom of the page
+            const footerHeight = 80;
+            const footerY = doc.page.height - footerHeight;
+
+            // Optional: Draw a line separating content from footer if they get close
+            // doc.moveTo(0, footerY).lineTo(doc.page.width, footerY).stroke(colors.border);
+
+            doc.rect(0, footerY, doc.page.width, footerHeight).fill(colors.bgSection);
+
+            doc.fontSize(12).font('Helvetica-Bold').fillColor(colors.textDark)
+                .text('QuietSummit', 0, footerY + 20, { align: 'center' });
+
+            doc.fontSize(9).font('Helvetica').fillColor(colors.textMedium)
+                .text('Find Your Peace, Discover Yourself', 0, footerY + 36, { align: 'center' });
+
+            if (config.email && config.email.user) {
+                doc.fontSize(9).text(`Support: Nagendrarajput9753@gmail.com`, 0, footerY + 48, { align: 'center' });
+            }
+
+            doc.end();
+
+        } catch (error) {
+            console.error('PDF Generation Error:', error);
+            reject(error);
         }
-        console.error('PDF generation error:', {
-            message: error.message,
-            stack: error.stack,
-            name: error.name
-        });
-        throw new Error(`Failed to generate PDF: ${error.message}`);
-    }
+    });
 };
