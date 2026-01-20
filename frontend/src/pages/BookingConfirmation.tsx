@@ -1,10 +1,11 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, MapPin, Users, Mail, Phone, Download, Share2, Sparkles, Clock, Home } from 'lucide-react';
 import { getBookingById } from '../services/api';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api/v1';
 
 export default function BookingConfirmation() {
     const { id } = useParams();
@@ -13,7 +14,6 @@ export default function BookingConfirmation() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isDownloading, setIsDownloading] = useState(false);
-    const receiptRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const fetchBooking = async () => {
@@ -74,42 +74,51 @@ export default function BookingConfirmation() {
 
     const bookingRef = `QS${booking._id.toString().slice(-8).toUpperCase()}`;
 
-    const handleDownload = async () => {
-        if (!receiptRef.current || isDownloading) return;
+    const handleDownloadPDF = async () => {
+        if (isDownloading) return;
 
         setIsDownloading(true);
 
         try {
-            // Create a clone of the receipt element for PDF generation
-            const element = receiptRef.current;
+            // Get token from localStorage in the same way as api.ts
+            let token = '';
+            const userDataStr = localStorage.getItem('quietsummit_user');
+            if (userDataStr) {
+                try {
+                    const userData = JSON.parse(userDataStr);
+                    token = userData.token || '';
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                }
+            }
 
-            // Configure canvas options for better quality
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff',
-            });
+            if (!token) {
+                alert('Please log in to download your receipt.');
+                setIsDownloading(false);
+                return;
+            }
 
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4',
-            });
+            const response = await axios.get(
+                `${API_URL}/bookings/${booking._id}/receipt/download`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    responseType: 'blob',
+                }
+            );
 
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
-            const imgWidth = canvas.width;
-            const imgHeight = canvas.height;
-            const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-            const imgX = (pdfWidth - imgWidth * ratio) / 2;
-            const imgY = 10;
-
-            pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-            pdf.save(`QuietSummit-Receipt-${bookingRef}.pdf`);
-        } catch (error) {
-            console.error('Error generating PDF:', error);
+            // Create blob link to download
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `QuietSummit-Receipt-${bookingRef}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error: any) {
+            console.error('Error downloading receipt:', error);
             alert('Failed to download receipt. Please try again.');
         } finally {
             setIsDownloading(false);
@@ -150,71 +159,105 @@ export default function BookingConfirmation() {
                 <div className="absolute top-16 right-1/3 w-3 h-3 bg-green-400 rounded-full animate-float animation-delay-3000"></div>
             </div>
 
-            <div className="container mx-auto px-4 py-12 md:py-20 relative z-10 max-w-5xl" ref={receiptRef}>
-                {/* Hero Section */}
+            <div className="container mx-auto px-4 py-12 md:py-20 relative z-10 max-w-5xl">
+                {/* Premium Header - Receipt Style */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="text-center mb-12"
+                    initial={{ opacity: 0, y: -30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="mb-12"
                 >
-                    {/* Success Icon with Glow */}
-                    <motion.div
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-                        className="relative inline-block mb-6"
-                    >
-                        <div className="absolute inset-0 bg-green-400 rounded-full blur-2xl opacity-50 animate-pulse"></div>
-                        <div className="relative w-24 h-24 md:w-32 md:h-32 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-2xl">
-                            <CheckCircle className="w-12 h-12 md:w-16 md:h-16 text-white" strokeWidth={2.5} />
-                        </div>
-                    </motion.div>
+                    <div className="bg-white/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border-2 border-white/40 overflow-hidden">
+                        {/* Gradient Header */}
+                        <div className="relative bg-gradient-to-r from-emerald-600 via-primary-600 to-teal-600 px-6 md:px-12 py-8 md:py-10 text-center text-white overflow-hidden">
+                            {/* Decorative circles */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                            <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2"></div>
 
-                    {/* Title */}
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="text-4xl md:text-6xl font-black text-gray-900 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900"
-                    >
-                        {booking.bookingStatus === 'confirmed' ? 'Booking Confirmed! 🎉' :
-                            booking.bookingStatus === 'pending' ? 'Booking Pending ⏳' :
-                                'Booking Received 📝'}
-                    </motion.h1>
+                            <div className="relative">
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                                    className="inline-flex items-center justify-center w-14 h-14 bg-white/20 backdrop-blur-md rounded-xl shadow-xl mb-3 ring-4 ring-white/30"
+                                >
+                                    <CheckCircle className="w-8 h-8 text-white drop-shadow-lg" strokeWidth={2.5} />
+                                </motion.div>
 
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                        className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto"
-                    >
-                        {booking.bookingStatus === 'confirmed'
-                            ? <>Your adventure to <span className="font-semibold text-gray-900">{booking.destination}</span> is all set!</>
-                            : <>Your booking for <span className="font-semibold text-gray-900">{booking.destination}</span> is being processed. We'll confirm shortly!</>
-                        }
-                    </motion.p>
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.3 }}
+                                    className="text-xs font-bold tracking-[0.3em] mb-2 opacity-90 uppercase"
+                                >
+                                    QuietSummit
+                                </motion.div>
 
-                    {/* Booking Reference Card */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 }}
-                        className="inline-block"
-                    >
-                        <div className="relative group">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-primary-600 via-blue-600 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
-                            <div className="relative px-8 py-6 bg-white rounded-2xl shadow-xl">
-                                <div className="flex items-center gap-3">
-                                    <Sparkles className="w-5 h-5 text-primary-600" />
-                                    <div className="text-left">
-                                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Booking Reference</p>
-                                        <p className="text-3xl font-black text-gray-900 tracking-wider">{bookingRef}</p>
+                                <motion.h1
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.4 }}
+                                    className="text-3xl md:text-4xl font-black mb-2 tracking-tight"
+                                >
+                                    {booking.bookingStatus === 'confirmed' ? 'Booking Confirmed!' :
+                                        booking.bookingStatus === 'pending' ? 'Booking Pending' :
+                                            'Thank You!'}
+                                </motion.h1>
+
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.5 }}
+                                    className="text-base md:text-lg font-semibold opacity-95 mb-3"
+                                >
+                                    {booking.memberName || booking.travelers?.[0]?.name || 'Valued Traveler'}
+                                </motion.p>
+
+                                {/* Booking Reference in Header */}
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.6 }}
+                                    className="inline-block"
+                                >
+                                    <div className="bg-white/20 backdrop-blur-md border-2 border-white/30 rounded-xl px-5 py-2.5 shadow-lg">
+                                        <div className="text-[10px] font-bold opacity-80 mb-0.5 tracking-wider">BOOKING REFERENCE</div>
+                                        <div className="text-xl md:text-2xl font-black tracking-widest">{bookingRef}</div>
                                     </div>
-                                </div>
+                                </motion.div>
                             </div>
                         </div>
-                    </motion.div>
+
+                        {/* Thank You Content */}
+                        <div className="px-6 md:px-12 py-5 md:py-6 bg-gradient-to-br from-white to-gray-50">
+                            <div className="max-w-3xl mx-auto text-center space-y-3">
+                                <motion.p
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.6 }}
+                                    className="text-base md:text-lg text-gray-800 leading-relaxed font-semibold"
+                                >
+                                    Your journey to <span className="font-black bg-gradient-to-r from-primary-600 to-emerald-600 bg-clip-text text-transparent">{booking.destination}</span> is confirmed.
+                                </motion.p>
+
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.7 }}
+                                    className="pt-1 flex flex-wrap justify-center gap-2.5"
+                                >
+                                    <div className="inline-flex items-center gap-2 bg-gradient-to-br from-green-50 to-emerald-50 text-green-700 px-5 py-2.5 rounded-xl font-bold border-2 border-green-200 shadow-sm text-sm">
+                                        <CheckCircle className="w-4 h-4" />
+                                        <span>Payment Confirmed</span>
+                                    </div>
+                                    <div className="inline-flex items-center gap-2 bg-gradient-to-br from-blue-50 to-sky-50 text-blue-700 px-5 py-2.5 rounded-xl font-bold border-2 border-blue-200 shadow-sm text-sm">
+                                        <Mail className="w-4 h-4" />
+                                        <span>Confirmation Sent</span>
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </div>
+                    </div>
                 </motion.div>
 
                 {/* Main Content Grid */}
@@ -226,9 +269,11 @@ export default function BookingConfirmation() {
                         transition={{ delay: 0.6 }}
                         className="lg:col-span-2"
                     >
-                        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 p-6 md:p-8">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                                <MapPin className="w-6 h-6 text-primary-600" />
+                        <div className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border-2 border-white/30 p-8 md:p-10 hover:shadow-3xl transition-shadow duration-300">
+                            <h2 className="text-3xl font-black text-gray-900 mb-8 flex items-center gap-3 pb-4 border-b-2 border-gray-100">
+                                <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-blue-600 rounded-xl flex items-center justify-center">
+                                    <MapPin className="w-6 h-6 text-white" />
+                                </div>
                                 Journey Details
                             </h2>
 
@@ -285,22 +330,22 @@ export default function BookingConfirmation() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.7 }}
-                        className="space-y-4"
+                        className="space-y-5"
                     >
-                        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
-                            <div className="space-y-3">
+                        <div className="bg-white/90 backdrop-blur-2xl rounded-3xl shadow-2xl border-2 border-white/30 p-7 hover:shadow-3xl transition-shadow duration-300">
+                            <h3 className="text-xl font-black text-gray-900 mb-5 pb-3 border-b-2 border-gray-100">Quick Actions</h3>
+                            <div className="space-y-4">
                                 <button
-                                    onClick={handleDownload}
+                                    onClick={handleDownloadPDF}
                                     disabled={isDownloading}
-                                    className="w-full px-4 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-all hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                                    className="w-full px-5 py-4 bg-gradient-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-bold rounded-xl transition-all hover:scale-105 hover:shadow-xl flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg"
                                 >
                                     <Download className="w-5 h-5" />
-                                    {isDownloading ? 'Generating PDF...' : 'Download Receipt'}
+                                    {isDownloading ? 'Downloading...' : 'Download Receipt'}
                                 </button>
                                 <button
                                     onClick={handleShare}
-                                    className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold rounded-xl transition-all hover:scale-105 flex items-center justify-center gap-2"
+                                    className="w-full px-5 py-4 bg-gradient-to-br from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 text-gray-900 font-bold rounded-xl transition-all hover:scale-105 hover:shadow-lg flex items-center justify-center gap-3 border-2 border-gray-200"
                                 >
                                     <Share2 className="w-5 h-5" />
                                     Share Booking
@@ -308,14 +353,20 @@ export default function BookingConfirmation() {
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl shadow-xl p-6 text-white">
-                            <Sparkles className="w-8 h-8 mb-3" />
-                            <h3 className="text-lg font-bold mb-2">Earn Rewards!</h3>
-                            <p className="text-sm text-blue-50 mb-4">Share your experience and earn 500 points</p>
-                            <button className="w-full px-4 py-2 bg-white text-purple-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors">
-                                Refer a Friend
-                            </button>
-                        </div>
+                        {/* Earn Rewards - Commented out for now */}
+                        {/* <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-3xl shadow-2xl p-7 text-white relative overflow-hidden group hover:shadow-3xl transition-shadow duration-300">
+                            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div className="relative">
+                                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4">
+                                    <Sparkles className="w-7 h-7 text-white" />
+                                </div>
+                                <h3 className="text-xl font-black mb-2">Earn Rewards!</h3>
+                                <p className="text-sm text-white/90 mb-5 leading-relaxed">Share your experience and earn 500 points towards your next adventure</p>
+                                <button className="w-full px-5 py-3 bg-white text-purple-600 font-bold rounded-xl hover:bg-white/95 transition-all hover:shadow-xl hover:scale-105">
+                                    Refer a Friend
+                                </button>
+                            </div>
+                        </div> */}
                     </motion.div>
                 </div>
 

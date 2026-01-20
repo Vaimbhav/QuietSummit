@@ -92,18 +92,15 @@ export default function Footer() {
                         <h4 className="font-bold text-white mb-6 text-lg">Resources</h4>
                         <ul className="space-y-3 text-sm">
                             {[
-                                'Travel Tips',
-                                'Packing Guide',
-                                'Sustainable Travel',
-                                'FAQs',
-                                'Terms & Conditions',
-                                'Privacy Policy'
+                                { path: '/faqs', label: 'FAQs' },
+                                { path: '/terms', label: 'Terms & Conditions' },
+                                { path: '/privacy', label: 'Privacy Policy' }
                             ].map((item) => (
-                                <li key={item}>
-                                    <a href="#" className="hover:text-white transition-colors flex items-center group">
+                                <li key={item.label}>
+                                    <Link to={item.path} className="hover:text-white transition-colors flex items-center group">
                                         <ArrowRight className="w-4 h-4 mr-2 text-primary-500 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
-                                        {item}
-                                    </a>
+                                        {item.label}
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
@@ -120,7 +117,7 @@ export default function Footer() {
                         <p className="text-sm mb-4 leading-relaxed text-neutral-400">
                             Join our community of quiet believers and receive exclusive travel inspiration.
                         </p>
-                        <Link to="/signup">
+                        <a href="https://chat.whatsapp.com/J0pKreKmOez2qAlzBnJ7hA" target="_blank" rel="noopener noreferrer">
                             <motion.button
                                 whileHover={{ scale: 1.03, y: -2 }}
                                 whileTap={{ scale: 0.97 }}
@@ -128,7 +125,7 @@ export default function Footer() {
                             >
                                 Join Community
                             </motion.button>
-                        </Link>
+                        </a>
                         <div className="mt-8 p-5 bg-linear-to-br from-neutral-800/80 to-neutral-900/80 backdrop-blur-sm rounded-2xl border border-neutral-700/50 hover:border-primary-500/30 transition-all duration-300">
                             <div className="flex items-center space-x-4">
                                 <div className="p-3 bg-linear-to-br from-primary-500 to-accent-600 rounded-xl shadow-lg shrink-0">
@@ -150,12 +147,12 @@ export default function Footer() {
                             &copy; {currentYear} QuietSummit. All rights reserved. Made with 💚 for intentional travelers.
                         </p>
                         <div className="flex space-x-6 text-sm">
-                            <a href="#" className="text-neutral-500 hover:text-white transition-colors">
+                            <Link to="/privacy" className="text-neutral-500 hover:text-white transition-colors">
                                 Privacy
-                            </a>
-                            <a href="#" className="text-neutral-500 hover:text-white transition-colors">
+                            </Link>
+                            <Link to="/terms" className="text-neutral-500 hover:text-white transition-colors">
                                 Terms
-                            </a>
+                            </Link>
                             <a href="#" className="text-neutral-500 hover:text-white transition-colors">
                                 Cookies
                             </a>

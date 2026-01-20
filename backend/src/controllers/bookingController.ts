@@ -9,6 +9,7 @@ import {
     sendBookingConfirmationEmail,
     sendNewBookingNotificationToHost,
 } from '../services/emailService'
+import { generateBookingReceiptPDF } from '../services/pdfService'
 import logger from '../utils/logger'
 import { applyCoupon } from './couponController'
 
@@ -267,42 +268,52 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
 
                     // Send email notification to host
                     if (hostInfo) {
-                        await sendNewBookingNotificationToHost(hostInfo.email, {
-                            hostName: hostInfo.name,
-                            propertyName: journey.title,
-                            guestName: (req.user as any)?.name || member.name,
-                            guestEmail: (req.user as any)?.email || member.email,
-                            checkIn: new Date(startDate).toLocaleDateString(),
-                            checkOut: new Date(endDate).toLocaleDateString(),
-                            totalPrice: totalAmount,
-                            guests: numberOfTravelers
-                        }).catch(err => logger.error('Failed to send new booking email to host:', err));
+                        try {
+                            await sendNewBookingNotificationToHost(hostInfo.email, {
+                                hostName: hostInfo.name,
+                                propertyName: journey.title,
+                                guestName: (req.user as any)?.name || member.name,
+                                guestEmail: (req.user as any)?.email || member.email,
+                                checkIn: new Date(startDate).toLocaleDateString(),
+                                checkOut: new Date(endDate).toLocaleDateString(),
+                                totalPrice: totalAmount,
+                                guests: numberOfTravelers
+                            });
+                            logger.info(`Host notification email sent to: ${hostInfo.email}`);
+                        } catch (err) {
+                            logger.error('Failed to send new booking email to host:', err);
+                        }
                     }
                 }
 
                 // Send booking confirmation email to guest with detailed receipt
-                await sendBookingConfirmationEmail(member.email, {
-                    guestName: member.name,
-                    propertyName: journey.title,
-                    checkIn: isProperty ? new Date(checkIn).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
-                    checkOut: isProperty ? new Date(checkOut).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
-                    totalPrice: totalAmount,
-                    hostName: hostInfo?.name,
-                    hostEmail: hostInfo?.email,
-                    bookingReference: booking._id.toString(),
-                    numberOfTravelers,
-                    travelers: travelers || [],
-                    duration: durationDays,
-                    destination: booking.destination,
-                    departureDate: isProperty ? '' : new Date(departureDate).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }),
-                    roomPreference: roomPreference || 'double',
-                    subtotal,
-                    discount: discount || 0,
-                    paymentMethod: 'Razorpay',
-                    transactionId: razorpay_payment_id || paymentId || ''
-                }).catch(err => logger.error('Failed to send booking confirmation email to guest:', err));
+                try {
+                    await sendBookingConfirmationEmail(member.email, {
+                        guestName: member.name,
+                        propertyName: journey.title,
+                        checkIn: isProperty ? new Date(checkIn).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
+                        checkOut: isProperty ? new Date(checkOut).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
+                        totalPrice: totalAmount,
+                        hostName: hostInfo?.name,
+                        hostEmail: hostInfo?.email,
+                        bookingReference: booking._id.toString(),
+                        numberOfTravelers,
+                        travelers: travelers || [],
+                        duration: durationDays,
+                        destination: booking.destination,
+                        departureDate: isProperty ? '' : new Date(departureDate).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }),
+                        roomPreference: roomPreference || 'double',
+                        subtotal,
+                        discount: discount || 0,
+                        paymentMethod: 'Razorpay',
+                        transactionId: razorpay_payment_id || paymentId || ''
+                    });
+                    logger.info(`Guest confirmation email sent successfully to: ${member.email}`);
+                } catch (err) {
+                    logger.error('Failed to send booking confirmation email to guest:', err);
+                }
 
-                logger.info(`Email notifications sent successfully for booking: ${booking._id}`);
+                logger.info(`Email notifications processed for booking: ${booking._id}`);
             } catch (emailError) {
                 logger.error('Error in background email sending:', emailError);
             }
@@ -585,3 +596,63 @@ export const updateBookingStatus = async (req: Request, res: Response): Promise<
     }
 }
 
+// Download booking receipt as PDF
+export const downloadBookingReceipt = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params
+
+        const booking = await Booking.findById(id)
+            .populate('memberId', 'name email')
+            .populate('journeyId')
+
+        if (!booking) {
+            res.status(404).json({
+                success: false,
+                error: 'Booking not found',
+            })
+            return
+        }
+
+        const member = booking.memberId as any
+        const journey = booking.journeyId as any
+        const isJourney = booking.journeyModel === 'Journey'
+
+        // Prepare booking details for PDF
+        const bookingDetails = {
+            guestName: member.name,
+            propertyName: journey.title,
+            checkIn: booking.checkIn ? new Date(booking.checkIn).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
+            checkOut: booking.checkOut ? new Date(booking.checkOut).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
+            totalPrice: booking.totalAmount,
+            bookingReference: booking._id.toString(),
+            numberOfTravelers: booking.numberOfTravelers,
+            travelers: booking.travelers || [],
+            duration: booking.duration,
+            destination: booking.destination,
+            departureDate: isJourney ? new Date(booking.startDate).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' }) : '',
+            roomPreference: booking.roomPreference,
+            subtotal: booking.subtotal || booking.totalAmount,
+            discount: booking.discount || 0,
+            paymentMethod: 'Razorpay',
+            transactionId: booking.paymentDetails?.razorpayPaymentId || ''
+        }
+
+        // Generate PDF
+        const pdfBuffer = await generateBookingReceiptPDF(bookingDetails)
+
+        // Set response headers for PDF download
+        const bookingRef = `QS${booking._id.toString().slice(-8).toUpperCase()}`
+        res.setHeader('Content-Type', 'application/pdf')
+        res.setHeader('Content-Disposition', `attachment; filename=QuietSummit-Receipt-${bookingRef}.pdf`)
+        res.setHeader('Content-Length', pdfBuffer.length)
+
+        res.send(pdfBuffer)
+    } catch (error: any) {
+        logger.error('Error generating booking receipt PDF:', error)
+        res.status(500).json({
+            success: false,
+            error: 'Failed to generate receipt',
+            details: error.message,
+        })
+    }
+}

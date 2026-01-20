@@ -32,6 +32,9 @@ const HomestayDetail = lazy(() => import('@pages/HomestayDetail'))
 const Profile = lazy(() => import('@pages/Profile'))
 const MyBookings = lazy(() => import('@pages/MyBookings'))
 const Notifications = lazy(() => import('@pages/Notifications'))
+const FAQs = lazy(() => import('@pages/FAQs'))
+const TermsAndConditions = lazy(() => import('@pages/TermsAndConditions'))
+const PrivacyPolicy = lazy(() => import('@pages/PrivacyPolicy'))
 const NotFound = lazy(() => import('@pages/NotFound'))
 
 // Lazy load host pages
@@ -86,6 +89,9 @@ function AppContent() {
                         <Route path="/forgot-password" element={<ForgotPassword />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
                         <Route path="/auth/google/success" element={<GoogleAuthSuccess />} />
+                        <Route path="/faqs" element={<FAQs />} />
+                        <Route path="/terms" element={<TermsAndConditions />} />
+                        <Route path="/privacy" element={<PrivacyPolicy />} />
 
                         {/* Protected Routes - Require Authentication */}
                         <Route path="/dashboard" element={
