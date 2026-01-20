@@ -124,19 +124,25 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                         setIsSuccess(true)
                         setIsProcessing(false)
 
-                        // Use requestAnimationFrame for smoother transition on mobile
-                        requestAnimationFrame(() => {
+                        // iOS Chrome/Safari compatible navigation
+                        const confirmationUrl = `/booking-confirmation/${bookingId}`;
+                        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+                        if (isIOS) {
+                            // Close modal immediately on iOS
+                            onClose();
+
+                            // Force direct navigation on iOS (both Safari and Chrome)
                             setTimeout(() => {
-                                try {
-                                    navigate(`/booking-confirmation/${bookingId}`)
-                                    onClose()
-                                } catch (navError) {
-                                    console.error('Navigation error:', navError)
-                                    // Fallback: try direct window navigation
-                                    window.location.href = `/booking-confirmation/${bookingId}`
-                                }
-                            }, 2000)
-                        })
+                                window.location.href = confirmationUrl;
+                            }, 500);
+                        } else {
+                            // Desktop: use React Router
+                            setTimeout(() => {
+                                navigate(confirmationUrl, { replace: true });
+                                onClose();
+                            }, 1500);
+                        }
                     } catch (error) {
                         console.error('✗ Booking creation failed:', error)
                         setIsProcessing(false)

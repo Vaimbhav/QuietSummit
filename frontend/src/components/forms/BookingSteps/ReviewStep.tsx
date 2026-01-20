@@ -120,19 +120,25 @@ export default function ReviewStep({ journey, bookingData, onBack, onClose }: Re
                         sessionStorage.removeItem(`booking_${journey._id}`)
                         setIsProcessing(false)
 
-                        // Use requestAnimationFrame for smoother transition on mobile
-                        requestAnimationFrame(() => {
+                        // iOS Chrome/Safari compatible navigation
+                        const confirmationUrl = `/booking-confirmation/${bookingId}`;
+                        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+                        if (isIOS) {
+                            // Close modal immediately on iOS
+                            if (onClose) onClose();
+
+                            // Force direct navigation on iOS (both Safari and Chrome)
                             setTimeout(() => {
-                                try {
-                                    navigate(`/booking-confirmation/${bookingId}`)
-                                    if (onClose) onClose()
-                                } catch (navError) {
-                                    console.error('Navigation error:', navError)
-                                    // Fallback: try direct window navigation
-                                    window.location.href = `/booking-confirmation/${bookingId}`
-                                }
-                            }, 1000)
-                        })
+                                window.location.href = confirmationUrl;
+                            }, 500);
+                        } else {
+                            // Desktop: use React Router
+                            setTimeout(() => {
+                                navigate(confirmationUrl, { replace: true });
+                                if (onClose) onClose();
+                            }, 1000);
+                        }
 
                     } catch (error) {
                         console.error('✗ Booking creation failed:', error)
