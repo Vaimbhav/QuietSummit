@@ -92,8 +92,7 @@ const propertySchema = new Schema<IProperty>(
             type: String,
             required: [true, 'Property title is required'],
             trim: true,
-            minlength: [10, 'Title must be at least 10 characters'],
-            maxlength: [100, 'Title cannot exceed 100 characters'],
+            minlength: [1, 'Title cannot be empty'],
         },
         slug: {
             type: String,
@@ -105,8 +104,7 @@ const propertySchema = new Schema<IProperty>(
         description: {
             type: String,
             required: [true, 'Property description is required'],
-            minlength: [50, 'Description must be at least 50 characters'],
-            maxlength: [2000, 'Description cannot exceed 2000 characters'],
+            minlength: [1, 'Description cannot be empty'],
         },
         propertyType: {
             type: String,
