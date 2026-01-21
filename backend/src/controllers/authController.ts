@@ -384,13 +384,10 @@ export const googleCallback = async (req: Request, res: Response): Promise<void>
         // Only pass essential data in URL to avoid length limits
         // Frontend will fetch full profile using the token
 
-        // Check if user is new (created within last 60 seconds)
-        // 1. Explicit flag from Passport strategy (most reliable for immediate request)
-        // 2. CreatedAt timestamp (fallback)
-        // 3. ConfirmedAt timestamp (fallback for clock sync issues)
-        const isNewUser = (user as any).isNewUser ||
-            (user.createdAt && (Date.now() - new Date(user.createdAt).getTime() < 60000)) ||
-            (user.confirmedAt && (Date.now() - new Date(user.confirmedAt).getTime() < 60000))
+        // Check if user is new
+        // We rely on the explicit flag set in the Passport strategy during creation
+        // This avoids timing issues or false positives with timestamps for existing users
+        const isNewUser = (user as any).isNewUser
 
         const authData = {
             token,
