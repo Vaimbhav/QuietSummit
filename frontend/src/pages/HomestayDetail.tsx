@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Star, MapPin, Share2, Users, Home as HomeIcon, Bed, Bath, MessageCircle, Check } from 'lucide-react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -15,7 +15,6 @@ import AmenityGrid from '../components/properties/AmenityGrid';
 
 export default function PropertyDetail() {
     const { slug } = useParams<{ slug: string }>();
-    const navigate = useNavigate();
     const [property, setProperty] = useState<Property | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
