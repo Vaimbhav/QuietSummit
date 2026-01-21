@@ -50,12 +50,12 @@ export default function PropertyForm() {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = !!id;
-    const { showWarning, showError, showSuccess } = useToast();
+    const { showWarning, showError } = useToast();
 
     const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [uploading, setUploading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [, setError] = useState<string | null>(null);
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files?.length) return;

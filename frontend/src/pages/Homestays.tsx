@@ -9,7 +9,6 @@ import { createPortal } from 'react-dom';
 import PropertyCard from '../components/properties/PropertyCard';
 import { searchProperties, getFilterOptions, getLocationSuggestions, Property, PropertySearchParams } from '../services/propertyApi';
 import Loader from '../components/common/Loader';
-import Button from '@components/common/Button';
 
 export default function Homestays() {
     const [searchParams, setSearchParams] = useSearchParams();

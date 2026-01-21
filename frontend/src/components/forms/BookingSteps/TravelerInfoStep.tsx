@@ -71,10 +71,10 @@ export default function TravelerInfoStep({
                 ...travelers,
                 ...Array.from({ length: numberOfTravelers - currentLength }, () => ({
                     name: '',
-                    age: '',
+                    age: '' as const,
                     gender: 'male' as const,
                     emergencyContact: '',
-                }))
+                }) as Traveler)
             ])
         } else if (numberOfTravelers < currentLength) {
             setTravelers(travelers.slice(0, numberOfTravelers))
@@ -122,9 +122,14 @@ export default function TravelerInfoStep({
         const taxes = basePrice * 0.18
         const totalAmount = basePrice + taxes
 
+        const sanitizedTravelers = travelers.map(t => ({
+            ...t,
+            age: Number(t.age)
+        }))
+
         onNext({
             numberOfTravelers,
-            travelers,
+            travelers: sanitizedTravelers,
             departureDate,
             email: userData?.email || '',
             basePrice,
