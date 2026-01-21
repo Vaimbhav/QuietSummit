@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Star, MapPin, Share2, Users, Home as HomeIcon, Bed, Bath, MessageCircle, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Star, MapPin, Share2, Users, Home as HomeIcon, Bed, Bath, MessageCircle, Check, X } from 'lucide-react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getPropertyBySlug, Property } from '../services/propertyApi';
@@ -25,6 +26,7 @@ export default function PropertyDetail() {
     const [showShareToast, setShowShareToast] = useState(false);
     const [guests, setGuests] = useState(1);
     const [bookingError, setBookingError] = useState<string | null>(null);
+    const [isMobileDateOpen, setIsMobileDateOpen] = useState(false);
     const [priceBreakdown, setPriceBreakdown] = useState<{
         basePrice: number;
         cleaningFee: number;
@@ -33,6 +35,18 @@ export default function PropertyDetail() {
     } | null>(null);
 
     const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+
+    // Prevent body scroll when modal is open
+    useEffect(() => {
+        if (isMobileDateOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMobileDateOpen]);
 
     const getMinDate = () => {
         const tomorrow = new Date();
@@ -192,7 +206,7 @@ export default function PropertyDetail() {
             <div className="container mx-auto px-4 py-8">
                 <PropertyGallery images={property.images} title={property.title} />
             </div>
-            <div className="container mx-auto px-4 pb-12">
+            <div className="container mx-auto px-4 pb-32 md:pb-12">
                 <div className="grid lg:grid-cols-3 gap-8 lg:gap-16">
                     <div className="lg:col-span-2 space-y-8">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -257,7 +271,7 @@ export default function PropertyDetail() {
                                     </div>
                                     <div className="flex-1">
                                         <h3 className="text-2xl font-bold text-gray-900 mb-2">{property.host.name}</h3>
-                                        <p className="text-gray-600 mb-4">Member since {new Date(property.createdAt).getFullYear()}</p>
+                                        <p className="text-gray-600 mb-4">Host since {new Date(property.createdAt).getFullYear()}</p>
                                         {property.host.hostProfile && (
                                             <div className="grid grid-cols-2 gap-4 mb-4">
                                                 <div>
@@ -270,7 +284,10 @@ export default function PropertyDetail() {
                                                 </div>
                                             </div>
                                         )}
-                                        <button className="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl transition-colors flex items-center gap-2">
+                                        <button
+                                            onClick={() => window.location.href = `mailto:${property.host.email}`}
+                                            className="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl transition-colors flex items-center gap-2"
+                                        >
                                             <MessageCircle className="w-5 h-5" />
                                             Contact Host
                                         </button>
@@ -279,7 +296,7 @@ export default function PropertyDetail() {
                             </div>
                         </div>
                     </div>
-                    <div className="lg:col-span-1">
+                    <div className="hidden lg:col-span-1 lg:block">
                         <div className="sticky top-24">
                             <div className="relative group">
                                 <div className="absolute -inset-1 bg-gradient-to-r from-primary-600 via-blue-600 to-purple-600 rounded-3xl blur-xl opacity-20 group-hover:opacity-30 transition duration-1000"></div>
@@ -396,7 +413,6 @@ export default function PropertyDetail() {
                                             </button>
                                         )}
                                     </BookingGuard>
-                                    <p className="text-center text-sm text-gray-500 mt-4">You won't be charged yet</p>
                                 </div>
                             </div>
                         </div>
@@ -417,6 +433,201 @@ export default function PropertyDetail() {
                     priceBreakdown={priceBreakdown}
                 />
             )}
+
+            {/* Fixed Bottom Bar (Mobile Only) */}
+            <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-4 safe-area-pb">
+                <div className="flex items-center justify-between gap-4">
+                    <div>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-xl font-bold text-gray-900">₹{property.pricing.basePrice}</span>
+                            <span className="text-sm text-gray-600">/ night</span>
+                        </div>
+                        <div className="text-xs text-gray-500 font-medium mt-0.5">
+                            {checkIn && checkOut ? `${checkIn.toLocaleDateString()} - ${checkOut.toLocaleDateString()}` : 'Select dates'}
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => setIsMobileDateOpen(true)}
+                        className="px-6 py-3 bg-gradient-to-r from-primary-600 to-blue-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95"
+                    >
+                        {checkIn && checkOut ? 'Continue' : 'Check Availability'}
+                    </button>
+                </div>
+            </div>
+
+            {/* Mobile Date Selection Sheet */}
+            <AnimatePresence>
+                {isMobileDateOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsMobileDateOpen(false)}
+                            className="fixed inset-0 bg-black/50 z-[60] md:hidden backdrop-blur-sm"
+                            style={{ touchAction: 'none' }}
+                        />
+                        <motion.div
+                            initial={{ y: '100%' }}
+                            animate={{ y: 0 }}
+                            exit={{ y: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            className="fixed bottom-0 left-0 right-0 z-[70] md:hidden bg-white rounded-t-3xl shadow-2xl h-auto max-h-[90vh] overflow-hidden flex flex-col safe-area-pb"
+                        >
+                            {/* Premium Header */}
+                            <div className="bg-gradient-to-r from-primary-600 to-blue-600 px-6 py-5 flex items-center justify-between shrink-0">
+                                <div>
+                                    <h3 className="text-xl font-bold text-white mb-1">Select Dates</h3>
+                                    <p className="text-sm text-white/80 font-medium">Choose your stay period</p>
+                                </div>
+                                <button
+                                    onClick={() => setIsMobileDateOpen(false)}
+                                    className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                                    aria-label="Close"
+                                >
+                                    <X className="w-6 h-6 text-white" />
+                                </button>
+                            </div>
+
+                            {/* Scrollable Content */}
+                            <div className="overflow-y-auto flex-1">
+                                <div className="p-6 space-y-6">
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-3 flex items-center gap-2">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
+                                                Check-in
+                                            </label>
+                                            <div className="relative">
+                                                <DatePicker
+                                                    selected={checkIn}
+                                                    onChange={(date: Date | null) => {
+                                                        setCheckIn(date);
+                                                        if (checkOut && date && date >= checkOut) {
+                                                            setCheckOut(null);
+                                                        }
+                                                    }}
+                                                    selectsStart
+                                                    startDate={checkIn}
+                                                    endDate={checkOut}
+                                                    minDate={getMinDate()}
+                                                    placeholderText="Select date"
+                                                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50 font-semibold text-gray-900 text-base hover:border-gray-300 transition-colors"
+                                                    dateFormat="dd MMM yyyy"
+                                                    onFocus={(e) => e.target.blur()}
+                                                    showMonthDropdown
+                                                    showYearDropdown
+                                                    dropdownMode="select"
+                                                    calendarClassName="premium-calendar"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-3 flex items-center gap-2">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
+                                                Check-out
+                                            </label>
+                                            <div className="relative">
+                                                <DatePicker
+                                                    selected={checkOut}
+                                                    onChange={(date: Date | null) => setCheckOut(date)}
+                                                    selectsEnd
+                                                    startDate={checkIn}
+                                                    endDate={checkOut}
+                                                    minDate={checkIn || getMinDate()}
+                                                    placeholderText="Select date"
+                                                    className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50 font-semibold text-gray-900 text-base hover:border-gray-300 transition-colors"
+                                                    dateFormat="dd MMM yyyy"
+                                                    onFocus={(e) => e.target.blur()}
+                                                    showMonthDropdown
+                                                    showYearDropdown
+                                                    dropdownMode="select"
+                                                    calendarClassName="premium-calendar"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-3 flex items-center gap-2">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
+                                            Guests
+                                        </label>
+                                        <div className="relative">
+                                            <Users className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                                            <select
+                                                value={guests}
+                                                onChange={(e) => setGuests(parseInt(e.target.value))}
+                                                className="w-full pl-14 pr-12 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none bg-gray-50 font-semibold text-gray-900 text-base hover:border-gray-300 transition-colors cursor-pointer"
+                                            >
+                                                {Array.from({ length: property.capacity.guests }, (_, i) => i + 1).map((num) => (
+                                                    <option key={num} value={num}>{num} {num === 1 ? 'guest' : 'guests'}</option>
+                                                ))}
+                                            </select>
+                                            <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {bookingError && (
+                                        <div className="p-4 bg-red-50 border-2 border-red-200 rounded-2xl animate-shake">
+                                            <p className="text-sm text-red-800 font-semibold">{bookingError}</p>
+                                        </div>
+                                    )}
+
+                                    {priceBreakdown && (
+                                        <div className="p-6 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-2xl border-2 border-blue-200/50 shadow-sm">
+                                            <div className="space-y-3">
+                                                <div className="flex justify-between items-center text-sm">
+                                                    <span className="text-gray-600 font-medium">₹{property.pricing.basePrice} × {priceBreakdown.nights} nights</span>
+                                                    <span className="font-semibold text-gray-900">₹{priceBreakdown.basePrice}</span>
+                                                </div>
+                                                {priceBreakdown.cleaningFee > 0 && (
+                                                    <div className="flex justify-between items-center text-sm">
+                                                        <span className="text-gray-600 font-medium">Cleaning fee</span>
+                                                        <span className="font-semibold text-gray-900">₹{priceBreakdown.cleaningFee}</span>
+                                                    </div>
+                                                )}
+                                                <div className="pt-3 border-t-2 border-blue-200 flex justify-between items-center">
+                                                    <span className="text-gray-700 font-bold text-base">Total</span>
+                                                    <span className="text-2xl font-black bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">₹{priceBreakdown.totalPrice}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Sticky Footer */}
+                            <div className="shrink-0 p-6 bg-white border-t border-gray-100 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                                <BookingGuard onAuthenticated={() => setIsBookingModalOpen(true)}>
+                                    {(triggerAuthCheck) => (
+                                        <button
+                                            onClick={() => {
+                                                const error = validateBookingForm();
+                                                if (error) {
+                                                    setBookingError(error);
+                                                    return;
+                                                }
+                                                setBookingError(null);
+                                                setIsMobileDateOpen(false);
+                                                handleBookingClick(triggerAuthCheck);
+                                            }}
+                                            disabled={!checkIn || !checkOut}
+                                            className="w-full py-4 bg-gradient-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-bold rounded-2xl shadow-xl active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+                                        >
+                                            Continue to Book
+                                        </button>
+                                    )}
+                                </BookingGuard>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

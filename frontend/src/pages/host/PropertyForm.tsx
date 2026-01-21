@@ -4,6 +4,7 @@ import { createProperty, updateProperty, CreatePropertyData } from '@/services/h
 import { Upload, X, MapPin, Home, DollarSign, Users, Wifi, Car, Utensils, Tv, Wind, Waves, Mountain, Coffee, Dumbbell, Save, ArrowLeft } from 'lucide-react';
 import Loader from '@components/common/Loader';
 import api from '@/services/api';
+import { useToast } from '@/components/common/ToastProvider';
 
 const AMENITIES_OPTIONS = [
     { id: 'wifi', label: 'WiFi', icon: Wifi },
@@ -35,10 +36,21 @@ const CANCELLATION_POLICIES = [
     { value: 'super_strict', label: 'Super Strict - No refunds' },
 ];
 
+const INDIAN_STATES = [
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
+    "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh",
+    "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+    "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh",
+    "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh",
+    "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Lakshadweep", "Puducherry",
+    "Ladakh", "Jammu and Kashmir"
+];
+
 export default function PropertyForm() {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = !!id;
+    const { showWarning, showError, showSuccess } = useToast();
 
     const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
@@ -74,7 +86,7 @@ export default function PropertyForm() {
             }));
         } catch (error) {
             console.error('Upload failed', error);
-            setError('Failed to upload images. Please try again.');
+            showError('Failed to upload images. Please try again.');
         } finally {
             setUploading(false);
             // Reset input
@@ -91,7 +103,7 @@ export default function PropertyForm() {
             city: '',
             state: '',
             country: 'India',
-            zipCode: '',
+            postalCode: '',
         },
         capacity: {
             guests: 2,
@@ -149,7 +161,7 @@ export default function PropertyForm() {
             setImageUrls(property.images?.map((img: any) => img.url) || []);
         } catch (error: any) {
             console.error('Error loading property:', error);
-            setError('Failed to load property');
+            showError('Failed to load property');
         } finally {
             setLoading(false);
         }
@@ -232,7 +244,7 @@ export default function PropertyForm() {
             // Ensure address has all required fields
             payload.address = {
                 ...formData.address!,
-                zipCode: formData.address?.zipCode || '',
+                postalCode: formData.address?.postalCode || '',
                 coordinates: {
                     latitude: 0, // Default coordinates as we don't have map picker yet
                     longitude: 0
@@ -250,7 +262,7 @@ export default function PropertyForm() {
             const errorMessage = error.response?.data?.errors
                 ? error.response.data.errors.join(', ')
                 : error.response?.data?.message || 'Failed to save property';
-            setError(errorMessage);
+            showWarning(errorMessage);
         } finally {
             setSubmitting(false);
         }
@@ -293,19 +305,6 @@ export default function PropertyForm() {
             </div>
 
             <div className="container mx-auto px-6 sm:px-8 lg:px-16 py-8 lg:py-12 max-w-5xl">
-
-                {error && (
-                    <div className="bg-red-50 border-l-4 border-red-500 text-red-800 px-6 py-4 rounded-lg mb-8 shadow-sm">
-                        <div className="flex items-start gap-3">
-                            <div className="flex-shrink-0 w-5 h-5 mt-0.5">
-                                <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                </svg>
-                            </div>
-                            <p className="font-medium">{error}</p>
-                        </div>
-                    </div>
-                )}
 
                 <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-8">
                     {/* Basic Information */}
@@ -409,41 +408,75 @@ export default function PropertyForm() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    State *
-                                </label>
-                                <input
-                                    type="text"
-                                    required
-                                    value={formData.address?.state}
-                                    onChange={(e) => handleNestedChange('address', 'state', e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-semibold text-neutral-700 mb-2">
                                     Country *
                                 </label>
-                                <input
-                                    type="text"
-                                    required
-                                    value={formData.address?.country}
-                                    onChange={(e) => handleNestedChange('address', 'country', e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                />
+                                <div className="relative">
+                                    <select
+                                        required
+                                        value={formData.address?.country}
+                                        onChange={(e) => {
+                                            const newCountry = e.target.value;
+                                            handleNestedChange('address', 'country', newCountry);
+                                            // Reset state if switching to India to force dropdown usage
+                                            if (newCountry === 'India') {
+                                                handleNestedChange('address', 'state', '');
+                                            }
+                                        }}
+                                        className="w-full px-4 py-3 pr-12 border border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-neutral-300 bg-white appearance-none cursor-pointer text-neutral-900 font-medium shadow-sm hover:shadow-md"
+                                    >
+                                        <option value="India">India</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-neutral-500">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-semibold text-neutral-700 mb-2">
+                                    State *
+                                </label>
+                                {formData.address?.country === 'India' ? (
+                                    <div className="relative">
+                                        <select
+                                            required
+                                            value={formData.address?.state}
+                                            onChange={(e) => handleNestedChange('address', 'state', e.target.value)}
+                                            className="w-full px-4 py-3 pr-12 border border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-neutral-300 bg-white appearance-none cursor-pointer text-neutral-900 font-medium shadow-sm hover:shadow-md"
+                                        >
+                                            <option value="">Select State</option>
+                                            {INDIAN_STATES.map(state => (
+                                                <option key={state} value={state}>{state}</option>
+                                            ))}
+                                        </select>
+                                        <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-neutral-500">
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <input
+                                        type="text"
+                                        required
+                                        value={formData.address?.state}
+                                        onChange={(e) => handleNestedChange('address', 'state', e.target.value)}
+                                        className="w-full px-4 py-3 border border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow hover:border-neutral-300"
+                                        placeholder="State/Province"
+                                    />
+                                )}
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    ZIP Code *
+                                    Postal Code *
                                 </label>
                                 <input
                                     type="text"
                                     required
-                                    value={formData.address?.zipCode}
-                                    onChange={(e) => handleNestedChange('address', 'zipCode', e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    value={formData.address?.postalCode}
+                                    onChange={(e) => handleNestedChange('address', 'postalCode', e.target.value)}
+                                    className="w-full px-4 py-3 border border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow hover:border-neutral-300"
                                 />
                             </div>
                         </div>

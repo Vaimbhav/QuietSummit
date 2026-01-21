@@ -103,6 +103,8 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                 redirect: false,
                 handler: async function (response: any) {
                     try {
+                        console.log('Payment success callback received', response);
+
                         // Verify payment
                         await verifyPayment({
                             razorpay_order_id: response.razorpay_order_id,
@@ -123,6 +125,10 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
 
                         const bookingId = bookingResponse.data?.bookingId || bookingResponse.bookingId
 
+                        if (!bookingId) {
+                            throw new Error('No booking ID received from server');
+                        }
+
                         // Update state first
                         setBookingReference(bookingId)
                         setIsSuccess(true)
@@ -132,14 +138,21 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
 
                         // Delay navigation to show success message and ensure smooth transition
                         setTimeout(() => {
-                            // Use React Router for all platforms to prevent page refresh crashes
-                            navigate(confirmationUrl, { replace: true });
-                            onClose();
-                        }, 2000);
-                    } catch (error) {
+                            try {
+                                // Use React Router first
+                                navigate(confirmationUrl, { replace: true });
+                                onClose();
+                            } catch (e) {
+                                // Fallback for iOS/Mobile if context lost
+                                console.warn('Navigation context lost, using window.location', e);
+                                window.location.href = confirmationUrl;
+                            }
+                        }, 1000);
+                    } catch (error: any) {
                         console.error('✗ Booking creation failed:', error)
                         setIsProcessing(false)
-                        alert('Payment successful but booking creation failed. Please contact support with your payment ID: ' + response.razorpay_payment_id)
+                        const errorMsg = error.response?.data?.error || error.message || 'Payment successful but booking creation failed.';
+                        alert(errorMsg + ' Please contact support with Payment ID: ' + response.razorpay_payment_id)
                     }
                 },
                 prefill: {

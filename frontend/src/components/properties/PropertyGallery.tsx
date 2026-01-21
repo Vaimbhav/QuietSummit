@@ -25,7 +25,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
     return (
         <>
             {/* Gallery Grid */}
-            <div className="relative h-[400px] md:h-[500px] lg:h-[600px] mb-8 rounded-3xl overflow-hidden">
+            <div className="relative h-[40vh] mb-8 rounded-3xl overflow-hidden">
                 <div className="grid grid-cols-4 gap-2 h-full">
                     {/* Main Large Image */}
                     <div
@@ -151,8 +151,8 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                                     key={index}
                                     onClick={() => setCurrentImageIndex(index)}
                                     className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${index === currentImageIndex
-                                            ? 'border-white scale-110'
-                                            : 'border-transparent opacity-60 hover:opacity-100'
+                                        ? 'border-white scale-110'
+                                        : 'border-transparent opacity-60 hover:opacity-100'
                                         }`}
                                 >
                                     <img

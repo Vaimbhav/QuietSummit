@@ -99,8 +99,6 @@ export default function ReviewStep({ journey, bookingData, onBack, onClose }: Re
                 name: 'QuietSummit',
                 description: `${journey.title} - ${bookingData.numberOfTravelers} traveler(s)`,
                 order_id: orderId,
-                callback_url: window.location.origin + '/booking-confirmation',
-                redirect: false,
                 handler: async function (response: any) {
                     try {
                         // Verify payment

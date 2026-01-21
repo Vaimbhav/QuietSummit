@@ -54,6 +54,7 @@ const ReviewModeration = lazy(() => import('@pages/admin/ReviewModeration'))
 function AppContent() {
     const location = useLocation()
     const isJourneyDetailPage = location.pathname.startsWith('/journeys/') && location.pathname !== '/journeys'
+    const isHomestayDetailPage = location.pathname.startsWith('/homestays/') || location.pathname.startsWith('/properties/')
 
     // Initialize auth state on app load
     useAuth()
@@ -185,7 +186,7 @@ function AppContent() {
                     </Routes>
                 </Suspense>
             </main>
-            <div className={isJourneyDetailPage ? 'hidden md:block' : ''}>
+            <div className={(isJourneyDetailPage || isHomestayDetailPage) ? 'hidden md:block' : ''}>
                 <Footer />
             </div>
         </div>

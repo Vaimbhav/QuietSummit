@@ -19,7 +19,7 @@ interface TravelerInfoStepProps {
 
 interface Traveler {
     name: string
-    age: number
+    age: number | ''
     gender: 'male' | 'female' | 'other'
     emergencyContact: string
     emergencyContactCountry?: string
@@ -57,7 +57,7 @@ export default function TravelerInfoStep({
             }))
             : Array.from({ length: numberOfTravelers }, (_, i) => ({
                 name: i === 0 ? userData?.name || '' : '',
-                age: 25,
+                age: '',
                 gender: 'male' as const,
                 emergencyContact: i === 0 ? userData?.phone || '' : '',
             }))
@@ -71,7 +71,7 @@ export default function TravelerInfoStep({
                 ...travelers,
                 ...Array.from({ length: numberOfTravelers - currentLength }, () => ({
                     name: '',
-                    age: 25,
+                    age: '',
                     gender: 'male' as const,
                     emergencyContact: '',
                 }))
@@ -102,7 +102,12 @@ export default function TravelerInfoStep({
                 alert(`Please fill all details for Traveler ${i + 1}`)
                 return
             }
-            if (travelers[i].age < 1 || travelers[i].age > 120) {
+            if (travelers[i].age === '') {
+                alert(`Please enter a valid age for Traveler ${i + 1}`)
+                return
+            }
+            const travelerAge = travelers[i].age as number
+            if (travelerAge < 1 || travelerAge > 120) {
                 alert(`Please enter a valid age for Traveler ${i + 1}`)
                 return
             }
@@ -264,8 +269,8 @@ export default function TravelerInfoStep({
                                                 <label className="block text-xs font-bold text-neutral-700">Age *</label>
                                                 <Input
                                                     type="number"
-                                                    value={traveler.age || ''}
-                                                    onChange={(e) => updateTraveler(index, 'age', parseInt(e.target.value) || 0)}
+                                                    value={traveler.age}
+                                                    onChange={(e) => updateTraveler(index, 'age', e.target.value === '' ? '' : parseInt(e.target.value))}
                                                     placeholder="Age"
                                                     min="1"
                                                     max="120"

@@ -58,7 +58,7 @@ export default function Toast({
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -20, scale: 0.95 }}
                     transition={{ duration: 0.2, ease: 'easeOut' }}
-                    className={`fixed top-4 right-4 z-[9999] max-w-md shadow-lg rounded-lg border-2 ${styles[type]} backdrop-blur-sm`}
+                    className={`fixed top-4 left-1/2 -translate-x-1/2 z-[9999] max-w-md w-[calc(100vw-2rem)] sm:w-auto shadow-lg rounded-lg border-2 ${styles[type]} backdrop-blur-sm`}
                 >
                     <div className="flex items-start gap-3 p-4">
                         <div className={iconColors[type]}>

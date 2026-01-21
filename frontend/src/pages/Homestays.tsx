@@ -460,23 +460,26 @@ export default function Homestays() {
                 </div>
             </section>
 
-            {/* Mobile Filter Button */}
-            <div className="md:hidden container mx-auto px-4 py-4">
+            {/* Mobile Filter Button - Overlapping */}
+            <div className="md:hidden container mx-auto px-6 -mt-16 sm:-mt-20 relative z-20 mb-6">
                 <motion.button
                     onClick={() => setIsMobileFilterOpen(true)}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full glass-luxury rounded-2xl px-6 py-4 flex items-center justify-between shadow-luxury hover:shadow-luxury-lg transition-all border border-primary-100 group"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="w-full bg-white rounded-2xl px-6 py-5 flex items-center justify-between shadow-lg border border-neutral-200 hover:shadow-xl transition-all"
                 >
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-600 to-accent-600 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                            <SlidersHorizontal className="w-5 h-5 text-white" />
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-primary-600 flex items-center justify-center shadow-sm">
+                            <SlidersHorizontal className="w-6 h-6 text-white" />
                         </div>
                         <div className="text-left">
-                            <div className="text-sm font-bold text-neutral-900">Filters</div>
-                            <div className="text-xs text-neutral-600 font-medium">{properties.length} {properties.length === 1 ? 'property' : 'properties'}</div>
+                            <div className="text-base font-bold text-neutral-900">Filters</div>
+                            <div className="text-sm text-neutral-600 font-medium">{properties.length} {properties.length === 1 ? 'property' : 'properties'}</div>
                         </div>
                     </div>
-                    <ChevronDown className="w-5 h-5 text-neutral-600 group-hover:translate-y-0.5 transition-transform" />
+                    <ChevronDown className="w-6 h-6 text-neutral-600" />
                 </motion.button>
             </div>
 
@@ -801,120 +804,148 @@ export default function Homestays() {
                 )}
             </div>
 
-            {/* Mobile Filter Drawer (Bottom Sheet style) */}
+            {/* Mobile Filter Dropdown (Centered Modal style) */}
             {
                 createPortal(
                     <AnimatePresence>
                         {isMobileFilterOpen && (
                             <>
+                                {/* Backdrop */}
                                 <motion.div
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
                                     onClick={() => setIsMobileFilterOpen(false)}
-                                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
+                                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998] md:hidden"
                                 />
-                                <motion.div
-                                    initial={{ y: '100%' }}
-                                    animate={{ y: 0 }}
-                                    exit={{ y: '100%' }}
-                                    transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                                    className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[70] max-h-[90vh] overflow-y-auto flex flex-col"
-                                >
-                                    <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                                        <h2 className="text-xl font-semibold text-gray-900">Filters</h2>
-                                        <button
-                                            onClick={() => setIsMobileFilterOpen(false)}
-                                            className="p-2 hover:bg-gray-100 rounded-full text-gray-500"
-                                        >
-                                            <X className="w-5 h-5" />
-                                        </button>
-                                    </div>
 
-                                    <div className="p-6 space-y-8 pb-24">
-                                        {/* Price Range */}
-                                        <div>
-                                            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Price Range</h3>
-                                            <div className="flex gap-4">
-                                                <div className="flex-1">
-                                                    <label className="text-xs text-gray-500 mb-1 block">Min Price</label>
-                                                    <div className="relative">
-                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
+                                {/* Premium Dropdown Panel */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                                    transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                                    className="fixed top-32 left-4 right-4 z-[9999] md:hidden max-w-md mx-auto"
+                                >
+                                    <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] border border-neutral-200/50 overflow-hidden">
+                                        {/* Compact Header */}
+                                        <div className="bg-gradient-to-r from-neutral-900 to-neutral-800 px-5 py-4 flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                                    <SlidersHorizontal className="w-4 h-4 text-white" />
+                                                </div>
+                                                <h3 className="text-base font-bold text-white">Filter & Sort</h3>
+                                            </div>
+                                            <button
+                                                onClick={() => setIsMobileFilterOpen(false)}
+                                                className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+                                                aria-label="Close filters"
+                                            >
+                                                <X className="w-4 h-4 text-white/80" />
+                                            </button>
+                                        </div>
+
+                                        {/* Compact Filter Content */}
+                                        <div className="p-4 space-y-4 max-h-[65vh] overflow-y-auto">
+                                            {/* Price Range */}
+                                            <div>
+                                                <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                                    <div className="w-1 h-1 rounded-full bg-primary-500"></div>
+                                                    Price Range
+                                                </label>
+                                                <div className="flex gap-2">
+                                                    <div className="flex-1 relative">
+                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">₹</span>
                                                         <input
                                                             type="number"
                                                             value={draftFilters.minPrice}
                                                             onChange={(e) => setDraftFilters({ ...draftFilters, minPrice: e.target.value })}
-                                                            placeholder="0"
-                                                            className="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                                                            placeholder="Min"
+                                                            className="w-full pl-6 pr-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 text-sm font-medium transition-all"
                                                         />
                                                     </div>
-                                                </div>
-                                                <div className="flex-1">
-                                                    <label className="text-xs text-gray-500 mb-1 block">Max Price</label>
-                                                    <div className="relative">
-                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₹</span>
+                                                    <div className="flex-1 relative">
+                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">₹</span>
                                                         <input
                                                             type="number"
                                                             value={draftFilters.maxPrice}
                                                             onChange={(e) => setDraftFilters({ ...draftFilters, maxPrice: e.target.value })}
-                                                            placeholder="Any"
-                                                            className="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                                                            placeholder="Max"
+                                                            className="w-full pl-6 pr-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 text-sm font-medium transition-all"
                                                         />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Property Type */}
+                                            <div>
+                                                <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                                    <div className="w-1 h-1 rounded-full bg-primary-500"></div>
+                                                    Type
+                                                </label>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <button
+                                                        onClick={() => updateFilter('propertyType', undefined)}
+                                                        className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${!appliedFilters.propertyType
+                                                            ? 'bg-neutral-900 text-white shadow-lg'
+                                                            : 'bg-neutral-50 border border-neutral-200 text-neutral-700 hover:border-neutral-300 hover:bg-neutral-100'
+                                                            }`}
+                                                    >
+                                                        All
+                                                    </button>
+                                                    {filterOptions?.propertyTypes?.map((type: string) => (
+                                                        <button
+                                                            key={type}
+                                                            onClick={() => updateFilter('propertyType', type)}
+                                                            className={`px-3 py-2 rounded-xl text-xs font-semibold capitalize transition-all duration-200 ${appliedFilters.propertyType === type
+                                                                ? 'bg-neutral-900 text-white shadow-lg'
+                                                                : 'bg-neutral-50 border border-neutral-200 text-neutral-700 hover:border-neutral-300 hover:bg-neutral-100'
+                                                                }`}
+                                                        >
+                                                            {type}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Guests */}
+                                            <div>
+                                                <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                                    <div className="w-1 h-1 rounded-full bg-primary-500"></div>
+                                                    Guests
+                                                </label>
+                                                <div className="flex items-center justify-between p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                                                    <span className="text-sm font-medium text-neutral-700">Count</span>
+                                                    <div className="flex items-center gap-3">
+                                                        <button
+                                                            onClick={() => setDraftFilters(p => ({ ...p, guests: Math.max(1, (Number(p.guests) || 1) - 1).toString() }))}
+                                                            className="w-8 h-8 rounded-lg bg-white border border-neutral-200 flex items-center justify-center text-neutral-600 hover:bg-neutral-100 active:scale-95 transition-all"
+                                                        >-</button>
+                                                        <span className="w-6 text-center font-bold text-neutral-900">{draftFilters.guests || 1}</span>
+                                                        <button
+                                                            onClick={() => setDraftFilters(p => ({ ...p, guests: ((Number(p.guests) || 1) + 1).toString() }))}
+                                                            className="w-8 h-8 rounded-lg bg-white border border-neutral-200 flex items-center justify-center text-neutral-600 hover:bg-neutral-100 active:scale-95 transition-all"
+                                                        >+</button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        {/* Type */}
-                                        <div>
-                                            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Property Type</h3>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <button
-                                                    onClick={() => { updateFilter('propertyType', undefined); }}
-                                                    className={`px-4 py-3 rounded-xl border text-sm font-medium ${!appliedFilters.propertyType ? 'border-black bg-black text-white' : 'border-gray-200 text-gray-700'}`}
-                                                >
-                                                    All Types
-                                                </button>
-                                                {filterOptions?.propertyTypes?.map((type: string) => (
-                                                    <button
-                                                        key={type}
-                                                        onClick={() => { updateFilter('propertyType', type); }}
-                                                        className={`px-4 py-3 rounded-xl border text-sm font-medium capitalize ${appliedFilters.propertyType === type ? 'border-black bg-black text-white' : 'border-gray-200 text-gray-700'}`}
-                                                    >
-                                                        {type}
-                                                    </button>
-                                                ))}
-                                            </div>
+                                        {/* Footer Actions */}
+                                        <div className="p-4 bg-gray-50 border-t border-gray-100 flex gap-2">
+                                            <button
+                                                onClick={clearAllFilters}
+                                                className="flex-1 px-4 py-3 rounded-xl text-xs font-bold text-neutral-700 bg-white hover:bg-neutral-100 transition-colors border border-gray-200"
+                                            >
+                                                Reset
+                                            </button>
+                                            <button
+                                                onClick={() => { applyDetailedFilters(); setIsMobileFilterOpen(false); }}
+                                                className="flex-[2] px-6 py-3 bg-gradient-to-r from-primary-600 to-blue-600 text-white text-xs font-bold rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95"
+                                            >
+                                                Apply ({pagination?.total})
+                                            </button>
                                         </div>
-
-                                        {/* Guests */}
-                                        <div>
-                                            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Guests</h3>
-                                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                                                <span className="font-medium text-gray-900">How many guests?</span>
-                                                <div className="flex items-center gap-4">
-                                                    <button
-                                                        onClick={() => setDraftFilters(p => ({ ...p, guests: Math.max(1, (Number(p.guests) || 1) - 1).toString() }))}
-                                                        className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-lg active:scale-90 transition-transform shadow-sm"
-                                                    >-</button>
-                                                    <span className="w-8 text-center font-semibold text-lg">{draftFilters.guests || 1}</span>
-                                                    <button
-                                                        onClick={() => setDraftFilters(p => ({ ...p, guests: ((Number(p.guests) || 1) + 1).toString() }))}
-                                                        className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-lg active:scale-90 transition-transform shadow-sm"
-                                                    >+</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Footer Actions */}
-                                    <div className="p-6 border-t border-gray-100 bg-white mt-auto sticky bottom-0 z-10 flex gap-3">
-                                        <Button onClick={clearAllFilters} variant="outline" size="lg" className="flex-1">
-                                            Clear All
-                                        </Button>
-                                        <Button onClick={() => { applyDetailedFilters(); setIsMobileFilterOpen(false); }} variant="primary" size="lg" className="flex-1 bg-black text-white hover:bg-gray-900">
-                                            Show {pagination?.total || 'Results'} Properties
-                                        </Button>
                                     </div>
                                 </motion.div>
                             </>

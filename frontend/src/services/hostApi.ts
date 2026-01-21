@@ -22,7 +22,7 @@ export interface CreatePropertyData {
         city: string;
         state: string;
         country: string;
-        zipCode: string;
+        postalCode: string;
         coordinates?: {
             latitude: number;
             longitude: number;
