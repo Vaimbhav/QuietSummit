@@ -93,6 +93,13 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                 const redirectPath = localStorage.getItem('redirectAfterLogin')
                 if (redirectPath) {
                     localStorage.removeItem('redirectAfterLogin')
+
+                    // Safety: Don't redirect members to host pages
+                    if (response.data.role === 'member' && redirectPath.startsWith('/host')) {
+                        window.location.href = '/dashboard'
+                        return
+                    }
+
                     window.location.href = redirectPath
                 } else {
                     // If no explicit redirect, stay on current page unless it's an auth-only page

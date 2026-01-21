@@ -75,7 +75,7 @@ export default function GoogleAuthSuccess() {
                     }
 
                     // Otherwise, proceed with redirect
-                    handleRedirect()
+                    handleRedirect(fullUserData.role)
                 } else {
                     setError('Failed to fetch user profile')
                     setLoading(false)
@@ -90,14 +90,28 @@ export default function GoogleAuthSuccess() {
         processAuth()
     }, [searchParams, navigate, dispatch])
 
-    const handleRedirect = () => {
+    const handleRedirect = (role?: string) => {
         // Check for redirect path
         const redirectPath = localStorage.getItem('redirectAfterLogin')
         if (redirectPath) {
             localStorage.removeItem('redirectAfterLogin')
+
+            // prevent members from being redirected to host pages
+            if (role === 'member' && redirectPath.startsWith('/host')) {
+                navigate('/dashboard')
+                return
+            }
+
             navigate(redirectPath)
         } else {
-            navigate('/dashboard')
+            // Default redirects based on role
+            if (role === 'host') {
+                navigate('/host/dashboard')
+            } else if (role === 'admin') {
+                navigate('/admin/dashboard')
+            } else {
+                navigate('/dashboard')
+            }
         }
     }
 
@@ -117,12 +131,8 @@ export default function GoogleAuthSuccess() {
                 localStorage.setItem('quietsummit_user', JSON.stringify(updatedUser))
                 dispatch(setUser(updatedUser))
 
-                // Redirect based on role
-                if (isHostMode || updatedUser.role === 'host') {
-                    navigate('/host/dashboard')
-                } else {
-                    handleRedirect()
-                }
+                // Redirect using the smart handler
+                handleRedirect(updatedUser.role)
             }
         } catch (err) {
             console.error(err)
