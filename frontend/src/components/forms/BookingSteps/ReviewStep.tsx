@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { ChevronRight, ChevronLeft, Clock, FileText, Info, ShieldCheck, ShoppingBag, Loader2 } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { ChevronRight, ChevronLeft, Clock, FileText, Info, ShieldCheck, ShoppingBag, Loader2, CheckCircle } from 'lucide-react'
 import { Journey } from '../../../types/journey'
 import { BookingData } from '../BookingForm'
 import { createRazorpayOrder, verifyPayment, createBooking, getRazorpayKey } from '../../../services/api'
@@ -21,6 +22,8 @@ declare global {
 export default function ReviewStep({ journey, bookingData, onBack, onClose }: ReviewStepProps) {
     const navigate = useNavigate()
     const [isProcessing, setIsProcessing] = useState(false)
+    const [isSuccess, setIsSuccess] = useState(false)
+    const [bookingReference, setBookingReference] = useState('')
 
     const loadRazorpayScript = () => {
         return new Promise((resolve) => {
@@ -118,27 +121,28 @@ export default function ReviewStep({ journey, bookingData, onBack, onClose }: Re
 
                         // Clear session storage on success
                         sessionStorage.removeItem(`booking_${journey._id}`)
+
+                        // Update state to show success screen
+                        setBookingReference(bookingId)
+                        setIsSuccess(true)
                         setIsProcessing(false)
 
                         // iOS Chrome/Safari compatible navigation
                         const confirmationUrl = `/booking-confirmation/${bookingId}`;
                         const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-                        if (isIOS) {
-                            // Close modal immediately on iOS
-                            if (onClose) onClose();
-
-                            // Force direct navigation on iOS (both Safari and Chrome)
-                            setTimeout(() => {
+                        // Delay navigation to show success message and ensure smooth transition
+                        setTimeout(() => {
+                            if (isIOS) {
+                                // Direct navigation for iOS
+                                // Do NOT close modal manually on iOS to prevent blank screen flash
                                 window.location.href = confirmationUrl;
-                            }, 500);
-                        } else {
-                            // Desktop: use React Router
-                            setTimeout(() => {
+                            } else {
+                                // Desktop: use React Router and close modal
                                 navigate(confirmationUrl, { replace: true });
                                 if (onClose) onClose();
-                            }, 1000);
-                        }
+                            }
+                        }, 2000);
 
                     } catch (error) {
                         console.error('✗ Booking creation failed:', error)
@@ -200,6 +204,39 @@ export default function ReviewStep({ journey, bookingData, onBack, onClose }: Re
             currency: 'INR',
             minimumFractionDigits: 0,
         }).format(amount)
+    }
+
+    if (isSuccess) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full py-12 text-center">
+                <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6"
+                >
+                    <CheckCircle className="w-12 h-12 text-green-600" />
+                </motion.div>
+                <h3 className="text-3xl font-black text-neutral-900 mb-4">
+                    Booking Confirmed! 🎉
+                </h3>
+                <p className="text-lg text-neutral-600 mb-2">
+                    Your journey to {journey.destination} is confirmed
+                </p>
+                {bookingReference && (
+                    <div className="inline-block px-6 py-3 bg-primary-50 rounded-xl mb-6">
+                        <p className="text-sm text-neutral-600">Booking Reference</p>
+                        <p className="text-2xl font-black text-primary-600">{bookingReference}</p>
+                    </div>
+                )}
+                <p className="text-neutral-600">
+                    A confirmation email has been sent to {bookingData.email}
+                </p>
+                <div className="mt-8 flex items-center gap-2 text-neutral-500">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <p className="text-sm">Redirecting to confirmation page...</p>
+                </div>
+            </div>
+        )
     }
 
     return (
