@@ -242,10 +242,10 @@ export default function Dashboard() {
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="max-w-4xl"
+                        className="w-full"
                     >
-                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-                            <div className="flex items-start gap-4">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                            <div className="flex items-center gap-4">
                                 <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-2xl sm:text-3xl font-bold border border-white/20 flex-shrink-0">
                                     {profile.name.charAt(0).toUpperCase()}
                                 </div>
@@ -262,10 +262,14 @@ export default function Dashboard() {
                             {authUser?.role === 'host' && (
                                 <button
                                     onClick={() => navigate('/host/dashboard')}
-                                    className="px-5 py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-xl font-semibold transition-all flex items-center gap-2 text-sm shrink-0"
+                                    className="group relative px-6 py-3 bg-gradient-to-r from-amber-200 to-amber-400 text-primary-900 rounded-xl font-bold shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 hover:scale-[1.02] transition-all duration-300 flex items-center gap-2 text-sm shrink-0 overflow-hidden"
                                 >
-                                    <span>Switch to Hosting</span>
-                                    <ArrowRight className="w-4 h-4" />
+                                    <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
+                                    <div className="p-1 bg-primary-900/10 rounded-full mr-1">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                                    </div>
+                                    <span className="relative z-10">Switch to Hosting</span>
+                                    <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
                                 </button>
                             )}
                         </div>

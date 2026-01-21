@@ -8,6 +8,7 @@ import { calculateBookingPrice } from '../services/bookingApi';
 import PropertyReviews from '../components/reviews/PropertyReviews';
 import Loader from '../components/common/Loader';
 import BookingModal from '../components/booking/BookingModal';
+import BookingGuard from '../components/common/BookingGuard';
 import PropertyGallery from '../components/properties/PropertyGallery';
 import TrustBadges from '../components/properties/TrustBadges';
 import AmenityGrid from '../components/properties/AmenityGrid';
@@ -120,14 +121,7 @@ export default function PropertyDetail() {
         return null;
     };
 
-    const handleContinueToBook = () => {
-        const userDataStr = localStorage.getItem('quietsummit_user');
-        if (!userDataStr) {
-            localStorage.setItem('redirectAfterLogin', window.location.pathname);
-            navigate('/signup');
-            return;
-        }
-
+    const handleBookingClick = (triggerAuthCheck: () => void) => {
         const validationError = validateBookingForm();
         if (validationError) {
             setBookingError(validationError);
@@ -135,7 +129,7 @@ export default function PropertyDetail() {
         }
 
         setBookingError(null);
-        setIsBookingModalOpen(true);
+        triggerAuthCheck();
     };
 
     if (loading) {
@@ -392,13 +386,17 @@ export default function PropertyDetail() {
                                             </div>
                                         </div>
                                     )}
-                                    <button
-                                        onClick={handleContinueToBook}
-                                        disabled={!checkIn || !checkOut}
-                                        className="w-full py-4 bg-gradient-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-bold rounded-xl transition-all hover:scale-[1.02] hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg active:scale-[0.98]"
-                                    >
-                                        Continue to Book
-                                    </button>
+                                    <BookingGuard onAuthenticated={() => setIsBookingModalOpen(true)}>
+                                        {(triggerAuthCheck) => (
+                                            <button
+                                                onClick={() => handleBookingClick(triggerAuthCheck)}
+                                                disabled={!checkIn || !checkOut}
+                                                className="w-full py-4 bg-gradient-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white font-bold rounded-xl transition-all hover:scale-[1.02] hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg active:scale-[0.98]"
+                                            >
+                                                Continue to Book
+                                            </button>
+                                        )}
+                                    </BookingGuard>
                                     <p className="text-center text-sm text-gray-500 mt-4">You won't be charged yet</p>
                                 </div>
                             </div>

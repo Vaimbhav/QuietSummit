@@ -28,8 +28,8 @@ export default function SignUp() {
                 <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {/* Sign Up Form */}
                     <div className="lg:col-span-2">
-                        <Card>
-                            <h2 className="text-2xl font-bold text-neutral-900 mb-6">Join our community</h2>
+                        <Card className="border-t-4 border-primary-500 shadow-xl">
+                            <h2 className="text-3xl font-bold text-neutral-900 mb-8 text-center">Create Your Account</h2>
                             <SignUpForm />
                         </Card>
                     </div>

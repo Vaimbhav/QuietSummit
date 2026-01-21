@@ -95,7 +95,22 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                     localStorage.removeItem('redirectAfterLogin')
                     window.location.href = redirectPath
                 } else {
-                    window.location.href = '/dashboard'
+                    // If no explicit redirect, stay on current page unless it's an auth-only page
+                    const currentPath = window.location.pathname
+                    const authPages = ['/signup', '/forgot-password', '/reset-password', '/login', '/auth']
+
+                    if (authPages.some(page => currentPath.startsWith(page)) || currentPath === '/') {
+                        // Optional: Redirect home users to dashboard, or keep them on home?
+                        // User asked to stay on same page. But for /signup we must move.
+                        // Let's keep /dashboard for auth pages.
+                        if (authPages.some(page => currentPath.startsWith(page))) {
+                            window.location.href = '/dashboard'
+                        } else {
+                            onClose()
+                        }
+                    } else {
+                        onClose()
+                    }
                 }
             }, 1500)
         } catch (err: any) {
@@ -153,6 +168,18 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
     }
 
     const handleGoogleLogin = () => {
+        // Store current location for redirect after successful auth
+        const currentPath = window.location.pathname
+
+        // Don't redirect back to auth pages (signup, login, etc)
+        // If we are on an auth page, default to dashboard (handled by GoogleAuthSuccess)
+        const authPages = ['/signup', '/login', '/forgot-password', '/reset-password', '/auth']
+        const isAuthPage = authPages.some(page => currentPath.startsWith(page))
+
+        if (!isAuthPage) {
+            localStorage.setItem('redirectAfterLogin', currentPath)
+        }
+
         const googleAuthUrl = getGoogleAuthUrl()
         window.location.href = googleAuthUrl
     }

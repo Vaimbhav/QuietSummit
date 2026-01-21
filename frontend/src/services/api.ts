@@ -207,6 +207,7 @@ export interface SignUpFormData {
     phone?: string;
     interests: string[];
     subscribeToNewsletter?: boolean;
+    isHost?: boolean;
 }
 
 export const submitSignUp = async (data: SignUpFormData): Promise<any> => {
@@ -215,6 +216,16 @@ export const submitSignUp = async (data: SignUpFormData): Promise<any> => {
         return response.data;
     } catch (error) {
         logger.error('Error submitting signup:', error);
+        throw error;
+    }
+};
+
+export const updateUserRole = async (isHost: boolean): Promise<any> => {
+    try {
+        const response = await api.put('/auth/role', { isHost });
+        return response.data;
+    } catch (error) {
+        logger.error('Error updating role:', error);
         throw error;
     }
 };

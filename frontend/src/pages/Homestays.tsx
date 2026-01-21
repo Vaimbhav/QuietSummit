@@ -209,7 +209,7 @@ export default function Homestays() {
     return (
         <div className="min-h-screen bg-[#FAF9F7] text-neutral-900 font-sans">
             {/* Hero - Premium Simplified */}
-            <section className="relative bg-primary-600 text-white py-20 sm:py-24 overflow-hidden">
+            <section className="relative bg-primary-600 text-white py-20 sm:py-24">
                 <div className="container mx-auto px-6 sm:px-8 text-center relative z-10">
                     <motion.h1
                         initial={{ opacity: 0, y: 10 }}
@@ -232,7 +232,7 @@ export default function Homestays() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="max-w-4xl mx-auto relative px-4 sm:px-0"
+                        className="max-w-4xl mx-auto relative px-4 sm:px-0 z-50"
                         ref={filterRef}
                     >
                         <div className="bg-white/95 backdrop-blur-xl rounded-full shadow-2xl p-2 flex items-center gap-2 border border-white/20">

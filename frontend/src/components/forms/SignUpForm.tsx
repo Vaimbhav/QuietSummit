@@ -31,6 +31,7 @@ export default function SignUpForm() {
     const [isExistingMember, setIsExistingMember] = useState(false)
     const [phoneNumber, setPhoneNumber] = useState('')
     const [phoneCountry, setPhoneCountry] = useState('IN')
+    const [isHostMode, setIsHostMode] = useState(false)
     const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<SignUpFormData>()
 
     const emailValue = watch('email')
@@ -80,7 +81,8 @@ export default function SignUpForm() {
                 phone: phoneNumber,
                 phoneCountry: phoneCountry,
                 interests: data.interests,
-                subscribeToNewsletter: data.subscribeToNewsletter
+                subscribeToNewsletter: data.subscribeToNewsletter,
+                isHost: isHostMode
             }
             const response = await submitSignUp(submitData)
 
@@ -94,6 +96,8 @@ export default function SignUpForm() {
                 interests: response.data.interests,
                 subscribeToNewsletter: response.data.subscribeToNewsletter,
                 memberSince: response.data.memberSince,
+                role: response.data.role,
+                isHost: response.data.isHost || isHostMode,
                 isAuthenticated: true
             }
             localStorage.setItem('quietsummit_user', JSON.stringify(userData))
@@ -103,6 +107,8 @@ export default function SignUpForm() {
                 email: response.data.email,
                 name: response.data.name,
                 token: response.data.token,
+                role: response.data.role,
+                isHost: response.data.isHost || isHostMode,
                 isAuthenticated: true
             }))
 
@@ -118,7 +124,11 @@ export default function SignUpForm() {
                     window.location.href = redirectUrl
                 } else {
                     // If no redirect, go to dashboard
-                    navigate('/dashboard')
+                    if (isHostMode || response.data.role === 'host') {
+                        navigate('/host/dashboard')
+                    } else {
+                        navigate('/dashboard')
+                    }
                 }
             }, 1500)
 
@@ -166,6 +176,50 @@ export default function SignUpForm() {
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-6"
         >
+            <div className="grid grid-cols-2 gap-4 mb-8">
+                <div
+                    onClick={() => setIsHostMode(false)}
+                    className={`cursor-pointer relative p-6 rounded-2xl border-2 transition-all duration-300 ${!isHostMode
+                        ? 'border-primary-600 bg-primary-50 ring-1 ring-primary-600 shadow-lg scale-[1.02]'
+                        : 'border-neutral-100 bg-white hover:border-primary-200 hover:shadow-md opacity-80 hover:opacity-100'
+                        }`}
+                >
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 text-2xl ${!isHostMode ? 'bg-primary-100' : 'bg-neutral-100'}`}>
+                        🌏
+                    </div>
+                    <div className="absolute top-4 right-4">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${!isHostMode ? 'border-primary-600 bg-primary-600' : 'border-neutral-300'}`}>
+                            {(!isHostMode) && <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
+                        </div>
+                    </div>
+                    <h3 className={`font-bold text-lg mb-1 ${!isHostMode ? 'text-primary-900' : 'text-neutral-700'}`}>Member</h3>
+                    <p className={`text-sm leading-relaxed ${!isHostMode ? 'text-primary-700' : 'text-neutral-500'}`}>
+                        I want to discover and book unique journeys.
+                    </p>
+                </div>
+
+                <div
+                    onClick={() => setIsHostMode(true)}
+                    className={`cursor-pointer relative p-6 rounded-2xl border-2 transition-all duration-300 ${isHostMode
+                        ? 'border-primary-600 bg-primary-50 ring-1 ring-primary-600 shadow-lg scale-[1.02]'
+                        : 'border-neutral-100 bg-white hover:border-primary-200 hover:shadow-md opacity-80 hover:opacity-100'
+                        }`}
+                >
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 text-2xl ${isHostMode ? 'bg-primary-100' : 'bg-neutral-100'}`}>
+                        🏡
+                    </div>
+                    <div className="absolute top-4 right-4">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isHostMode ? 'border-primary-600 bg-primary-600' : 'border-neutral-300'}`}>
+                            {(isHostMode) && <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
+                        </div>
+                    </div>
+                    <h3 className={`font-bold text-lg mb-1 ${isHostMode ? 'text-primary-900' : 'text-neutral-700'}`}>Host</h3>
+                    <p className={`text-sm leading-relaxed ${isHostMode ? 'text-primary-700' : 'text-neutral-500'}`}>
+                        I want to list my property and host travelers.
+                    </p>
+                </div>
+            </div>
+
             <div className="grid md:grid-cols-2 gap-6">
                 <Input
                     label="First Name"
@@ -330,7 +384,7 @@ export default function SignUpForm() {
                 className="w-full"
                 isLoading={isSubmitting}
             >
-                {isSubmitting ? 'Creating Your Account...' : 'Become a Quiet Believer'}
+                {isSubmitting ? 'Creating Your Account...' : (isHostMode ? 'Start Hosting' : 'Start Your Journey')}
             </Button>
 
             <div className="mt-6">

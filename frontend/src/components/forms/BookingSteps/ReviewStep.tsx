@@ -27,6 +27,10 @@ export default function ReviewStep({ journey, bookingData, onBack, onClose }: Re
 
     const loadRazorpayScript = () => {
         return new Promise((resolve) => {
+            if (window.Razorpay) {
+                resolve(true)
+                return
+            }
             const script = document.createElement('script')
             script.src = 'https://checkout.razorpay.com/v1/checkout.js'
             script.onload = () => resolve(true)
@@ -127,21 +131,13 @@ export default function ReviewStep({ journey, bookingData, onBack, onClose }: Re
                         setIsSuccess(true)
                         setIsProcessing(false)
 
-                        // iOS Chrome/Safari compatible navigation
                         const confirmationUrl = `/booking-confirmation/${bookingId}`;
-                        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
                         // Delay navigation to show success message and ensure smooth transition
                         setTimeout(() => {
-                            if (isIOS) {
-                                // Direct navigation for iOS
-                                // Do NOT close modal manually on iOS to prevent blank screen flash
-                                window.location.href = confirmationUrl;
-                            } else {
-                                // Desktop: use React Router and close modal
-                                navigate(confirmationUrl, { replace: true });
-                                if (onClose) onClose();
-                            }
+                            // Use React Router for all platforms to prevent page refresh crashes
+                            navigate(confirmationUrl, { replace: true });
+                            if (onClose) onClose();
                         }, 2000);
 
                     } catch (error) {

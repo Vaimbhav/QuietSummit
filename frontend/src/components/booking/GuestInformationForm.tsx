@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PhoneInput from '../common/PhoneInput';
+import { countries } from '../../utils/phoneValidation';
 
 interface Guest {
     name: string;
@@ -110,7 +111,27 @@ export default function GuestInformationForm({
                         <PhoneInput
                             label="Phone Number *"
                             value={formData.primaryGuest.phone}
-                            onChange={(phone: string) => handlePrimaryGuestChange('phone', phone)}
+                            onChange={(phone: string, countryCode: string) => {
+                                // Update phone and sync country
+                                const country = countries.find(c => c.code === countryCode);
+                                const updated = {
+                                    ...formData,
+                                    primaryGuest: {
+                                        ...formData.primaryGuest,
+                                        phone,
+                                        country: country ? country.name : formData.primaryGuest.country
+                                    },
+                                };
+                                setFormData(updated);
+                                onUpdate(updated);
+
+                                // Clear phone error
+                                if (errors.phone) {
+                                    setErrors({ ...errors, phone: '' });
+                                }
+                            }}
+                            // Derive country code from the selected country name
+                            countryCode={countries.find(c => c.name === formData.primaryGuest.country)?.code}
                             defaultCountry="IN"
                         />
                         {errors.phone && <p className="mt-2 text-sm text-red-600 font-medium animate-fade-in">{errors.phone}</p>}
@@ -132,12 +153,9 @@ export default function GuestInformationForm({
                                 aria-label="Primary guest country"
                             >
                                 <option value="">Select Country</option>
-                                <option value="India">India</option>
-                                <option value="United States">United States</option>
-                                <option value="United Kingdom">United Kingdom</option>
-                                <option value="Canada">Canada</option>
-                                <option value="Australia">Australia</option>
-                                <option value="Other">Other</option>
+                                {countries.map((country) => (
+                                    <option key={country.code} value={country.name}>{country.name}</option>
+                                ))}
                             </select>
                             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -10,6 +10,7 @@ interface PhoneInputProps {
     required?: boolean
     error?: string
     defaultCountry?: string
+    countryCode?: string // Controlled country code
 }
 
 export default function PhoneInput({
@@ -19,16 +20,25 @@ export default function PhoneInput({
     placeholder,
     required = false,
     error,
-    defaultCountry = 'IN'
+    defaultCountry = 'IN',
+    countryCode
 }: PhoneInputProps) {
-    const [selectedCountry, setSelectedCountry] = useState<Country>(
+    // If countryCode is provided (controlled), use it. Otherwise fall back to internal state or default.
+    const [internalCountry, setInternalCountry] = useState<Country>(
         countries.find(c => c.code === defaultCountry) || countries[0]
     )
+
+    const selectedCountry = countryCode
+        ? (countries.find(c => c.code === countryCode) || internalCountry)
+        : internalCountry
+
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const isValid = validatePhoneNumber(value || '', selectedCountry.code)
 
     const handleCountryChange = (country: Country) => {
-        setSelectedCountry(country)
+        if (!countryCode) {
+            setInternalCountry(country)
+        }
         setIsDropdownOpen(false)
         const valid = validatePhoneNumber(value || '', country.code)
         onChange(value || '', country.code, valid)
