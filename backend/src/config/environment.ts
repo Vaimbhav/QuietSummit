@@ -65,8 +65,11 @@ export const config = {
         apiSecret: process.env.CLOUDINARY_API_SECRET!,
     },
     email: {
-        user: process.env.EMAIL_USER!,
-        password: process.env.EMAIL_PASSWORD!,
+        user: process.env.EMAIL_USER || process.env.SMTP_USER!,
+        password: process.env.EMAIL_PASSWORD || process.env.SMTP_PASS!,
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        port: parseInt(process.env.SMTP_PORT || '587', 10),
+        from: process.env.EMAIL_FROM || process.env.SMTP_USER!,
     },
     clientUrl: process.env.CLIENT_URL || (isProduction ? '' : 'http://localhost:5173'),
 }

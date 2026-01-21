@@ -7,7 +7,7 @@ import { sendWelcomeEmail } from '../services/emailService'
 
 export const createSignUp = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { name, email, password, phone, interests, subscribeToNewsletter } = req.body
+        const { name, email, password, phone, interests, subscribeToNewsletter, isHost } = req.body
 
         // Validate required fields
         if (!name || !email || !password) {
@@ -46,11 +46,13 @@ export const createSignUp = async (req: Request, res: Response): Promise<void> =
             subscribeToNewsletter: subscribeToNewsletter !== false,
             source: 'website',
             status: 'confirmed',
+            isHost: isHost === true,
+            role: isHost === true ? 'host' : 'member'
         })
 
         // Generate JWT token (expires in 7 days for persistent login)
         const token = jwt.sign(
-            { id: signUp._id, email: signUp.email },
+            { id: signUp._id, email: signUp.email, isHost: signUp.isHost },
             config.jwtSecret,
             { expiresIn: '7d' }
         )
@@ -74,6 +76,8 @@ export const createSignUp = async (req: Request, res: Response): Promise<void> =
                 subscribeToNewsletter: signUp.subscribeToNewsletter,
                 memberSince: signUp.createdAt,
                 token: token,
+                isHost: signUp.isHost,
+                role: signUp.role
             },
         })
     } catch (error) {

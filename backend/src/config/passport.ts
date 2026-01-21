@@ -39,7 +39,8 @@ passport.use(
                             subscribeToNewsletter: true,
                             confirmedAt: new Date(),
                         })
-                        logger.info(`Created new user via Google: ${user.email}`)
+                        logger.info(`Created new user via Google: ${user.email}`); // Added semicolon
+                        (user as any).isNewUser = true
                     }
                 }
 

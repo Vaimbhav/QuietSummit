@@ -383,10 +383,15 @@ export const googleCallback = async (req: Request, res: Response): Promise<void>
 
         // Only pass essential data in URL to avoid length limits
         // Frontend will fetch full profile using the token
+
+        // Check if user is new (created within last 60 seconds)
+        const isNewUser = user.createdAt && (Date.now() - new Date(user.createdAt).getTime() < 60000)
+
         const authData = {
             token,
             refreshToken,
             email: user.email,
+            isNewUser: !!isNewUser
         }
 
         // Redirect to frontend with minimal auth data
@@ -553,6 +558,64 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
         res.status(500).json({
             success: false,
             error: 'Failed to reset password',
+        })
+    }
+}
+
+// Update member role (for onboarding)
+export const updateMemberRole = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = (req.user as any)?.id
+        const { isHost } = req.body
+
+        if (typeof isHost !== 'boolean') {
+            res.status(400).json({
+                success: false,
+                error: 'isHost must be a boolean',
+            })
+            return
+        }
+
+        const role = isHost ? 'host' : 'member'
+
+        const user = await SignUp.findByIdAndUpdate(
+            userId,
+            { isHost, role },
+            { new: true }
+        )
+
+        if (!user) {
+            res.status(404).json({
+                success: false,
+                error: 'User not found',
+            })
+            return
+        }
+
+        // Generate new token with updated claims
+        const token = jwt.sign(
+            {
+                id: user._id,
+                email: user.email,
+                role: user.role,
+                isHost: user.isHost
+            },
+            config.jwtSecret,
+            { expiresIn: '7d' }
+        )
+
+        res.json({
+            success: true,
+            data: {
+                ...user.toObject(),
+                token
+            }
+        })
+    } catch (error) {
+        logger.error('Error updating member role:', error)
+        res.status(500).json({
+            success: false,
+            error: 'Failed to update role',
         })
     }
 }

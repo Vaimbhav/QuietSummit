@@ -1,13 +1,16 @@
 import nodemailer from 'nodemailer';
 import { config } from '../config/environment';
 import logger from '../utils/logger';
+import { generateBookingReceiptPDF } from './pdfService';
 
 // Create reusable transporter
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: config.email.host,
+    port: config.email.port,
+    secure: config.email.port === 465, // true for 465, false for other ports
     auth: {
         user: config.email.user,
-        pass: config.email.password, // Use App Password, not regular Gmail password
+        pass: config.email.password,
     },
 });
 
@@ -15,8 +18,14 @@ const transporter = nodemailer.createTransport({
 transporter.verify((error: Error | null) => {
     if (error) {
         logger.error('Email transporter verification failed:', error);
+        console.error('Email config:', {
+            host: config.email.host,
+            port: config.email.port,
+            user: config.email.user,
+            secure: config.email.port === 465
+        });
     } else {
-        logger.info('Email service is ready to send messages');
+        logger.info(`Email service is ready sent from ${config.email.user}`);
     }
 });
 
@@ -25,19 +34,25 @@ interface EmailOptions {
     subject: string;
     html: string;
     text?: string;
+    attachments?: Array<{
+        filename: string;
+        content: Buffer | string;
+        contentType?: string;
+    }>;
 }
 
 /**
- * Send email using Gmail
+ * Send email using configured transport
  */
 export const sendEmail = async (options: EmailOptions): Promise<void> => {
     try {
         const mailOptions = {
-            from: `QuietSummit <${config.email.user}>`,
+            from: `"QuietSummit" <${config.email.from || config.email.user}>`,
             to: options.to,
             subject: options.subject,
             html: options.html,
             text: options.text || '',
+            attachments: options.attachments,
         };
 
         const info = await transporter.sendMail(mailOptions);
@@ -130,261 +145,277 @@ export const sendBookingConfirmationEmail = async (
     }
 ): Promise<void> => {
     const bookingRef = bookingDetails.bookingReference || `QS${Date.now().toString().slice(-8).toUpperCase()}`;
-    const travelers = bookingDetails.travelers || [];
     const isJourney = !!bookingDetails.departureDate;
+
+    // Generate PDF Receipt
+    let pdfBuffer: Buffer | undefined;
+    try {
+        pdfBuffer = await generateBookingReceiptPDF({
+            guestName: bookingDetails.guestName,
+            propertyName: bookingDetails.propertyName,
+            checkIn: bookingDetails.checkIn,
+            checkOut: bookingDetails.checkOut,
+            totalPrice: bookingDetails.totalPrice,
+            hostName: bookingDetails.hostName,
+            hostEmail: bookingDetails.hostEmail,
+            bookingReference: bookingRef,
+            numberOfTravelers: bookingDetails.numberOfTravelers || 1,
+            travelers: bookingDetails.travelers || [],
+            duration: bookingDetails.duration,
+            destination: bookingDetails.destination,
+            departureDate: bookingDetails.departureDate,
+            roomPreference: bookingDetails.roomPreference,
+            subtotal: bookingDetails.subtotal,
+            discount: bookingDetails.discount,
+            paymentMethod: bookingDetails.paymentMethod,
+            transactionId: bookingDetails.transactionId,
+        });
+    } catch (error) {
+        logger.error('Failed to generate PDF for email:', error);
+    }
 
     const html = `
     <!DOCTYPE html>
     <html>
     <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f5f5f5; }
-        .container { max-width: 650px; margin: 0 auto; background: white; }
-        .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 40px 30px; text-align: center; position: relative; overflow: hidden; }
-        .header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); animation: pulse 3s ease-in-out infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
-        .header h1 { margin: 0 0 10px 0; font-size: 32px; position: relative; z-index: 1; }
-        .header p { margin: 0; font-size: 16px; opacity: 0.95; position: relative; z-index: 1; }
-        .logo-text { font-size: 14px; font-weight: 600; letter-spacing: 2px; opacity: 0.9; margin-bottom: 15px; }
-        .thank-you { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 30px; border-left: 5px solid #10b981; margin: 0; }
-        .thank-you h2 { margin: 0 0 15px 0; color: #059669; font-size: 26px; font-weight: 700; }
-        .thank-you p { margin: 0; color: #065f46; font-size: 16px; line-height: 1.8; }
-        .content { padding: 35px 30px; }
-        .receipt-header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px double #e5e7eb; }
-        .receipt-header h2 { margin: 0 0 5px 0; color: #1f2937; font-size: 22px; }
-        .receipt-header p { margin: 0; color: #6b7280; font-size: 14px; }
-        .reference-card { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; padding: 25px; border-radius: 12px; text-align: center; margin: 25px 0; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3); }
-        .reference-card .label { font-size: 12px; opacity: 0.9; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
-        .reference-card .value { font-size: 32px; font-weight: bold; letter-spacing: 3px; margin: 5px 0; }
-        .reference-card .date { font-size: 13px; opacity: 0.8; margin-top: 10px; }
-        .section-title { font-size: 18px; font-weight: bold; color: #1f2937; margin: 30px 0 15px 0; padding-bottom: 10px; border-bottom: 2px solid #10b981; display: flex; align-items: center; gap: 10px; }
-        .section-title::before { content: '▶'; color: #10b981; font-size: 14px; }
-        .booking-details { background: #f9fafb; padding: 25px; border-radius: 10px; margin: 15px 0; border: 1px solid #e5e7eb; }
-        .detail-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #e5e7eb; }
-        .detail-row:last-child { border-bottom: none; }
-        .detail-row strong { color: #4b5563; font-weight: 600; font-size: 14px; }
-        .detail-row span { color: #1f2937; text-align: right; max-width: 60%; font-weight: 500; font-size: 14px; }
-        .traveler-card { background: white; border: 1px solid #e5e7eb; padding: 18px; border-radius: 10px; margin: 12px 0; display: flex; align-items: center; gap: 15px; transition: all 0.3s; }
-        .traveler-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); }
-        .traveler-number { width: 45px; height: 45px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; font-size: 18px; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3); }
-        .traveler-info { flex: 1; }
-        .traveler-name { font-weight: bold; color: #1f2937; margin-bottom: 5px; font-size: 15px; }
-        .traveler-details { font-size: 13px; color: #6b7280; }
-        .price-summary { background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border: 2px solid #e5e7eb; }
-        .price-row { display: flex; justify-content: space-between; padding: 12px 0; color: #4b5563; font-size: 15px; }
-        .price-total { border-top: 3px solid #10b981; margin-top: 15px; padding-top: 20px; font-size: 22px; font-weight: bold; color: #059669; }
-        .price-total span:last-child { color: #059669; font-size: 24px; }
-        .invoice-footer { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #d1d5db; }
-        .button { display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 10px; margin-top: 25px; font-weight: 600; transition: all 0.3s; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); font-size: 15px; }
-        .button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); }
-        .timeline { margin: 25px 0; }
-        .timeline-item { display: flex; gap: 18px; margin-bottom: 25px; }
-        .timeline-dot { width: 36px; height: 36px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3); }
-        .timeline-content h4 { margin: 0 0 6px 0; color: #1f2937; font-size: 16px; }
-        .timeline-content p { margin: 0; color: #6b7280; font-size: 14px; line-height: 1.6; }
-        .reminder-box { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 5px solid #f59e0b; padding: 20px; border-radius: 8px; margin: 25px 0; }
-        .reminder-box strong { color: #92400e; display: block; margin-bottom: 12px; font-size: 16px; }
-        .reminder-box ul { margin: 0; padding-left: 22px; }
-        .reminder-box li { color: #78350f; margin: 8px 0; font-size: 14px; }
-        .footer { background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); padding: 35px 30px; text-align: center; border-top: 3px solid #e5e7eb; }
-        .footer-links { margin: 20px 0; }
-        .footer-links a { color: #6366f1; text-decoration: none; margin: 0 15px; font-weight: 600; font-size: 14px; transition: color 0.3s; }
-        .footer-links a:hover { color: #4f46e5; }
-        .footer p { margin: 8px 0; color: #6b7280; font-size: 13px; line-height: 1.6; }
-        .footer .brand { margin-top: 25px; font-weight: 700; color: #1f2937; font-size: 16px; }
-        .footer .tagline { font-style: italic; color: #059669; margin-top: 5px; }
-        .badge { display: inline-block; background: #dbeafe; color: #1e40af; padding: 5px 14px; border-radius: 15px; font-size: 12px; font-weight: 600; margin: 5px 0; }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #1f2937; margin: 0; padding: 0; background-color: #f9fafb; -webkit-font-smoothing: antialiased; }
+        .container { max-width: 720px; margin: 40px auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.05); border: 1px solid #f3f4f6; }
+        
+        /* Header */
+        .header { background: linear-gradient(135deg, #059669 0%, #047857 100%); padding: 48px 30px; text-align: center; color: white; position: relative; }
+        .logo { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 0.15em; padding: 4px 12px; background: rgba(255,255,255,0.15); border-radius: 4px; margin-bottom: 20px; text-transform: uppercase; color: #ffffff; backdrop-filter: blur(4px); }
+        .header h1 { margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .subheader { font-size: 15px; color: #e6fffa; margin-top: 10px; font-weight: 500; opacity: 0.95; }
+        
+        /* Welcome Block */
+        .welcome-block { background: #f0fdf4; padding: 30px; text-align: center; border-bottom: 1px solid #dcfce7; }
+        .welcome-title { color: #065f46; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+        .welcome-text { color: #047857; font-size: 15px; margin: 0; max-width: 500px; margin-inline: auto; line-height: 1.5; }
+        .highlight { background: #fef08a; padding: 0 4px; border-radius: 2px; color: #854d0e; font-weight: 600; }
+        .ref-badge { display: inline-block; background: white; padding: 6px 16px; border-radius: 99px; font-size: 12px; font-weight: 700; color: #059669; border: 1px solid #6ee7b7; margin-top: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); letter-spacing: 0.02em; }
+
+        .content { padding: 40px 32px; }
+
+        /* Grid Layout */
+        .grid-row { display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 40px; }
+        .grid-col { flex: 1; min-width: 280px; }
+        
+        /* Cards */
+        .card-label { font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; display: block; }
+        .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; height: 100%; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        
+        /* Details List */
+        .detail-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px dashed #f3f4f6; }
+        .detail-item:last-child { border-bottom: none; }
+        .detail-label { color: #6b7280; font-size: 13px; font-weight: 600; min-width: 100px; padding-right: 12px; }
+        .detail-value { color: #111827; font-size: 13px; font-weight: 600; text-align: right; flex: 1; line-height: 1.4; }
+        
+        /* Price List */
+        .price-list .detail-item { padding: 10px 0; }
+        .price-total { margin-top: 20px; padding-top: 20px; border-top: 2px dashed #e5e7eb; display: flex; justify-content: space-between; align-items: baseline; }
+        .total-label { font-size: 15px; font-weight: 700; color: #374151; }
+        .total-value { font-size: 26px; font-weight: 800; color: #059669; letter-spacing: -0.03em; }
+        
+        .receipt-meta { margin-top: 24px; background: #f9fafb; padding: 16px; border-radius: 8px; border: 1px solid #f3f4f6; }
+        .meta-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; color: #6b7280; }
+        .meta-row:last-child { margin-bottom: 0; }
+        .status-badge { color: #047857; font-weight: 700; background: #d1fae5; padding: 3px 10px; border-radius: 4px; font-size: 11px; letter-spacing: 0.03em; text-transform: uppercase; }
+
+        /* Timeline */
+        .timeline-section { margin-top: 30px; padding: 0 10px; }
+        .timeline-header { text-align: center; margin-bottom: 30px; }
+        .timeline-title { font-size: 18px; font-weight: 800; color: #111827; letter-spacing: -0.02em; }
+        
+        .timeline-item { display: flex; gap: 24px; margin-bottom: 30px; position: relative; }
+        .timeline-item:last-child { margin-bottom: 0; }
+        .timeline-icon-container { position: relative; z-index: 2; width: 44px; height: 44px; flex-shrink: 0; }
+        .timeline-icon { width: 44px; height: 44px; background: white; border: 2px solid #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #059669; font-weight: 800; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.15); }
+        .timeline-line { position: absolute; left: 21px; top: 44px; bottom: -30px; width: 2px; background: #e5e7eb; z-index: 1; }
+        .timeline-item:last-child .timeline-line { display: none; }
+        
+        /* Timeline checkmark fix */
+        .checkmark { display: inline-block; width: 6px; height: 10px; border: solid #059669; border-width: 0 2px 2px 0; transform: rotate(45deg); margin-top: -3px; }
+        
+        .timeline-body { padding-top: 2px; }
+        .timeline-body h4 { margin: 0 0 6px 0; font-size: 15px; font-weight: 700; color: #111827; }
+        .timeline-body p { margin: 0; font-size: 14px; color: #6b7280; line-height: 1.5; }
+
+        /* CTA */
+        .cta-section { text-align: center; margin: 50px 0 20px; border-top: 1px solid #f3f4f6; padding-top: 40px; }
+        .btn-primary { background: #059669; color: white; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-weight: 600; font-size: 15px; display: inline-block; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3), 0 2px 4px -1px rgba(5, 150, 105, 0.06); border: 1px solid #047857; letter-spacing: 0.01em; }
+        .btn-primary:hover { background: #047857; transform: translateY(-1px); box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.4); }
+        
+        /* Footer */
+        .footer { background: #f9fafb; padding: 48px 30px; text-align: center; border-top: 1px solid #e5e7eb; }
+        .footer-brand { color: #111827; font-weight: 800; font-size: 16px; margin-bottom: 8px; letter-spacing: -0.02em; }
+        .footer-tagline { color: #6b7280; font-size: 14px; margin-bottom: 32px; font-style: italic; }
+        .footer-links { margin-bottom: 32px; }
+        .footer-links a { color: #4b5563; text-decoration: none; font-size: 13px; margin: 0 12px; font-weight: 600; transition: color 0.15s; }
+        .footer-links a:hover { color: #059669; }
+        .copyright { color: #9ca3af; font-size: 12px; line-height: 1.6; }
+        
+        @media (max-width: 600px) {
+            .container { margin: 0; border-radius: 0; border: none; }
+            .content { padding: 32px 20px; }
+            .card { padding: 20px; }
+            .header h1 { font-size: 26px; }
+            .total-value { font-size: 22px; }
+        }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo-text">QUIETSUMMIT</div>
-          <h1>🎉 Booking Confirmed!</h1>
-          <p>Your adventure begins here</p>
+          <div class="logo">QUIETSUMMIT</div>
+          <h1>Adventure Awaits!</h1>
+          <div class="subheader">Your booking is secure &amp; confirmed</div>
         </div>
         
-        <div class="thank-you">
-          <h2>Thank You for Choosing QuietSummit, ${bookingDetails.guestName}! 🙏</h2>
-          <p>We are absolutely thrilled to have you as our valued guest! Your trust in QuietSummit means the world to us. Your booking has been successfully confirmed, and our team is already working to ensure you have an unforgettable, peaceful, and transformative experience.</p>
+        <div class="welcome-block">
+          <div class="welcome-title">Hi ${bookingDetails.guestName},</div>
+          <div class="welcome-text">Get ready for an unforgettable experience at <span class="highlight">${bookingDetails.propertyName}</span> in ${bookingDetails.destination}.</div>
+          <div class="ref-badge">Ref: ${bookingRef}</div>
         </div>
 
         <div class="content">
-          <div class="receipt-header">
-            <h2>📋 BOOKING RECEIPT</h2>
-            <p>Official confirmation and payment receipt</p>
-          </div>
-
-          <div class="reference-card">
-            <div class="label">BOOKING REFERENCE NUMBER</div>
-            <div class="value">${bookingRef}</div>
-            <div class="date">Issued on ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
-          </div>
-
-          <h3 class="section-title">${isJourney ? 'Journey' : 'Booking'} Information</h3>
-          <div class="booking-details">
-            <div class="detail-row">
-              <strong>${isJourney ? '🏔️ Journey Name' : '🏡 Property Name'}:</strong>
-              <span>${bookingDetails.propertyName}</span>
-            </div>
-            ${bookingDetails.destination ? `
-            <div class="detail-row">
-              <strong>📍 Destination:</strong>
-              <span>${bookingDetails.destination}</span>
-            </div>` : ''}
-            ${isJourney ? `
-            <div class="detail-row">
-              <strong>🗓️ Departure Date:</strong>
-              <span>${bookingDetails.departureDate}</span>
-            </div>
-            <div class="detail-row">
-              <strong>⏱️ Duration:</strong>
-              <span>${bookingDetails.duration} days of adventure</span>
-            </div>` : `
-            <div class="detail-row">
-              <strong>📅 Check-in:</strong>
-              <span>${bookingDetails.checkIn}</span>
-            </div>
-            <div class="detail-row">
-              <strong>📅 Check-out:</strong>
-              <span>${bookingDetails.checkOut}</span>
-            </div>`}
-            <div class="detail-row">
-              <strong>👥 Number of Travelers:</strong>
-              <span>${bookingDetails.numberOfTravelers || 1} ${(bookingDetails.numberOfTravelers || 1) === 1 ? 'Guest' : 'Guests'}</span>
-            </div>
-            ${bookingDetails.roomPreference ? `
-            <div class="detail-row">
-              <strong>🛏️ Room Preference:</strong>
-              <span style="text-transform: capitalize;">${bookingDetails.roomPreference}</span>
-            </div>` : ''}
-            ${bookingDetails.hostName ? `
-            <div class="detail-row">
-              <strong>🤝 Your Host:</strong>
-              <span>${bookingDetails.hostName}</span>
-            </div>
-            <div class="detail-row">
-              <strong>📧 Host Contact:</strong>
-              <span>${bookingDetails.hostEmail}</span>
-            </div>` : ''}
-          </div>
-
-          ${travelers.length > 0 ? `
-          <h3 class="section-title">Traveler Details</h3>
-          ${travelers.map((traveler, index) => `
-          <div class="traveler-card">
-            <div class="traveler-number">${index + 1}</div>
-            <div class="traveler-info">
-              <div class="traveler-name">${traveler.name}</div>
-              <div class="traveler-details">${traveler.age} years old • ${traveler.gender.charAt(0).toUpperCase() + traveler.gender.slice(1)}</div>
-            </div>
-          </div>`).join('')}
-          ` : ''}
-
-          <h3 class="section-title">Payment Receipt</h3>
-          <div class="price-summary">
-            ${bookingDetails.subtotal ? `
-            <div class="price-row">
-              <span>Subtotal:</span>
-              <span>₹${bookingDetails.subtotal.toLocaleString('en-IN')}</span>
-            </div>` : ''}
-            ${bookingDetails.discount && bookingDetails.discount > 0 ? `
-            <div class="price-row" style="color: #059669;">
-              <span>💚 Discount Applied:</span>
-              <span>- ₹${bookingDetails.discount.toLocaleString('en-IN')}</span>
-            </div>` : ''}
-            <div class="price-row price-total">
-              <span>Total Amount Paid:</span>
-              <span>₹${bookingDetails.totalPrice.toLocaleString('en-IN')}</span>
-            </div>
-            <div class="invoice-footer">
-              ${bookingDetails.paymentMethod ? `
-              <div class="price-row" style="font-size: 13px; padding: 8px 0;">
-                <span>Payment Method:</span>
-                <span><strong>${bookingDetails.paymentMethod}</strong></span>
-              </div>` : ''}
-              ${bookingDetails.transactionId ? `
-              <div class="price-row" style="font-size: 13px; padding: 8px 0;">
-                <span>Transaction ID:</span>
-                <span style="font-family: monospace; font-size: 12px;">${bookingDetails.transactionId}</span>
-              </div>` : ''}
-              <div class="price-row" style="font-size: 13px; padding: 8px 0;">
-                <span>Payment Date:</span>
-                <span>${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+          
+          <div class="grid-row">
+            <!-- Booking Details Card -->
+            <div class="grid-col">
+              <span class="card-label">Booking Details</span>
+              <div class="card">
+                <div class="detail-item">
+                  <span class="detail-label">${isJourney ? 'Journey' : 'Property'}</span>
+                  <span class="detail-value">${bookingDetails.propertyName}</span>
+                </div>
+                ${bookingDetails.destination ? `
+                <div class="detail-item">
+                  <span class="detail-label">Destination</span>
+                  <span class="detail-value">${bookingDetails.destination}</span>
+                </div>` : ''}
+                <div class="detail-item">
+                  <span class="detail-label">${isJourney ? 'Departure' : 'Check-in'}</span>
+                  <span class="detail-value">${isJourney ? bookingDetails.departureDate : bookingDetails.checkIn}</span>
+                </div>
+                ${!isJourney ? `
+                <div class="detail-item">
+                  <span class="detail-label">Check-out</span>
+                  <span class="detail-value">${bookingDetails.checkOut}</span>
+                </div>` : ''}
+                <div class="detail-item">
+                  <span class="detail-label">Travelers</span>
+                  <span class="detail-value">${bookingDetails.numberOfTravelers || 1} ${(bookingDetails.numberOfTravelers || 1) === 1 ? 'Guest' : 'Guests'}</span>
+                </div>
+                ${bookingDetails.hostName ? `
+                <div class="detail-item">
+                  <span class="detail-label">Host</span>
+                  <span class="detail-value">${bookingDetails.hostName}</span>
+                </div>` : ''}
               </div>
-              <div class="price-row" style="font-size: 13px; padding: 8px 0;">
-                <span>Payment Status:</span>
-                <span style="color: #059669; font-weight: 700;">✓ PAID</span>
+            </div>
+
+            <!-- Receipt Card -->
+            <div class="grid-col">
+              <span class="card-label">Payment Receipt</span>
+              <div class="card">
+                <div class="price-list">
+                  ${bookingDetails.subtotal ? `
+                  <div class="detail-item">
+                    <span class="detail-label">Subtotal</span>
+                    <span class="detail-value">₹${bookingDetails.subtotal.toLocaleString('en-IN')}</span>
+                  </div>` : ''}
+                  ${bookingDetails.discount && bookingDetails.discount > 0 ? `
+                  <div class="detail-item">
+                    <span class="detail-label" style="color: #059669;">Discount</span>
+                    <span class="detail-value" style="color: #059669;">- ₹${bookingDetails.discount.toLocaleString('en-IN')}</span>
+                  </div>` : ''}
+                  
+                  <div class="price-total">
+                    <span class="total-label">Total Paid</span>
+                    <span class="total-value">₹${bookingDetails.totalPrice.toLocaleString('en-IN')}</span>
+                  </div>
+                  
+                  <div class="receipt-meta">
+                    <div class="meta-row">
+                      <span>Status</span>
+                      <span class="status-badge">PAID</span>
+                    </div>
+                    <div class="meta-row">
+                      <span>Date</span>
+                      <span>${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    </div>
+                    ${bookingDetails.transactionId ? `
+                    <div class="meta-row">
+                      <span>Trans ID</span>
+                      <span style="font-family: monospace; letter-spacing: -0.5px;">${bookingDetails.transactionId.slice(-8)}...</span>
+                    </div>` : ''}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <h3 class="section-title">What Happens Next? 🚀</h3>
-          <div class="timeline">
+          <div class="timeline-section">
+            <div class="timeline-header">
+              <div class="timeline-title">What Happens Next?</div>
+            </div>
+            
             <div class="timeline-item">
-              <div class="timeline-dot">✓</div>
-              <div class="timeline-content">
-                <h4>Confirmation Received</h4>
-                <p>Your booking is confirmed and payment has been successfully processed. You're all set!</p>
+              <div class="timeline-icon-container">
+                <div class="timeline-icon"><div class="checkmark"></div></div>
+                <div class="timeline-line"></div>
+              </div>
+              <div class="timeline-body">
+                <h4>Booking Confirmed</h4>
+                <p>You're all set! A PDF receipt is attached to this email for your records.</p>
               </div>
             </div>
+            
             <div class="timeline-item">
-              <div class="timeline-dot">2</div>
-              <div class="timeline-content">
-                <h4>Pre-Trip Information Package</h4>
-                <p>We'll send you a comprehensive travel guide and packing list 30 days before ${isJourney ? 'departure' : 'check-in'}</p>
+              <div class="timeline-icon-container">
+                <div class="timeline-icon">2</div>
+                <div class="timeline-line"></div>
+              </div>
+              <div class="timeline-body">
+                <h4>Prepare for your Trip</h4>
+                <p>We'll send you a comprehensive packing list &amp; local guide 30 days before departure.</p>
               </div>
             </div>
+            
             <div class="timeline-item">
-              <div class="timeline-dot">3</div>
-              <div class="timeline-content">
-                <h4>Final Details & Check-in Instructions</h4>
-                <p>Our team will reach out 7 days before with all the final details, directions, and important information</p>
+              <div class="timeline-icon-container">
+                <div class="timeline-icon">3</div>
               </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-dot">🎯</div>
-              <div class="timeline-content">
-                <h4>Experience Begins!</h4>
-                <p>Get ready for an incredible ${isJourney ? 'journey' : 'stay'} at ${bookingDetails.destination || bookingDetails.propertyName}. We can't wait to welcome you!</p>
+              <div class="timeline-body">
+                <h4>Check-in Details</h4>
+                <p>Unlock your final itinerary and check-in instructions 7 days before your trip.</p>
               </div>
             </div>
           </div>
 
-          <div style="text-align: center; margin: 35px 0;">
-            <a href="${config.clientUrl}/booking-confirmation/${bookingDetails.bookingReference}" class="button">📱 View Full Booking Details</a>
+          <div class="cta-section">
+            <a href="${config.clientUrl}/booking-confirmation/${bookingDetails.bookingReference}" class="btn-primary">Manage My Booking</a>
+            <p style="margin-top: 15px; font-size: 13px; color: #6b7280;">Need to make changes? You can update your booking online.</p>
           </div>
 
-          <div class="reminder-box">
-            <strong>📋 Important Reminders & Next Steps:</strong>
-            <ul>
-              <li><strong>Save this email</strong> - Keep this confirmation for your records and easy reference</li>
-              <li><strong>Check your inbox</strong> - Watch for updates and pre-trip information (check spam/promotions folder)</li>
-              ${bookingDetails.hostEmail ? `<li><strong>Connect with your host</strong> - Feel free to reach out to ${bookingDetails.hostEmail} with any questions</li>` : ''}
-              <li><strong>Review policies</strong> - Check cancellation and modification policies in your dashboard</li>
-              <li><strong>Travel insurance</strong> - Consider purchasing travel insurance for peace of mind</li>
-              <li><strong>Questions?</strong> - Our support team is here 24/7 to help you</li>
-            </ul>
-          </div>
-
-          <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-left: 5px solid #3b82f6; padding: 20px; border-radius: 8px; margin: 25px 0; text-align: center;">
-            <p style="margin: 0 0 15px 0; color: #1e40af; font-size: 16px; font-weight: 600;">💙 Share Your Excitement!</p>
-            <p style="margin: 0; color: #1e3a8a; font-size: 14px;">Tell your friends and family about your upcoming adventure. We'd love to host them too!</p>
-          </div>
         </div>
 
         <div class="footer">
+          <div class="footer-brand">QUIETSUMMIT</div>
+          <div class="footer-tagline">Find Your Peace, Discover Yourself</div>
+          
           <div class="footer-links">
-            <a href="${config.clientUrl}/dashboard">📊 My Bookings</a>
-            <a href="${config.clientUrl}/support">💬 Help & Support</a>
-            <a href="${config.clientUrl}/contact">📞 Contact Us</a>
+            <a href="${config.clientUrl}/dashboard">My Trips</a>
+            <a href="${config.clientUrl}/support">Help Center</a>
+            <a href="${config.clientUrl}/contact">Contact Us</a>
           </div>
-          <p class="brand">QuietSummit 🏔️</p>
-          <p class="tagline">Find Your Peace, Discover Yourself</p>
-          <p style="margin-top: 20px; font-weight: 600; color: #1f2937;">Thank you for choosing QuietSummit!</p>
-          <p>We're honored to be part of your journey and committed to making it extraordinary.</p>
-          <p style="margin-top: 15px;">Questions or need assistance? Reply to this email or contact us at <a href="mailto:${config.email.user}" style="color: #6366f1; text-decoration: none;">${config.email.user}</a></p>
-          <p style="margin-top: 20px; font-size: 11px; color: #9ca3af;">This is an automated confirmation email. Please do not reply to this message. For support, use the contact information above.</p>
+          
+          <div class="copyright">
+            &copy; ${new Date().getFullYear()} QuietSummit Inc. All rights reserved.<br>
+            Sent with 💚 from the mountains.
+          </div>
         </div>
       </div>
     </body>
@@ -396,6 +427,11 @@ export const sendBookingConfirmationEmail = async (
         subject: `🎉 Thank You! Booking Confirmed - ${bookingDetails.propertyName} | Ref: ${bookingRef}`,
         html,
         text: `Thank you for your booking!\n\nBooking Reference: ${bookingRef}\n${isJourney ? 'Journey' : 'Property'}: ${bookingDetails.propertyName}\n${isJourney ? 'Departure' : 'Check-in'}: ${isJourney ? bookingDetails.departureDate : bookingDetails.checkIn}\nTotal: ₹${bookingDetails.totalPrice}\n\nView details: ${config.clientUrl}/booking-confirmation/${bookingDetails.bookingReference}`,
+        attachments: pdfBuffer ? [{
+            filename: `QuietSummit-Receipt-${bookingRef}.pdf`,
+            content: pdfBuffer,
+            contentType: 'application/pdf'
+        }] : undefined,
     });
 };
 

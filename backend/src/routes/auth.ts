@@ -10,6 +10,7 @@ import {
     forgotPassword,
     validateResetToken,
     resetPassword,
+    updateMemberRole,
 } from '../controllers/authController'
 import passport from '../config/passport'
 import { authenticateToken } from '../middleware/auth'
@@ -21,6 +22,7 @@ router.post('/refresh', refreshAccessToken)
 router.get('/check', checkMember)
 router.get('/profile', authenticateToken, getMemberProfile)
 router.put('/preferences', authenticateToken, updateMemberPreferences)
+router.put('/role', authenticateToken, updateMemberRole)
 
 // Password reset routes
 router.post('/forgot-password', forgotPassword)
