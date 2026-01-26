@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     X, Loader2, MapPin,
-    Search, SlidersHorizontal, Check, ChevronDown
+    Search, SlidersHorizontal, Check
 } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import PropertyCard from '../components/properties/PropertyCard';

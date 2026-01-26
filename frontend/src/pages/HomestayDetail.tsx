@@ -334,7 +334,6 @@ export default function PropertyDetail() {
                                                         renderCustomHeader={({
                                                             date,
                                                             changeYear,
-                                                            changeMonth,
                                                             decreaseMonth,
                                                             increaseMonth,
                                                             prevMonthButtonDisabled,
@@ -604,7 +603,6 @@ export default function PropertyDetail() {
                                                     renderCustomHeader={({
                                                         date,
                                                         changeYear,
-                                                        changeMonth,
                                                         decreaseMonth,
                                                         increaseMonth,
                                                         prevMonthButtonDisabled,
@@ -680,7 +678,6 @@ export default function PropertyDetail() {
                                                     renderCustomHeader={({
                                                         date,
                                                         changeYear,
-                                                        changeMonth,
                                                         decreaseMonth,
                                                         increaseMonth,
                                                         prevMonthButtonDisabled,
