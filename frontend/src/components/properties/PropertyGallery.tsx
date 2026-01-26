@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, Grid3x3 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -10,6 +10,19 @@ interface PropertyGalleryProps {
 export default function PropertyGallery({ images, title }: PropertyGalleryProps) {
     const [showLightbox, setShowLightbox] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [mobileIndex, setMobileIndex] = useState(0);
+
+    // Lock body scroll when lightbox is open
+    useEffect(() => {
+        if (showLightbox) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [showLightbox]);
 
     const displayImages = images.slice(0, 5);
     const remainingCount = Math.max(0, images.length - 5);
@@ -22,6 +35,16 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
         setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
     };
 
+    const nextMobileImage = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setMobileIndex((prev) => (prev + 1) % images.length);
+    };
+
+    const prevMobileImage = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setMobileIndex((prev) => (prev - 1 + images.length) % images.length);
+    };
+
     return (
         <>
             {/* Gallery Grid */}
@@ -31,16 +54,37 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                     <div
                         className="col-span-4 md:col-span-2 row-span-2 relative group cursor-pointer overflow-hidden"
                         onClick={() => {
-                            setCurrentImageIndex(0);
+                            setCurrentImageIndex(mobileIndex);
                             setShowLightbox(true);
                         }}
                     >
                         <img
-                            src={displayImages[0]?.url}
+                            src={images[mobileIndex]?.url}
                             alt={title}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+
+                        {/* Mobile Navigation Arrows */}
+                        <div className="md:hidden">
+                            <button
+                                onClick={prevMobileImage}
+                                className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-lg transition-all backdrop-blur-sm"
+                            >
+                                <ChevronLeft className="w-5 h-5" />
+                            </button>
+                            <button
+                                onClick={nextMobileImage}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-lg transition-all backdrop-blur-sm"
+                            >
+                                <ChevronRight className="w-5 h-5" />
+                            </button>
+                            
+                            {/* Mobile Image Indicator */}
+                            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/50 text-white text-xs rounded-full backdrop-blur-sm">
+                                {mobileIndex + 1} / {images.length}
+                            </div>
+                        </div>
                     </div>
 
                     {/* Grid of 4 smaller images */}

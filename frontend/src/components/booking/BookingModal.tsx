@@ -175,22 +175,25 @@ export default function BookingModal({
         <div className="fixed inset-0 z-50 overflow-y-auto">
             {/* Premium Blurred Backdrop */}
             <div
-                className="fixed inset-0 bg-gray-900/20 backdrop-blur-md transition-all duration-300"
+                className="fixed inset-0 bg-gray-900/40 backdrop-blur-md transition-all duration-300"
                 onClick={onClose}
             />
 
             {/* Modal */}
             <div className="flex min-h-full items-center justify-center p-4">
-                <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+                <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden border border-gray-100">
                     {/* Header */}
-                    <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
+                    <div className="sticky top-0 bg-gradient-to-br from-primary-50 via-white to-white border-b border-gray-100 px-8 py-6 flex items-center justify-between z-10">
                         <div>
-                            <h2 className="text-2xl font-bold text-gray-900">Complete Your Booking</h2>
-                            <p className="text-sm text-gray-600 mt-1">{property.title}</p>
+                            <h2 className="text-3xl font-black text-gray-900 mb-1">Complete Your Booking</h2>
+                            <p className="text-sm text-gray-600 font-medium flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-primary-500"></span>
+                                {property.title}
+                            </p>
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            className="p-2.5 hover:bg-gray-100 rounded-xl transition-colors"
                             aria-label="Close modal"
                         >
                             <X className="w-6 h-6 text-gray-500" />
@@ -198,12 +201,12 @@ export default function BookingModal({
                     </div>
 
                     {/* Content */}
-                    <div className="px-6 py-8 overflow-y-auto max-h-[calc(90vh-180px)]">
+                    <div className="px-8 py-8 overflow-y-auto max-h-[calc(90vh-200px)]">
                         <BookingProgressBar currentStep={currentStep} steps={steps} />
 
                         {error && (
-                            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                                <p className="text-sm text-red-800">{error}</p>
+                            <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-2xl animate-shake">
+                                <p className="text-sm text-red-800 font-semibold">{error}</p>
                             </div>
                         )}
 
@@ -257,22 +260,22 @@ export default function BookingModal({
                     </div>
 
                     {/* Footer */}
-                    <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-between">
+                    <div className="sticky bottom-0 bg-gradient-to-t from-gray-50 to-white border-t border-gray-100 px-8 py-6 flex items-center justify-between shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                         <div>
                             {currentStep > 1 && (
                                 <button
                                     onClick={handleBack}
-                                    className="px-6 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors"
+                                    className="px-6 py-3 text-gray-700 hover:bg-gray-100 rounded-2xl font-semibold transition-colors border border-gray-200"
                                 >
-                                    Back
+                                    ← Back
                                 </button>
                             )}
                         </div>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-6">
                             <div className="text-right">
-                                <p className="text-sm text-gray-600">Total</p>
-                                <p className="text-2xl font-bold text-gray-900">₹{priceBreakdown.totalPrice}</p>
+                                <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-1">Total Amount</p>
+                                <p className="text-3xl font-black bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">₹{priceBreakdown.totalPrice.toLocaleString()}</p>
                             </div>
 
                             {currentStep < 3 ? (
@@ -282,15 +285,15 @@ export default function BookingModal({
                                             handleNext();
                                         }
                                     }}
-                                    className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors"
+                                    className="px-10 py-4 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold rounded-2xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
                                 >
-                                    Continue
+                                    Continue →
                                 </button>
                             ) : (
                                 <button
                                     onClick={handleConfirmBooking}
                                     disabled={loading || !acceptedTerms || !acceptedCancellation}
-                                    className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                    className="px-10 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold rounded-2xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2.5"
                                 >
                                     {loading ? (
                                         <>
@@ -298,7 +301,9 @@ export default function BookingModal({
                                             Processing...
                                         </>
                                     ) : (
-                                        'Confirm Booking'
+                                        <>
+                                            ✓ Confirm Booking
+                                        </>
                                     )}
                                 </button>
                             )}

@@ -40,7 +40,7 @@ export const uploadImage = async (
             ],
         };
 
-        return new Promise((resolve, reject) => {
+        const result = await new Promise<UploadResult>((resolve, reject) => {
             const uploadStream = cloudinary.uploader.upload_stream(
                 defaultOptions as any,
                 (error: any, result: any) => {
@@ -61,6 +61,8 @@ export const uploadImage = async (
 
             uploadStream.end(fileBuffer);
         });
+
+        return result;
     } catch (error) {
         logger.error('Error in uploadImage to Cloudinary, falling back to local storage:', error);
         // Fallback to local storage

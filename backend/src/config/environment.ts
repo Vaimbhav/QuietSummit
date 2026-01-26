@@ -14,6 +14,9 @@ const validateEnv = () => {
         'RAZORPAY_KEY_ID',
         'RAZORPAY_KEY_SECRET',
         'GEMINI_API_KEY',
+        'CLOUDINARY_CLOUD_NAME',
+        'CLOUDINARY_API_KEY',
+        'CLOUDINARY_API_SECRET',
     ]
 
     if (isProduction) {

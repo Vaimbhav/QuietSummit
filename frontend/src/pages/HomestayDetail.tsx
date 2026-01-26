@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, MapPin, Share2, Users, Home as HomeIcon, Bed, Bath, MessageCircle, Check, X } from 'lucide-react';
+import { Star, MapPin, Share2, Users, Home as HomeIcon, Bed, Bath, MessageCircle, Check, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getPropertyBySlug, Property } from '../services/propertyApi';
@@ -161,29 +162,29 @@ export default function PropertyDetail() {
     }
 
     return (
-        <div className="min-h-screen bg-white">
-            <div className="border-b border-gray-100">
+        <div className="min-h-screen bg-gradient-to-b from-white via-gray-50 to-white">
+            <div className="border-b border-gray-100 bg-white shadow-sm">
                 <div className="container mx-auto px-4 py-6">
                     <nav className="mb-4">
                         <ol className="flex items-center space-x-2 text-sm">
-                            <li><Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link></li>
-                            <li className="text-gray-400">/</li>
-                            <li><Link to="/properties" className="text-gray-600 hover:text-gray-900">Properties</Link></li>
-                            <li className="text-gray-400">/</li>
-                            <li className="text-gray-900 font-medium">{property.title}</li>
+                            <li><Link to="/" className="text-gray-600 hover:text-primary-700 font-medium transition-colors">Home</Link></li>
+                            <li className="text-gray-300">/</li>
+                            <li><Link to="/properties" className="text-gray-600 hover:text-primary-700 font-medium transition-colors">Properties</Link></li>
+                            <li className="text-gray-300">/</li>
+                            <li className="text-gray-900 font-semibold">{property.title}</li>
                         </ol>
                     </nav>
                     <div className="flex items-start justify-between">
                         <div className="flex-1">
-                            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">{property.title}</h1>
-                            <div className="flex flex-wrap items-center gap-4 text-sm">
-                                <div className="flex items-center gap-1">
+                            <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-4 leading-tight" style={{ letterSpacing: '-0.02em' }}>{property.title}</h1>
+                            <div className="flex flex-wrap items-center gap-5 text-sm">
+                                <div className="flex items-center gap-2 bg-gradient-to-br from-yellow-50 to-orange-50 px-4 py-2 rounded-xl border border-yellow-200/50">
                                     <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                                    <span className="font-semibold">{property.reviews.averageRating.toFixed(1)}</span>
-                                    <span className="text-gray-600">({property.reviews.totalReviews} reviews)</span>
+                                    <span className="font-bold text-gray-900">{property.reviews.averageRating.toFixed(1)}</span>
+                                    <span className="text-gray-600 font-medium">({property.reviews.totalReviews} reviews)</span>
                                 </div>
-                                <div className="flex items-center gap-1 text-gray-600">
-                                    <MapPin className="w-4 h-4" />
+                                <div className="flex items-center gap-2 text-gray-600 font-medium">
+                                    <MapPin className="w-5 h-5 text-primary-600" />
                                     <span>{property.address.city}, {property.address.state}</span>
                                 </div>
 
@@ -192,10 +193,10 @@ export default function PropertyDetail() {
                         <div className="flex items-center gap-3 relative">
                             <button
                                 onClick={handleShare}
-                                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded-lg transition-colors group relative"
+                                className="flex items-center gap-2 px-5 py-3 hover:bg-gray-100 rounded-2xl transition-colors group relative border border-gray-200"
                             >
-                                {showShareToast ? <Check className="w-5 h-5 text-green-600" /> : <Share2 className="w-5 h-5" />}
-                                <span className={showShareToast ? "text-green-600 font-medium" : "hidden md:inline font-medium"}>
+                                {showShareToast ? <Check className="w-5 h-5 text-green-600" /> : <Share2 className="w-5 h-5 text-gray-700" />}
+                                <span className={showShareToast ? "text-green-600 font-semibold" : "hidden md:inline font-semibold text-gray-900"}>
                                     {showShareToast ? 'Copied!' : 'Share'}
                                 </span>
                             </button>
@@ -327,12 +328,62 @@ export default function PropertyDetail() {
                                                         startDate={checkIn}
                                                         endDate={checkOut}
                                                         minDate={getMinDate()}
-                                                        placeholderText="Add date"
+                                                        placeholderText="DD/MM/YYYY"
                                                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-gray-300 bg-white font-medium text-gray-900"
                                                         dateFormat="dd/MM/yyyy"
-                                                        showMonthDropdown
-                                                        showYearDropdown
-                                                        dropdownMode="select"
+                                                        renderCustomHeader={({
+                                                            date,
+                                                            changeYear,
+                                                            changeMonth,
+                                                            decreaseMonth,
+                                                            increaseMonth,
+                                                            prevMonthButtonDisabled,
+                                                            nextMonthButtonDisabled,
+                                                        }) => (
+                                                            <div className="flex items-center justify-between px-2 py-2 bg-white border-b border-gray-100">
+                                                                <div className="flex items-center gap-1">
+                                                                    <button
+                                                                        onClick={decreaseMonth}
+                                                                        disabled={prevMonthButtonDisabled}
+                                                                        type="button"
+                                                                        className={`p-1.5 hover:bg-gray-100 rounded-lg transition-colors ${prevMonthButtonDisabled ? 'opacity-30 cursor-not-allowed' : ''}`}
+                                                                    >
+                                                                        <ChevronLeft className="w-4 h-4 text-gray-600" />
+                                                                    </button>
+                                                                    <span className="text-sm font-bold text-gray-900 min-w-[80px] text-center">
+                                                                        {date.toLocaleString('default', { month: 'long' })}
+                                                                    </span>
+                                                                    <button
+                                                                        onClick={increaseMonth}
+                                                                        disabled={nextMonthButtonDisabled}
+                                                                        type="button"
+                                                                        className={`p-1.5 hover:bg-gray-100 rounded-lg transition-colors ${nextMonthButtonDisabled ? 'opacity-30 cursor-not-allowed' : ''}`}
+                                                                    >
+                                                                        <ChevronRight className="w-4 h-4 text-gray-600" />
+                                                                    </button>
+                                                                </div>
+
+                                                                <div className="flex items-center gap-1">
+                                                                    <button
+                                                                        onClick={(e) => { e.preventDefault(); changeYear(date.getFullYear() - 1); }}
+                                                                        type="button"
+                                                                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-600"
+                                                                    >
+                                                                        <ChevronLeft className="w-4 h-4" />
+                                                                    </button>
+                                                                    <span className="text-sm font-bold text-gray-900 min-w-[50px] text-center">
+                                                                        {date.getFullYear()}
+                                                                    </span>
+                                                                    <button
+                                                                        onClick={(e) => { e.preventDefault(); changeYear(date.getFullYear() + 1); }}
+                                                                        type="button"
+                                                                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-600"
+                                                                    >
+                                                                        <ChevronRight className="w-4 h-4" />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                     />
                                                 </div>
                                             </div>
@@ -346,12 +397,61 @@ export default function PropertyDetail() {
                                                         startDate={checkIn}
                                                         endDate={checkOut}
                                                         minDate={checkIn || getMinDate()}
-                                                        placeholderText="Add date"
+                                                        placeholderText="DD/MM/YYYY"
                                                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-gray-300 bg-white font-medium text-gray-900"
                                                         dateFormat="dd/MM/yyyy"
-                                                        showMonthDropdown
-                                                        showYearDropdown
-                                                        dropdownMode="select"
+                                                        renderCustomHeader={({
+                                                            date,
+                                                            changeYear,
+                                                            decreaseMonth,
+                                                            increaseMonth,
+                                                            prevMonthButtonDisabled,
+                                                            nextMonthButtonDisabled,
+                                                        }) => (
+                                                            <div className="flex items-center justify-between px-2 py-2 bg-white border-b border-gray-100">
+                                                                <div className="flex items-center gap-1">
+                                                                    <button
+                                                                        onClick={decreaseMonth}
+                                                                        disabled={prevMonthButtonDisabled}
+                                                                        type="button"
+                                                                        className={`p-1.5 hover:bg-gray-100 rounded-lg transition-colors ${prevMonthButtonDisabled ? 'opacity-30 cursor-not-allowed' : ''}`}
+                                                                    >
+                                                                        <ChevronLeft className="w-4 h-4 text-gray-600" />
+                                                                    </button>
+                                                                    <span className="text-sm font-bold text-gray-900 min-w-[80px] text-center">
+                                                                        {date.toLocaleString('default', { month: 'long' })}
+                                                                    </span>
+                                                                    <button
+                                                                        onClick={increaseMonth}
+                                                                        disabled={nextMonthButtonDisabled}
+                                                                        type="button"
+                                                                        className={`p-1.5 hover:bg-gray-100 rounded-lg transition-colors ${nextMonthButtonDisabled ? 'opacity-30 cursor-not-allowed' : ''}`}
+                                                                    >
+                                                                        <ChevronRight className="w-4 h-4 text-gray-600" />
+                                                                    </button>
+                                                                </div>
+
+                                                                <div className="flex items-center gap-1">
+                                                                    <button
+                                                                        onClick={(e) => { e.preventDefault(); changeYear(date.getFullYear() - 1); }}
+                                                                        type="button"
+                                                                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-600"
+                                                                    >
+                                                                        <ChevronLeft className="w-4 h-4" />
+                                                                    </button>
+                                                                    <span className="text-sm font-bold text-gray-900 min-w-[50px] text-center">
+                                                                        {date.getFullYear()}
+                                                                    </span>
+                                                                    <button
+                                                                        onClick={(e) => { e.preventDefault(); changeYear(date.getFullYear() + 1); }}
+                                                                        type="button"
+                                                                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-600"
+                                                                    >
+                                                                        <ChevronRight className="w-4 h-4" />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                     />
                                                 </div>
                                             </div>
@@ -383,24 +483,7 @@ export default function PropertyDetail() {
                                         </div>
                                     )}
                                     {priceBreakdown && (
-                                        <div className="mb-6 p-5 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl border-2 border-blue-100/50">
-                                            <div className="space-y-3 text-sm">
-                                                <div className="flex justify-between text-gray-700">
-                                                    <span className="font-medium">₹{property.pricing.basePrice} × {priceBreakdown.nights} nights</span>
-                                                    <span className="font-semibold">₹{priceBreakdown.basePrice}</span>
-                                                </div>
-                                                {priceBreakdown.cleaningFee > 0 && (
-                                                    <div className="flex justify-between text-gray-700">
-                                                        <span className="font-medium">Cleaning fee</span>
-                                                        <span className="font-semibold">₹{priceBreakdown.cleaningFee}</span>
-                                                    </div>
-                                                )}
-                                                <div className="pt-3 border-t-2 border-blue-200 flex justify-between font-bold text-lg text-gray-900">
-                                                    <span>Total</span>
-                                                    <span className="bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">₹{priceBreakdown.totalPrice}</span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <div className="mb-6 hidden"></div>
                                     )}
                                     <BookingGuard onAuthenticated={() => setIsBookingModalOpen(true)}>
                                         {(triggerAuthCheck) => (
@@ -511,14 +594,66 @@ export default function PropertyDetail() {
                                                     startDate={checkIn}
                                                     endDate={checkOut}
                                                     minDate={getMinDate()}
-                                                    placeholderText="Select date"
+                                                    placeholderText="DD/MM/YYYY"
                                                     className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50 font-semibold text-gray-900 text-base hover:border-gray-300 transition-colors"
-                                                    dateFormat="dd MMM yyyy"
-                                                    onFocus={(e) => e.target.blur()}
-                                                    showMonthDropdown
-                                                    showYearDropdown
-                                                    dropdownMode="select"
+                                                    dateFormat="dd/MM/yyyy"
                                                     calendarClassName="premium-calendar"
+                                                    popperClassName="!z-[100]"
+                                                    popperPlacement="bottom-start"
+                                                    popperContainer={({ children }) => createPortal(children, document.body)}
+                                                    renderCustomHeader={({
+                                                        date,
+                                                        changeYear,
+                                                        changeMonth,
+                                                        decreaseMonth,
+                                                        increaseMonth,
+                                                        prevMonthButtonDisabled,
+                                                        nextMonthButtonDisabled,
+                                                    }) => (
+                                                        <div className="flex items-center justify-between px-2 py-2 bg-white border-b border-gray-100">
+                                                            <div className="flex items-center gap-1">
+                                                                <button
+                                                                    onClick={decreaseMonth}
+                                                                    disabled={prevMonthButtonDisabled}
+                                                                    type="button"
+                                                                    className={`p-1.5 hover:bg-gray-100 rounded-lg transition-colors ${prevMonthButtonDisabled ? 'opacity-30 cursor-not-allowed' : ''}`}
+                                                                >
+                                                                    <ChevronLeft className="w-4 h-4 text-gray-600" />
+                                                                </button>
+                                                                <span className="text-sm font-bold text-gray-900 min-w-[80px] text-center">
+                                                                    {date.toLocaleString('default', { month: 'long' })}
+                                                                </span>
+                                                                <button
+                                                                    onClick={increaseMonth}
+                                                                    disabled={nextMonthButtonDisabled}
+                                                                    type="button"
+                                                                    className={`p-1.5 hover:bg-gray-100 rounded-lg transition-colors ${nextMonthButtonDisabled ? 'opacity-30 cursor-not-allowed' : ''}`}
+                                                                >
+                                                                    <ChevronRight className="w-4 h-4 text-gray-600" />
+                                                                </button>
+                                                            </div>
+
+                                                            <div className="flex items-center gap-1">
+                                                                <button
+                                                                    onClick={(e) => { e.preventDefault(); changeYear(date.getFullYear() - 1); }}
+                                                                    type="button"
+                                                                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-600"
+                                                                >
+                                                                    <ChevronLeft className="w-4 h-4" />
+                                                                </button>
+                                                                <span className="text-sm font-bold text-gray-900 min-w-[50px] text-center">
+                                                                    {date.getFullYear()}
+                                                                </span>
+                                                                <button
+                                                                    onClick={(e) => { e.preventDefault(); changeYear(date.getFullYear() + 1); }}
+                                                                    type="button"
+                                                                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-600"
+                                                                >
+                                                                    <ChevronRight className="w-4 h-4" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 />
                                             </div>
                                         </div>
@@ -535,14 +670,66 @@ export default function PropertyDetail() {
                                                     startDate={checkIn}
                                                     endDate={checkOut}
                                                     minDate={checkIn || getMinDate()}
-                                                    placeholderText="Select date"
+                                                    placeholderText="DD/MM/YYYY"
                                                     className="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50 font-semibold text-gray-900 text-base hover:border-gray-300 transition-colors"
-                                                    dateFormat="dd MMM yyyy"
-                                                    onFocus={(e) => e.target.blur()}
-                                                    showMonthDropdown
-                                                    showYearDropdown
-                                                    dropdownMode="select"
+                                                    dateFormat="dd/MM/yyyy"
                                                     calendarClassName="premium-calendar"
+                                                    popperClassName="!z-[100]"
+                                                    popperPlacement="bottom-start"
+                                                    popperContainer={({ children }) => createPortal(children, document.body)}
+                                                    renderCustomHeader={({
+                                                        date,
+                                                        changeYear,
+                                                        changeMonth,
+                                                        decreaseMonth,
+                                                        increaseMonth,
+                                                        prevMonthButtonDisabled,
+                                                        nextMonthButtonDisabled,
+                                                    }) => (
+                                                        <div className="flex items-center justify-between px-2 py-2 bg-white border-b border-gray-100">
+                                                            <div className="flex items-center gap-1">
+                                                                <button
+                                                                    onClick={decreaseMonth}
+                                                                    disabled={prevMonthButtonDisabled}
+                                                                    type="button"
+                                                                    className={`p-1.5 hover:bg-gray-100 rounded-lg transition-colors ${prevMonthButtonDisabled ? 'opacity-30 cursor-not-allowed' : ''}`}
+                                                                >
+                                                                    <ChevronLeft className="w-4 h-4 text-gray-600" />
+                                                                </button>
+                                                                <span className="text-sm font-bold text-gray-900 min-w-[80px] text-center">
+                                                                    {date.toLocaleString('default', { month: 'long' })}
+                                                                </span>
+                                                                <button
+                                                                    onClick={increaseMonth}
+                                                                    disabled={nextMonthButtonDisabled}
+                                                                    type="button"
+                                                                    className={`p-1.5 hover:bg-gray-100 rounded-lg transition-colors ${nextMonthButtonDisabled ? 'opacity-30 cursor-not-allowed' : ''}`}
+                                                                >
+                                                                    <ChevronRight className="w-4 h-4 text-gray-600" />
+                                                                </button>
+                                                            </div>
+
+                                                            <div className="flex items-center gap-1">
+                                                                <button
+                                                                    onClick={(e) => { e.preventDefault(); changeYear(date.getFullYear() - 1); }}
+                                                                    type="button"
+                                                                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-600"
+                                                                >
+                                                                    <ChevronLeft className="w-4 h-4" />
+                                                                </button>
+                                                                <span className="text-sm font-bold text-gray-900 min-w-[50px] text-center">
+                                                                    {date.getFullYear()}
+                                                                </span>
+                                                                <button
+                                                                    onClick={(e) => { e.preventDefault(); changeYear(date.getFullYear() + 1); }}
+                                                                    type="button"
+                                                                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-gray-600"
+                                                                >
+                                                                    <ChevronRight className="w-4 h-4" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 />
                                             </div>
                                         </div>
@@ -579,24 +766,7 @@ export default function PropertyDetail() {
                                     )}
 
                                     {priceBreakdown && (
-                                        <div className="p-6 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-2xl border-2 border-blue-200/50 shadow-sm">
-                                            <div className="space-y-3">
-                                                <div className="flex justify-between items-center text-sm">
-                                                    <span className="text-gray-600 font-medium">₹{property.pricing.basePrice} × {priceBreakdown.nights} nights</span>
-                                                    <span className="font-semibold text-gray-900">₹{priceBreakdown.basePrice}</span>
-                                                </div>
-                                                {priceBreakdown.cleaningFee > 0 && (
-                                                    <div className="flex justify-between items-center text-sm">
-                                                        <span className="text-gray-600 font-medium">Cleaning fee</span>
-                                                        <span className="font-semibold text-gray-900">₹{priceBreakdown.cleaningFee}</span>
-                                                    </div>
-                                                )}
-                                                <div className="pt-3 border-t-2 border-blue-200 flex justify-between items-center">
-                                                    <span className="text-gray-700 font-bold text-base">Total</span>
-                                                    <span className="text-2xl font-black bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent">₹{priceBreakdown.totalPrice}</span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <div className="hidden"></div>
                                     )}
                                 </div>
                             </div>

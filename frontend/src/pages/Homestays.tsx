@@ -206,37 +206,58 @@ export default function Homestays() {
     );
 
     return (
-        <div className="min-h-screen bg-[#FAF9F7] text-neutral-900 font-sans">
-            {/* Hero - Premium Simplified */}
-            <section className="relative bg-primary-600 text-white py-20 sm:py-24">
+        <div className="min-h-screen bg-gradient-to-b from-neutral-50 via-white to-neutral-50 text-neutral-900 font-sans">
+            {/* Hero - Premium Luxury */}
+            <section className="relative bg-gradient-to-br from-primary-700 via-primary-600 to-primary-800 text-white py-12 sm:py-20 z-20">
+                {/* Abstract Background Elements */}
+                <div className="absolute inset-0 overflow-hidden opacity-10">
+                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full mix-blend-soft-light blur-3xl animate-blob"></div>
+                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white rounded-full mix-blend-soft-light blur-3xl animate-blob animation-delay-2000"></div>
+                </div>
+
                 <div className="container mx-auto px-6 sm:px-8 text-center relative z-10">
-                    <motion.h1
-                        initial={{ opacity: 0, y: 10 }}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6"
+                        className="mb-3"
                     >
-                        Find your sanctuary.
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0, y: 10 }}
+                        <span className="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-sm font-semibold border border-white/20">
+                            ✨ Premium Collection
+                        </span>
+                    </motion.div>
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-8"
+                        className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight mb-4 leading-tight"
+                        style={{ letterSpacing: '-0.03em' }}
                     >
-                        Curated homestays for the conscious traveler.
+                        Discover Your
+                        <br />
+                        <span className="bg-gradient-to-r from-white via-blue-50 to-white bg-clip-text text-transparent">Perfect Escape</span>
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="text-lg md:text-2xl max-w-3xl mx-auto leading-relaxed mb-6 text-white/90 font-light"
+                    >
+                        Handpicked retreats where luxury meets nature.
+                        <br className="hidden sm:block" />
+                        Your sanctuary awaits.
                     </motion.p>
 
                     {/* Premium Search Bar */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                        className="max-w-4xl mx-auto relative px-4 sm:px-0 z-50"
+                        transition={{ delay: 0.3 }}
+                        className="hidden md:block max-w-5xl mx-auto relative px-4 sm:px-0 z-[100]"
                         ref={filterRef}
                     >
-                        <div className="bg-white/95 backdrop-blur-xl rounded-full shadow-2xl p-2 flex items-center gap-2 border border-white/20">
-                            <div className="flex-1 flex items-center gap-2 pl-4 pr-1 min-w-0">
-                                <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                        <div className="bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] p-2.5 flex items-center gap-3 border border-white/30 hover:shadow-[0_25px_70px_-15px_rgba(0,0,0,0.4)] transition-all duration-500 relative">
+                            <div className="flex-1 flex items-center gap-3 pl-5 pr-2 min-w-0">
+                                <Search className="w-5 h-5 text-gray-500 flex-shrink-0" />
                                 <input
                                     type="text"
                                     value={locationQuery}
@@ -251,8 +272,8 @@ export default function Homestays() {
                                         }
                                     }}
                                     onClick={() => setActiveFilter('location')}
-                                    placeholder="Where to?"
-                                    className="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none text-gray-900 placeholder:text-gray-400 font-medium text-base sm:text-lg py-3 min-w-0 w-0"
+                                    placeholder="Where would you like to go?"
+                                    className="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none text-gray-900 placeholder:text-gray-500 font-medium text-base sm:text-lg py-4 min-w-0 w-0"
                                 />
                             </div>
                             {locationQuery && (
@@ -262,16 +283,54 @@ export default function Homestays() {
                                         updateFilter('search', undefined);
                                         updateFilter('city', undefined);
                                     }}
-                                    className="p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 mr-1"
+                                    className="p-2.5 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 mr-1"
                                 >
-                                    <X className="w-5 h-5 text-gray-400" />
+                                    <X className="w-5 h-5 text-gray-500" />
                                 </button>
                             )}
 
-                            {/* Dividers */}
-                            <div className="hidden md:block w-px h-10 bg-gray-200"></div>
+                            {/* Location Suggestions Dropdown */}
+                            <AnimatePresence>
+                                {activeFilter === 'location' && (locationSuggestions.length > 0 || loadingLocation) && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="absolute top-full left-0 mt-4 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 overflow-hidden z-[101]"
+                                    >
+                                        {loadingLocation ? (
+                                            <div className="p-4 flex items-center gap-2 text-gray-500">
+                                                <Loader2 className="w-4 h-4 animate-spin" /> Looking...
+                                            </div>
+                                        ) : (
+                                            locationSuggestions.map((loc, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => {
+                                                        setLocationQuery(loc.city);
+                                                        updateFilter('city', loc.city);
+                                                        setActiveFilter(null);
+                                                    }}
+                                                    className="w-full text-left px-4 py-3 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
+                                                >
+                                                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                                                        <MapPin className="w-4 h-4 text-gray-600" />
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-medium text-gray-900">{loc.city}</div>
+                                                        <div className="text-xs text-gray-500">{loc.state}</div>
+                                                    </div>
+                                                </button>
+                                            ))
+                                        )}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
 
-                            <div className="hidden md:flex items-center gap-1">
+                            {/* Dividers */}
+                            <div className="hidden md:block w-px h-12 bg-gray-200"></div>
+
+                            <div className="hidden md:flex items-center gap-2">
                                 {/* Price Filter */}
                                 <button
                                     onClick={() => {
@@ -286,30 +345,30 @@ export default function Homestays() {
                                             setActiveFilter(null);
                                         }
                                     }}
-                                    className={`px-4 py-2.5 rounded-xl border-2 transition-all font-medium text-sm ${activeFilter === 'price'
-                                        ? 'border-blue-500 bg-blue-50 text-gray-900'
+                                    className={`px-5 py-3 rounded-2xl border-2 transition-all font-semibold text-sm ${activeFilter === 'price'
+                                        ? 'border-primary-500 bg-primary-50 text-primary-900 shadow-sm'
                                         : (appliedFilters.minPrice || appliedFilters.maxPrice)
-                                            ? 'border-gray-900 bg-gray-900 text-white'
+                                            ? 'border-gray-900 bg-gray-900 text-white shadow-sm'
                                             : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
                                         }`}
                                 >
                                     {(appliedFilters.minPrice || appliedFilters.maxPrice)
                                         ? `₹${appliedFilters.minPrice || 0}-${appliedFilters.maxPrice || '∞'}`
-                                        : 'Price'
+                                        : 'Price Range'
                                     }
                                 </button>
 
                                 {/* Type Filter */}
                                 <button
                                     onClick={() => setActiveFilter(activeFilter === 'type' ? null : 'type')}
-                                    className={`px-4 py-2.5 rounded-xl border-2 transition-all font-medium text-sm ${activeFilter === 'type'
-                                        ? 'border-blue-500 bg-blue-50 text-gray-900'
+                                    className={`px-5 py-3 rounded-2xl border-2 transition-all font-semibold text-sm ${activeFilter === 'type'
+                                        ? 'border-primary-500 bg-primary-50 text-primary-900 shadow-sm'
                                         : appliedFilters.propertyType
-                                            ? 'border-gray-900 bg-gray-900 text-white'
+                                            ? 'border-gray-900 bg-gray-900 text-white shadow-sm'
                                             : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
                                         }`}
                                 >
-                                    {appliedFilters.propertyType || 'Type'}
+                                    {appliedFilters.propertyType || 'Property Type'}
                                 </button>
 
                                 {/* Guests Filter */}
@@ -325,20 +384,33 @@ export default function Homestays() {
                                             setActiveFilter(null);
                                         }
                                     }}
-                                    className={`px-4 py-2.5 rounded-xl border-2 transition-all font-medium text-sm ${activeFilter === 'guests'
-                                        ? 'border-blue-500 bg-blue-50 text-gray-900'
+                                    className={`px-5 py-3 rounded-2xl border-2 transition-all font-semibold text-sm ${activeFilter === 'guests'
+                                        ? 'border-primary-500 bg-primary-50 text-primary-900 shadow-sm'
                                         : appliedFilters.guests
-                                            ? 'border-gray-900 bg-gray-900 text-white'
+                                            ? 'border-gray-900 bg-gray-900 text-white shadow-sm'
                                             : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
                                         }`}
                                 >
-                                    {appliedFilters.guests || 'Guests'}
+                                    {appliedFilters.guests ? `${appliedFilters.guests} Guests` : 'Add Guests'}
                                 </button>
                             </div>
 
-                            {/* Divider */}
+                            {/* Reset Button - Desktop */}
+                            {activeFilterCount > 0 && (
+                                <div className="hidden md:block flex-none">
+                                    <button
+                                        onClick={clearAllFilters}
+                                        className="px-5 py-3 rounded-2xl border-2 border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:border-red-300 transition-all font-semibold text-sm flex items-center gap-2 shadow-sm hover:shadow-md"
+                                    >
+                                        <X className="w-4 h-4" />
+                                        Reset ({activeFilterCount})
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Search Button */}
                             <div className="flex-none">
-                                <button className="bg-primary-600 hover:bg-primary-700 text-white w-10 h-10 sm:w-auto sm:h-auto p-0 sm:px-8 sm:py-4 rounded-full font-semibold flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 flex-shrink-0">
+                                <button className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 hover:from-primary-700 hover:via-primary-800 hover:to-primary-900 text-white w-12 h-12 sm:w-auto sm:h-auto p-0 sm:px-10 sm:py-4 rounded-full font-bold flex items-center justify-center gap-2.5 transition-all shadow-[0_4px_14px_0_rgba(74,139,112,0.39)] hover:shadow-[0_6px_20px_0_rgba(74,139,112,0.5)] hover:scale-[1.02] active:scale-[0.98] flex-shrink-0 text-base">
                                     <Search className="w-5 h-5" />
                                     <span className="hidden sm:inline">Search</span>
                                 </button>
@@ -350,7 +422,7 @@ export default function Homestays() {
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="filter-dropdown-content absolute top-full mt-4 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 w-80 z-50"
+                                    className="filter-dropdown-content absolute top-full mt-5 left-1/2 -translate-x-1/2 bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 p-8 w-96 z-[9999]"
                                 >
                                     <div className="space-y-4">
                                         <div>
@@ -391,7 +463,7 @@ export default function Homestays() {
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="filter-dropdown-content absolute top-full mt-4 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 w-64 z-50"
+                                    className="filter-dropdown-content absolute top-full mt-5 left-1/2 -translate-x-1/2 bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 p-5 w-80 z-[9999]"
                                 >
                                     <div className="space-y-2">
                                         {typeOptions.map(type => (
@@ -418,7 +490,7 @@ export default function Homestays() {
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="filter-dropdown-content absolute top-full mt-4 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 w-64 z-50"
+                                    className="filter-dropdown-content absolute top-full mt-5 left-1/2 -translate-x-1/2 bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 p-8 w-80 z-[9999]"
                                 >
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
@@ -467,18 +539,34 @@ export default function Homestays() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="w-full bg-white rounded-2xl px-6 py-5 flex items-center justify-between shadow-lg border border-neutral-200 hover:shadow-xl transition-all"
+                    className="w-full bg-white rounded-3xl px-6 py-5 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-neutral-100 hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)] transition-all"
                 >
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-primary-600 flex items-center justify-center shadow-sm">
-                            <SlidersHorizontal className="w-6 h-6 text-white" />
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-700 flex items-center justify-center shadow-lg">
+                            <Search className="w-6 h-6 text-white" />
                         </div>
                         <div className="text-left">
-                            <div className="text-base font-bold text-neutral-900">Filters</div>
-                            <div className="text-sm text-neutral-600 font-medium">{properties.length} {properties.length === 1 ? 'property' : 'properties'}</div>
+                            <div className="text-base font-bold text-neutral-900">
+                                {locationQuery || appliedFilters.propertyType || appliedFilters.guests
+                                    ? 'Filters Applied'
+                                    : 'Search & Filter'}
+                            </div>
+                            <div className="text-sm text-neutral-600 font-medium">
+                                {activeFilterCount > 0
+                                    ? `${activeFilterCount} active • ${properties.length} properties`
+                                    : `${properties.length} ${properties.length === 1 ? 'property' : 'properties'}`
+                                }
+                            </div>
                         </div>
                     </div>
-                    <ChevronDown className="w-6 h-6 text-neutral-600" />
+                    <div className="flex items-center gap-2">
+                        {activeFilterCount > 0 && (
+                            <div className="w-6 h-6 rounded-full bg-primary-600 flex items-center justify-center">
+                                <span className="text-xs font-bold text-white">{activeFilterCount}</span>
+                            </div>
+                        )}
+                        <SlidersHorizontal className="w-6 h-6 text-neutral-600" />
+                    </div>
                 </motion.button>
             </div>
 
@@ -536,7 +624,7 @@ export default function Homestays() {
                                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        className="absolute top-full left-0 mt-4 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 overflow-hidden z-50 origin-top-left"
+                                        className="absolute top-full left-0 mt-4 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 overflow-hidden z-[9999] origin-top-left"
                                     >
                                         {loadingLocation ? (
                                             <div className="p-4 flex items-center gap-2 text-gray-500">
@@ -642,12 +730,7 @@ export default function Homestays() {
                                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                             className="absolute top-full mt-2 left-0 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50"
                                         >
-                                            <button
-                                                onClick={() => { updateFilter('propertyType', undefined); setActiveFilter(null); }}
-                                                className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-1 ${!appliedFilters.propertyType ? 'bg-gray-100 font-medium' : 'hover:bg-gray-50'}`}
-                                            >
-                                                All Types
-                                            </button>
+
                                             {filterOptions?.propertyTypes?.map((type: string) => (
                                                 <button
                                                     key={type}
@@ -742,7 +825,7 @@ export default function Homestays() {
             </div>
 
             {/* Results Grid */}
-            <div className="container mx-auto px-4 pb-20 max-w-7xl mt-8">
+            <div className="container mx-auto px-4 pb-20 max-w-7xl mt-10 md:mt-14">
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-20">
                         <Loader />
@@ -759,7 +842,7 @@ export default function Homestays() {
                 ) : (
                     <>
                         <motion.div
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                         >
@@ -824,16 +907,16 @@ export default function Homestays() {
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: -20, scale: 0.95 }}
                                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                                    className="fixed top-32 left-4 right-4 z-[9999] md:hidden max-w-md mx-auto"
+                                    className="fixed top-24 left-4 right-4 z-[9999] md:hidden max-w-md mx-auto"
                                 >
-                                    <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] border border-neutral-200/50 overflow-hidden">
+                                    <div className="bg-white/98 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] border border-neutral-200/50 overflow-hidden max-h-[calc(100vh-120px)] flex flex-col">
                                         {/* Compact Header */}
-                                        <div className="bg-gradient-to-r from-neutral-900 to-neutral-800 px-5 py-4 flex items-center justify-between">
+                                        <div className="bg-gradient-to-r from-neutral-900 to-neutral-800 px-5 py-4 flex items-center justify-between flex-shrink-0">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                                                    <SlidersHorizontal className="w-4 h-4 text-white" />
+                                                    <Search className="w-4 h-4 text-white" />
                                                 </div>
-                                                <h3 className="text-base font-bold text-white">Filter & Sort</h3>
+                                                <h3 className="text-base font-bold text-white">Search & Filter</h3>
                                             </div>
                                             <button
                                                 onClick={() => setIsMobileFilterOpen(false)}
@@ -844,8 +927,62 @@ export default function Homestays() {
                                             </button>
                                         </div>
 
-                                        {/* Compact Filter Content */}
-                                        <div className="p-4 space-y-4 max-h-[65vh] overflow-y-auto">
+                                        {/* Scrollable Filter Content */}
+                                        <div className="p-4 space-y-4 overflow-y-auto flex-1">
+                                            {/* Location Search */}
+                                            <div>
+                                                <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                                    <div className="w-1 h-1 rounded-full bg-primary-500"></div>
+                                                    Search Location
+                                                </label>
+                                                <div className="relative">
+                                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10" />
+                                                    <input
+                                                        type="text"
+                                                        value={locationQuery}
+                                                        onChange={(e) => setLocationQuery(e.target.value)}
+                                                        placeholder="Where would you like to go?"
+                                                        className="w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm font-semibold transition-all"
+                                                    />
+                                                    {locationQuery && (
+                                                        <button
+                                                            onClick={() => {
+                                                                setLocationQuery('');
+                                                                updateFilter('search', undefined);
+                                                                updateFilter('city', undefined);
+                                                            }}
+                                                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-200 rounded-full transition-colors z-10"
+                                                        >
+                                                            <X className="w-4 h-4 text-gray-500" />
+                                                        </button>
+                                                    )}
+                                                </div>
+
+                                                {/* Location Suggestions */}
+                                                {locationQuery.length > 0 && locationSuggestions.length > 0 && (
+                                                    <div className="mt-2 bg-white border-2 border-gray-200 rounded-2xl p-2 max-h-48 overflow-y-auto">
+                                                        {locationSuggestions.map((loc, i) => (
+                                                            <button
+                                                                key={i}
+                                                                onClick={() => {
+                                                                    setLocationQuery(loc.city);
+                                                                    updateFilter('city', loc.city);
+                                                                }}
+                                                                className="w-full text-left px-3 py-2.5 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
+                                                            >
+                                                                <div className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0">
+                                                                    <MapPin className="w-4 h-4 text-primary-600" />
+                                                                </div>
+                                                                <div className="min-w-0">
+                                                                    <div className="font-semibold text-gray-900 text-sm truncate">{loc.city}</div>
+                                                                    <div className="text-xs text-gray-500">{loc.state}</div>
+                                                                </div>
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+
                                             {/* Price Range */}
                                             <div>
                                                 <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
@@ -931,18 +1068,29 @@ export default function Homestays() {
                                         </div>
 
                                         {/* Footer Actions */}
-                                        <div className="p-4 bg-gray-50 border-t border-gray-100 flex gap-2">
+                                        <div className="p-4 bg-gray-50 border-t border-gray-100 flex gap-2 flex-shrink-0">
                                             <button
-                                                onClick={clearAllFilters}
-                                                className="flex-1 px-4 py-3 rounded-xl text-xs font-bold text-neutral-700 bg-white hover:bg-neutral-100 transition-colors border border-gray-200"
+                                                onClick={() => {
+                                                    clearAllFilters();
+                                                    setLocationQuery('');
+                                                }}
+                                                className="flex-1 px-4 py-3 rounded-2xl text-xs font-bold text-neutral-700 bg-white hover:bg-neutral-100 transition-colors border-2 border-gray-200 flex items-center justify-center gap-2"
                                             >
-                                                Reset
+                                                <X className="w-4 h-4" />
+                                                Reset All
                                             </button>
                                             <button
-                                                onClick={() => { applyDetailedFilters(); setIsMobileFilterOpen(false); }}
-                                                className="flex-[2] px-6 py-3 bg-gradient-to-r from-primary-600 to-blue-600 text-white text-xs font-bold rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95"
+                                                onClick={() => {
+                                                    if (locationQuery) {
+                                                        updateFilter('search', locationQuery);
+                                                    }
+                                                    applyDetailedFilters();
+                                                    setIsMobileFilterOpen(false);
+                                                }}
+                                                className="flex-[2] px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white text-xs font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
                                             >
-                                                Apply ({pagination?.total})
+                                                <Check className="w-4 h-4" />
+                                                Apply Filters ({pagination?.total || properties.length})
                                             </button>
                                         </div>
                                     </div>
