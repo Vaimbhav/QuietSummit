@@ -72,8 +72,13 @@ export default function JourneyDetail() {
                 <div className="text-6xl mb-6">😔</div>
                 <h2 className="text-3xl font-bold text-neutral-900 mb-4">Journey Not Found</h2>
                 <p className="text-neutral-600 mb-8">{error || 'The journey you are looking for does not exist.'}</p>
-                <Button onClick={(e) => { e.stopPropagation(); navigate('/journeys') }} variant="primary">
-                    <ArrowLeft className="w-4 h-4 mr-2" />
+                <Button
+                    onClick={(e) => { e.stopPropagation(); navigate('/journeys') }}
+                    variant="primary"
+                    size="lg"
+                    className="px-8 font-bold"
+                >
+                    <ArrowLeft className="w-5 h-5 mr-2" />
                     Back to Journeys
                 </Button>
             </div>
@@ -511,7 +516,7 @@ export default function JourneyDetail() {
                                             disabled={!isBookable}
                                             variant={!isBookable ? "outline" : "primary"}
                                             size="lg"
-                                            className="w-full mb-3 sm:mb-4 text-base sm:text-lg font-bold py-3 sm:py-4"
+                                            className={`w-full mb-3 sm:mb-4 text-base sm:text-lg font-bold py-3 sm:py-4 ${!isBookable ? 'bg-red-50! text-red-600! border-red-600! disabled:opacity-100!' : ''}`}
                                         >
                                             {label}
                                         </Button>
@@ -586,7 +591,7 @@ export default function JourneyDetail() {
                                     disabled={!isBookable}
                                     variant={!isBookable ? "outline" : "primary"}
                                     size="lg"
-                                    className="px-8 py-3 text-base font-bold"
+                                    className={`px-8 py-3 text-base font-bold ${!isBookable ? '!bg-red-50 !text-red-600 !border-red-600 disabled:!opacity-100' : ''}`}
                                 >
                                     {label}
                                 </Button>

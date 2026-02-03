@@ -133,6 +133,7 @@ export function useAuth() {
             role: user.role,
             isHost: user.isHost,
             token: user.token,
+            dateOfBirth: user.dateOfBirth,
         }
     }
 
@@ -141,6 +142,7 @@ export function useAuth() {
         user: currentUser,
         email: user.email,
         name: user.name,
+        dateOfBirth: user.dateOfBirth,
         logout,
     }
 }

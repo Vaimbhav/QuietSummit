@@ -10,7 +10,6 @@ import couponsRouter from './coupons'
 import chatRouter from './chat'
 import uploadRouter from './upload'
 import calendarRouter from './calendar'
-import wishlistsRouter from './wishlists'
 import propertiesRouter from './properties'
 import hostsRouter from './hosts'
 import reviewsRouter from './reviews'
@@ -34,7 +33,6 @@ router.use('/coupons', couponsRouter)
 router.use('/chat', chatRouter)
 router.use('/upload', uploadRouter)
 router.use('/calendar', calendarRouter)
-router.use('/wishlists', wishlistsRouter)
 router.use('/reviews', reviewsRouter)
 router.use('/admin', adminRouter)
 router.use('/notifications', notificationsRouter)

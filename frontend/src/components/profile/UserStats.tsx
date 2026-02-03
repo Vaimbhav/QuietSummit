@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getMyStats, UserStats as UserStatsType } from '../../services/profileApi';
-import { TrendingUp, Calendar, Star, Heart, DollarSign, MessageSquare } from 'lucide-react';
+import { TrendingUp, Calendar, Star, DollarSign, MessageSquare } from 'lucide-react';
 import Loader from '../common/Loader';
 
 export default function UserStats() {
@@ -79,12 +79,7 @@ export default function UserStats() {
             value: stats.reviewsGiven,
             color: 'bg-indigo-100 text-indigo-600'
         },
-        {
-            icon: Heart,
-            label: 'Wishlists',
-            value: stats.wishlistCount,
-            color: 'bg-pink-100 text-pink-600'
-        },
+
         {
             icon: Calendar,
             label: 'Member Since',

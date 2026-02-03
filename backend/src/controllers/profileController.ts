@@ -3,7 +3,6 @@ import SignUp from '../models/SignUp'
 import Booking from '../models/Booking'
 import { Property } from '../models/Property'
 import Review from '../models/Review'
-import Wishlist from '../models/Wishlist'
 import logger from '../utils/logger'
 
 // Helper function to get user ID from request
@@ -343,7 +342,6 @@ export const deleteAccount = async (req: Request, res: Response): Promise<void> 
         // Delete user data
         await Promise.all([
             SignUp.findByIdAndDelete(userId),
-            Wishlist.deleteMany({ memberId: userId }),
             // Note: Keep bookings and reviews for historical purposes
         ])
 
@@ -574,7 +572,6 @@ export const getMyStats = async (req: Request, res: Response): Promise<void> => 
             totalProperties,
             totalReviews,
             averageRatingReceived,
-            wishlists,
         ] = await Promise.all([
             Booking.countDocuments({ memberId: userId }),
             Booking.countDocuments({ memberId: userId, bookingStatus: 'completed' }),
@@ -584,7 +581,6 @@ export const getMyStats = async (req: Request, res: Response): Promise<void> => 
                 { $match: { hostId: userId, reviewType: 'host' } },
                 { $group: { _id: null, avgRating: { $avg: '$rating' } } },
             ]),
-            Wishlist.countDocuments({ memberId: userId }),
         ])
 
         res.status(200).json({
@@ -599,7 +595,6 @@ export const getMyStats = async (req: Request, res: Response): Promise<void> => 
                     given: totalReviews,
                     averageReceived: averageRatingReceived[0]?.avgRating || 0,
                 },
-                wishlists,
             },
         })
         return

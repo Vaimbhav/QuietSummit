@@ -8,6 +8,7 @@ interface UserState {
     isHost: boolean
     token: string | null
     tokenExpiry: number | null
+    dateOfBirth: string | null
     preferences: {
         newsletter: boolean
         notifications: boolean
@@ -22,6 +23,7 @@ const initialState: UserState = {
     isHost: false,
     token: null,
     tokenExpiry: null,
+    dateOfBirth: null,
     preferences: {
         newsletter: false,
         notifications: false,
@@ -41,6 +43,7 @@ const userSlice = createSlice({
                 isHost?: boolean
                 token: string
                 isAuthenticated: boolean
+                dateOfBirth?: string
             }>
         ) => {
             state.email = action.payload.email
@@ -49,6 +52,7 @@ const userSlice = createSlice({
             state.isHost = action.payload.isHost || false
             state.token = action.payload.token
             state.isAuthenticated = action.payload.isAuthenticated
+            state.dateOfBirth = action.payload.dateOfBirth || null
 
             // Decode JWT to get expiry (simple decode, not verification)
             try {
@@ -72,6 +76,7 @@ const userSlice = createSlice({
             state.isHost = false
             state.token = null
             state.tokenExpiry = null
+            state.dateOfBirth = null
         },
         updatePreferences: (state, action: PayloadAction<Partial<UserState['preferences']>>) => {
             state.preferences = { ...state.preferences, ...action.payload }

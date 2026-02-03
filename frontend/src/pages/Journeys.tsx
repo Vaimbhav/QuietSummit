@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, MapPin, ArrowRight, ChevronLeft, ChevronRight, ChevronDown, X, Filter, RotateCcw } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { getJourneys } from '../services/api'
 import { Journey } from '../types/journey'
 import Button from '@components/common/Button'
@@ -16,15 +16,38 @@ const getDurationDays = (duration: number | { days: number }): number => {
 };
 
 export default function Journeys() {
+    const [searchParams, setSearchParams] = useSearchParams()
     const [allJourneys, setAllJourneys] = useState<Journey[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [filter, setFilter] = useState<'all' | 'easy' | 'moderate' | 'challenging'>('all')
-    const [selectedRegion, setSelectedRegion] = useState<string>('')
-    const [sortBy, setSortBy] = useState<'newest' | 'price' | 'price-high' | 'duration'>('newest')
+
+    // Initialize state from URL params
+    const [filter, setFilter] = useState<'all' | 'easy' | 'moderate' | 'challenging'>(
+        (searchParams.get('difficulty') as any) || 'all'
+    )
+    const [selectedRegion, setSelectedRegion] = useState<string>(
+        searchParams.get('region') || ''
+    )
+    const [sortBy, setSortBy] = useState<'newest' | 'price' | 'price-high' | 'duration'>(
+        (searchParams.get('sort') as any) || 'newest'
+    )
+    const [timing, setTiming] = useState<'upcoming' | 'past'>(
+        (searchParams.get('timing') as any) || 'upcoming'
+    )
+
     const [currentPage, setCurrentPage] = useState(1)
     const [isFilterOpen, setIsFilterOpen] = useState(false)
-    const [timing, setTiming] = useState<'upcoming' | 'past'>('upcoming')
+
+    // Update URL when filters change
+    useEffect(() => {
+        const params: any = {}
+        if (filter !== 'all') params.difficulty = filter
+        if (selectedRegion) params.region = selectedRegion
+        if (sortBy !== 'newest') params.sort = sortBy
+        if (timing !== 'upcoming') params.timing = timing
+        setSearchParams(params, { replace: true })
+    }, [filter, selectedRegion, sortBy, timing, setSearchParams])
+
 
     // Extract unique regions from all journeys with null check
     const regions = Array.from(

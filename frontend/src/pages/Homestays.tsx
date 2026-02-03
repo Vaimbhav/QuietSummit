@@ -848,7 +848,7 @@ export default function Homestays() {
                 ) : (
                     <>
                         <motion.div
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12"
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                         >
@@ -860,7 +860,7 @@ export default function Homestays() {
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.4, delay: idx * 0.05 }}
                                     >
-                                        <PropertyCard property={property} onWishlistChange={loadProperties} />
+                                        <PropertyCard property={property} />
                                     </motion.div>
                                 ))}
                             </AnimatePresence>

@@ -57,7 +57,6 @@ export interface UserStats {
     reviewsGiven: number;
     reviewsReceived: number;
     averageRating: number;
-    wishlistCount: number;
     memberSince: string;
 }
 

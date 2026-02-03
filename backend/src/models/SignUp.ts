@@ -6,6 +6,7 @@ export interface ISignUp extends Document {
     email: string
     password: string
     phone?: string
+    dateOfBirth?: Date
     interests: string[]
     source: string
     subscribeToNewsletter: boolean
@@ -37,6 +38,7 @@ const SignUpSchema = new Schema<ISignUp>(
         email: { type: String, required: true, unique: true, lowercase: true },
         password: { type: String, select: false },
         phone: { type: String },
+        dateOfBirth: { type: Date },
         interests: [String],
         source: { type: String, default: 'website' },
         subscribeToNewsletter: { type: Boolean, default: true },

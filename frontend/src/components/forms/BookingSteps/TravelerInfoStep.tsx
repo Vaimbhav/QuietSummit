@@ -82,6 +82,18 @@ export default function TravelerInfoStep({
         }
     }, [isAuthenticated])
 
+    const calculateAge = (dob: string | undefined | null) => {
+        if (!dob) return ''
+        const birthDate = new Date(dob)
+        const today = new Date()
+        let age = today.getFullYear() - birthDate.getFullYear()
+        const m = today.getMonth() - birthDate.getMonth()
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--
+        }
+        return age > 0 ? age : ''
+    }
+
     const [travelers, setTravelers] = useState<Traveler[]>(
         bookingData.travelers && bookingData.travelers.length > 0
             ? bookingData.travelers.map(t => ({
@@ -90,7 +102,7 @@ export default function TravelerInfoStep({
             }))
             : Array.from({ length: numberOfTravelers }, (_, i) => ({
                 name: i === 0 ? userData?.name || '' : '',
-                age: '',
+                age: (i === 0 && userData?.dateOfBirth) ? calculateAge(userData.dateOfBirth) : '',
                 gender: 'male' as const,
                 emergencyContact: i === 0 ? userData?.phone || '' : '',
             }))
@@ -387,6 +399,7 @@ export default function TravelerInfoStep({
                                                     updateTraveler(index, 'emergencyContactCountry', countryCode)
                                                 }}
                                                 placeholder="Enter phone number"
+                                                label=""
                                             />
                                         </div>
                                     </div>
