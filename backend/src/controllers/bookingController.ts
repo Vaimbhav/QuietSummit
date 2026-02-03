@@ -138,6 +138,35 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
                 })
                 return
             }
+
+            // Check availability
+            const targetDateEntry = journey.departureDates?.find((d: any) => {
+                const dDate = d.date ? new Date(d.date) : new Date(d)
+                // Compare dates ignoring time if stored with time, usually stored as ISODate
+                return dDate.toISOString().split('T')[0] === departureDateTime.toISOString().split('T')[0]
+            })
+
+            if (!targetDateEntry) {
+                res.status(400).json({
+                    success: false,
+                    error: 'Selected departure date is not available',
+                })
+                return
+            }
+
+            // Check seat capacity if available
+            if (targetDateEntry.totalSeats !== undefined) {
+                const booked = targetDateEntry.bookedSeats || 0
+                const available = targetDateEntry.totalSeats - booked
+
+                if (numberOfTravelers > available) {
+                    res.status(400).json({
+                        success: false,
+                        error: `Not enough seats available. Only ${available} spots left for this date.`,
+                    })
+                    return
+                }
+            }
         }
 
         // Calculate dates and duration
@@ -245,6 +274,27 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
         // If coupon was used, increment its usage count
         if (couponDetails?.couponId) {
             await applyCoupon(couponDetails.couponId)
+        }
+
+        // Update journey booked seats if confirmed
+        if (!isProperty && finalStatus === 'confirmed') {
+            try {
+                // Format date to match query
+                // We need to match the specific array element
+                // The date in DB is Date object.
+                await Journey.updateOne(
+                    {
+                        _id: journey._id,
+                        "departureDates.date": startDate
+                    },
+                    {
+                        $inc: { "departureDates.$.bookedSeats": numberOfTravelers }
+                    }
+                )
+            } catch (err) {
+                logger.error('Failed to update journey seat count:', err)
+                // Don't fail the booking request, just log it
+            }
         }
 
         logger.info(`Booking created successfully: ${booking._id} for member: ${member.email} | Status: ${finalStatus} | Payment Status: ${finalPaymentStatus} | Journey Model: ${isProperty ? 'Property' : 'Journey'}`)

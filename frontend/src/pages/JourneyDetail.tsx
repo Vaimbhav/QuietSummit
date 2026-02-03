@@ -22,17 +22,6 @@ export default function JourneyDetail() {
     const [expandedDay, setExpandedDay] = useState<number | null>(null)
     const [isBookingOpen, setIsBookingOpen] = useState(false)
 
-    // Check if there's a saved booking state and auto-open modal
-    useEffect(() => {
-        if (journey && !isBookingOpen) {
-            const savedBooking = sessionStorage.getItem(`booking_${journey._id}`)
-            if (savedBooking) {
-                // Booking was in progress, reopen the modal
-                setIsBookingOpen(true)
-            }
-        }
-    }, [journey])
-
     useEffect(() => {
         const fetchJourney = async () => {
             try {
@@ -184,10 +173,24 @@ export default function JourneyDetail() {
                                 <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
                                     <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
                                     <div className="text-xl sm:text-2xl font-black text-neutral-900 text-premium gradient-text-premium">
-                                        {new Date(journey.departureDates[0]).toLocaleDateString('en-US', {
-                                            month: 'short',
-                                            day: 'numeric'
-                                        })}
+                                        {(() => {
+                                            const futureDates = journey.departureDates!.filter(d => {
+                                                const dateVal = typeof d === 'object' && d !== null && 'date' in d ? d.date : d;
+                                                return new Date(dateVal as string | Date) > new Date();
+                                            }).sort((a, b) => {
+                                                const dA = new Date(typeof a === 'object' && a !== null && 'date' in a ? a.date : a);
+                                                const dB = new Date(typeof b === 'object' && b !== null && 'date' in b ? b.date : b);
+                                                return dA.getTime() - dB.getTime();
+                                            });
+
+                                            const nextDate = futureDates.length > 0 ? futureDates[0] : journey.departureDates![0];
+                                            const dateVal = typeof nextDate === 'object' && nextDate !== null && 'date' in nextDate ? nextDate.date : nextDate;
+
+                                            return new Date(dateVal as string | Date).toLocaleDateString('en-US', {
+                                                month: 'short',
+                                                day: 'numeric'
+                                            })
+                                        })()}
                                     </div>
                                     <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">Departure Date</div>
                                 </div>
@@ -433,16 +436,33 @@ export default function JourneyDetail() {
                                     </span>
                                 </div>
                                 {journey.departureDates && journey.departureDates.length > 0 && (
-                                    <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
-                                        <span className="text-sm sm:text-base text-neutral-700 font-medium">Departure</span>
-                                        <span className="text-sm sm:text-base text-neutral-900 font-bold">
-                                            {new Date(journey.departureDates[0]).toLocaleDateString('en-US', {
-                                                month: 'short',
-                                                day: 'numeric',
-                                                year: 'numeric'
-                                            })}
-                                        </span>
-                                    </div>
+                                    <>
+                                        <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
+                                            <span className="text-sm sm:text-base text-neutral-700 font-medium">Departure</span>
+                                            <span className="text-sm sm:text-base text-neutral-900 font-bold">
+                                                {(() => {
+                                                    const d = journey.departureDates![0];
+                                                    const dateVal = typeof d === 'object' && d !== null && 'date' in d ? d.date : d;
+                                                    return new Date(dateVal as string | Date).toLocaleDateString('en-US', {
+                                                        month: 'short',
+                                                        day: 'numeric',
+                                                        year: 'numeric'
+                                                    })
+                                                })()}
+                                            </span>
+                                        </div>
+                                        {typeof journey.departureDates[0] === 'object' && 'totalSeats' in journey.departureDates[0] && (
+                                            <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
+                                                <span className="text-sm sm:text-base text-neutral-700 font-medium">Availability</span>
+                                                <span className={`text-sm sm:text-base font-bold ${(journey.departureDates[0] as any).totalSeats - ((journey.departureDates[0] as any).bookedSeats || 0) < 5
+                                                    ? 'text-red-600'
+                                                    : 'text-green-600'
+                                                    }`}>
+                                                    {(journey.departureDates[0] as any).totalSeats - ((journey.departureDates[0] as any).bookedSeats || 0)} seats left
+                                                </span>
+                                            </div>
+                                        )}
+                                    </>
                                 )}
                                 <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
                                     <span className="text-sm sm:text-base text-neutral-700 font-medium">Group Size</span>
@@ -455,19 +475,48 @@ export default function JourneyDetail() {
                             </div>
 
                             <BookingGuard onAuthenticated={() => setIsBookingOpen(true)}>
-                                {(openBooking) => (
-                                    <Button
-                                        onClick={(e) => {
-                                            e.stopPropagation()
-                                            openBooking()
-                                        }}
-                                        variant="primary"
-                                        size="lg"
-                                        className="w-full mb-3 sm:mb-4 text-base sm:text-lg font-bold py-3 sm:py-4"
-                                    >
-                                        Book This Journey
-                                    </Button>
-                                )}
+                                {(openBooking) => {
+                                    const now = new Date();
+                                    const dates = journey.departureDates || [];
+                                    const futureDates = dates.filter(d => {
+                                        const dateVal = typeof d === 'object' && d !== null && 'date' in d ? d.date : d;
+                                        return new Date(dateVal as string | Date) > now;
+                                    });
+
+                                    const hasFutureDates = futureDates.length > 0;
+                                    const hasSeats = futureDates.some(d => {
+                                        if (typeof d === 'object' && 'totalSeats' in d) {
+                                            return (d.totalSeats - ((d as any).bookedSeats || 0)) > 0;
+                                        }
+                                        return true;
+                                    });
+
+                                    const isBookable = hasFutureDates && hasSeats;
+
+                                    let label = 'Book This Journey';
+                                    if (!isBookable) {
+                                        if (!hasFutureDates) {
+                                            label = 'Journey Ended';
+                                        } else {
+                                            label = 'Sold Out';
+                                        }
+                                    }
+
+                                    return (
+                                        <Button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                openBooking()
+                                            }}
+                                            disabled={!isBookable}
+                                            variant={!isBookable ? "outline" : "primary"}
+                                            size="lg"
+                                            className="w-full mb-3 sm:mb-4 text-base sm:text-lg font-bold py-3 sm:py-4"
+                                        >
+                                            {label}
+                                        </Button>
+                                    )
+                                }}
                             </BookingGuard>
 
                             <Button
@@ -501,19 +550,48 @@ export default function JourneyDetail() {
                         </div>
                     </div>
                     <BookingGuard onAuthenticated={() => setIsBookingOpen(true)}>
-                        {(openBooking) => (
-                            <Button
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    openBooking()
-                                }}
-                                variant="primary"
-                                size="lg"
-                                className="px-8 py-3 text-base font-bold"
-                            >
-                                Book Now
-                            </Button>
-                        )}
+                        {(openBooking) => {
+                            const now = new Date();
+                            const dates = journey.departureDates || [];
+                            const futureDates = dates.filter(d => {
+                                const dateVal = typeof d === 'object' && d !== null && 'date' in d ? d.date : d;
+                                return new Date(dateVal as string | Date) > now;
+                            });
+
+                            const hasFutureDates = futureDates.length > 0;
+                            const hasSeats = futureDates.some(d => {
+                                if (typeof d === 'object' && 'totalSeats' in d) {
+                                    return (d.totalSeats - ((d as any).bookedSeats || 0)) > 0;
+                                }
+                                return true;
+                            });
+
+                            const isBookable = hasFutureDates && hasSeats;
+
+                            let label = 'Book Now';
+                            if (!isBookable) {
+                                if (!hasFutureDates) {
+                                    label = 'Ended';
+                                } else {
+                                    label = 'Sold Out';
+                                }
+                            }
+
+                            return (
+                                <Button
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        openBooking()
+                                    }}
+                                    disabled={!isBookable}
+                                    variant={!isBookable ? "outline" : "primary"}
+                                    size="lg"
+                                    className="px-8 py-3 text-base font-bold"
+                                >
+                                    {label}
+                                </Button>
+                            )
+                        }}
                     </BookingGuard>
                 </div>
             </div>

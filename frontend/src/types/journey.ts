@@ -47,7 +47,11 @@ export interface Journey {
     itinerary: ItineraryDay[];
     images: string[];
     testimonials: Testimonial[];
-    departureDates?: string[]; // Fixed departure dates
+    departureDates?: Array<{
+        date: string | Date;
+        totalSeats: number;
+        bookedSeats: number;
+    }>;
     createdAt: string;
     updatedAt: string;
 }

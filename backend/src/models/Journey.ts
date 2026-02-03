@@ -28,7 +28,11 @@ export interface IJourney extends Document {
     // New fields for booking system
     price?: number
     destination?: string
-    departureDates?: string[]
+    departureDates?: Array<{
+        date: Date
+        totalSeats: number
+        bookedSeats: number
+    }>
     itinerary: Array<{
         day: number
         title: string
@@ -77,7 +81,11 @@ const JourneySchema = new Schema<IJourney>(
         // New fields for booking system
         price: { type: Number },
         destination: { type: String },
-        departureDates: [String],
+        departureDates: [{
+            date: Date,
+            totalSeats: { type: Number, default: 20 },
+            bookedSeats: { type: Number, default: 0 }
+        }],
         itinerary: [
             {
                 day: Number,

@@ -4,7 +4,7 @@ import logger from '../utils/logger'
 
 export const getAllJourneys = async (req: Request, res: Response) => {
     try {
-        const { difficulty, region, status = 'published' } = req.query
+        const { difficulty, region, status = 'published', timing } = req.query
 
         const filter: any = { status }
 
@@ -14,6 +14,21 @@ export const getAllJourneys = async (req: Request, res: Response) => {
 
         if (region) {
             filter['location.region'] = region
+        }
+
+        if (timing) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (timing === 'upcoming') {
+                // Must have at least one date >= today
+                // Also handle old string dates if necessary, or just rely on date objects
+                filter['departureDates.date'] = { $gte: today }
+            } else if (timing === 'past') {
+                // All dates must be < today
+                // Can be achieved by excluding those that have future dates
+                filter['departureDates.date'] = { $not: { $gte: today } }
+            }
         }
 
         const journeys = await Journey.find(filter).sort({ createdAt: -1 })

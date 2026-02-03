@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Calendar, MapPin, ArrowRight, ChevronLeft, ChevronRight, ChevronDown, X, Filter } from 'lucide-react'
+import { Calendar, MapPin, ArrowRight, ChevronLeft, ChevronRight, ChevronDown, X, Filter, RotateCcw } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { getJourneys } from '../services/api'
 import { Journey } from '../types/journey'
@@ -24,6 +24,7 @@ export default function Journeys() {
     const [sortBy, setSortBy] = useState<'newest' | 'price' | 'price-high' | 'duration'>('newest')
     const [currentPage, setCurrentPage] = useState(1)
     const [isFilterOpen, setIsFilterOpen] = useState(false)
+    const [timing, setTiming] = useState<'upcoming' | 'past'>('upcoming')
 
     // Extract unique regions from all journeys with null check
     const regions = Array.from(
@@ -38,7 +39,7 @@ export default function Journeys() {
         const fetchJourneys = async () => {
             try {
                 setLoading(true)
-                const data = await getJourneys()
+                const data = await getJourneys({ timing })
                 setAllJourneys(data)
             } catch (err) {
                 setError('Failed to load journeys. Please try again later.')
@@ -48,7 +49,7 @@ export default function Journeys() {
         }
 
         fetchJourneys()
-    }, [])
+    }, [timing])
 
     // Client-side filtering with null checks
     const filteredJourneys = allJourneys.filter(journey => {
@@ -75,7 +76,7 @@ export default function Journeys() {
     // Reset to page 1 when filters change
     useEffect(() => {
         setCurrentPage(1)
-    }, [filter, selectedRegion])
+    }, [filter, selectedRegion, timing, sortBy])
 
     // Scroll to top when page changes
     useEffect(() => {
@@ -85,22 +86,6 @@ export default function Journeys() {
         }, 0)
         return () => clearTimeout(timer)
     }, [currentPage])
-
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-neutral-50">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-            </div>
-        )
-    }
-
-    if (error) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-neutral-50 text-red-600">
-                <p>{error}</p>
-            </div>
-        )
-    }
 
     return (
         <div className="min-h-screen bg-[#FAF9F7] text-neutral-900 overflow-x-hidden">
@@ -154,29 +139,71 @@ export default function Journeys() {
                 >
                     <div className="flex flex-col gap-6">
                         {/* Difficulty Filter */}
-                        <div>
-                            <label className="text-sm font-semibold text-neutral-900 mb-4 block">
-                                Difficulty Level
-                            </label>
-                            <div className="flex gap-2.5 flex-wrap">
-                                {(['all', 'easy', 'moderate', 'challenging'] as const).map((level) => (
-                                    <Button
-                                        key={level}
-                                        variant={filter === level ? 'luxury' : 'ghost'}
-                                        size="sm"
-                                        onClick={() => {
-                                            setFilter(level)
-                                            window.scrollTo({ top: 0, behavior: 'smooth' })
-                                        }}
-                                        className="text-xs sm:text-sm font-extrabold"
-                                    >
-                                        {level.charAt(0).toUpperCase() + level.slice(1)}
-                                    </Button>
-                                ))}
+                        <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                                <label className="text-sm font-semibold text-neutral-900 mb-4 block">
+                                    Difficulty Level
+                                </label>
+                                <div className="flex gap-2.5 flex-wrap">
+                                    {(['all', 'easy', 'moderate', 'challenging'] as const).map((level) => (
+                                        <Button
+                                            key={level}
+                                            variant={filter === level ? 'luxury' : 'ghost'}
+                                            size="sm"
+                                            onClick={() => {
+                                                setFilter(level)
+                                                window.scrollTo({ top: 0, behavior: 'smooth' })
+                                            }}
+                                            className="text-xs sm:text-sm font-extrabold"
+                                        >
+                                            {level.charAt(0).toUpperCase() + level.slice(1)}
+                                        </Button>
+                                    ))}
+                                </div>
                             </div>
+
+                            {/* Reset Filters */}
+                            {(filter !== 'all' || selectedRegion || sortBy !== 'newest' || timing !== 'upcoming') && (
+                                <button
+                                    onClick={() => {
+                                        setFilter('all')
+                                        setSelectedRegion('')
+                                        setSortBy('newest')
+                                        setTiming('upcoming')
+                                    }}
+                                    className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-neutral-500 hover:text-red-600 transition-colors group mt-6"
+                                >
+                                    <div className="p-1.5 rounded-full bg-neutral-100 group-hover:bg-red-50 transition-colors">
+                                        <RotateCcw className="w-4 h-4" />
+                                    </div>
+                                    Clear Filters
+                                </button>
+                            )}
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 sm:gap-6">
+                            {/* Adventure Type Filter */}
+                            <div className="relative md:col-span-1">
+                                <label className="text-xs sm:text-sm font-extrabold text-neutral-900 mb-2 sm:mb-3 block uppercase tracking-wide">
+                                    Adventure Type
+                                </label>
+                                <div className="relative">
+                                    <select
+                                        value={timing}
+                                        onChange={(e) => {
+                                            setTiming(e.target.value as 'upcoming' | 'past')
+                                            window.scrollTo({ top: 0, behavior: 'smooth' })
+                                        }}
+                                        className="appearance-none pl-5 pr-12 py-3.5 border-2 border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-primary-600 bg-white w-full text-sm sm:text-base font-semibold truncate transition-all cursor-pointer shadow-sm hover:shadow-md"
+                                        aria-label="Filter by adventure type"
+                                    >
+                                        <option value="upcoming">Upcoming Adventures</option>
+                                        <option value="past">Past Expeditions</option>
+                                    </select>
+                                    <ChevronDown className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500 pointer-events-none" />
+                                </div>
+                            </div>
+
                             {/* Region Filter */}
                             <div className="relative md:col-span-1">
                                 <label className="text-xs sm:text-sm font-extrabold text-neutral-900 mb-2 sm:mb-3 block uppercase tracking-wide">
@@ -228,9 +255,9 @@ export default function Journeys() {
                             </div>
 
                             {/* Results Count */}
-                            <div className="flex items-end md:col-span-2">
+                            <div className="flex items-end md:col-span-1">
                                 <div className="text-sm sm:text-base gradient-primary px-5 sm:px-6 py-3 sm:py-3.5 rounded-2xl w-full text-center md:text-right font-extrabold text-white shadow-luxury">
-                                    <span className="text-lg">{filteredJourneys.length}</span> {filteredJourneys.length === 1 ? 'journey' : 'journeys'} found
+                                    <span className="text-lg">{filteredJourneys.length}</span> {filteredJourneys.length === 1 ? 'found' : 'found'}
                                 </div>
                             </div>
                         </div>
@@ -280,6 +307,28 @@ export default function Journeys() {
 
                                     {/* Compact Filter Content */}
                                     <div className="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
+                                        {/* Journey Type */}
+                                        <div className="flex bg-neutral-100 p-1 rounded-xl">
+                                            <button
+                                                onClick={() => setTiming('upcoming')}
+                                                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${timing === 'upcoming'
+                                                    ? 'bg-white text-primary-700 shadow-sm'
+                                                    : 'text-neutral-500'
+                                                    }`}
+                                            >
+                                                Upcoming
+                                            </button>
+                                            <button
+                                                onClick={() => setTiming('past')}
+                                                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${timing === 'past'
+                                                    ? 'bg-white text-primary-700 shadow-sm'
+                                                    : 'text-neutral-500'
+                                                    }`}
+                                            >
+                                                Past
+                                            </button>
+                                        </div>
+
                                         {/* Difficulty Filter */}
                                         <div>
                                             <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
@@ -393,10 +442,18 @@ export default function Journeys() {
             )}
 
             {/* Journeys Grid Container */}
-            <div className="container mx-auto px-6 sm:px-6 lg:px-8 pb-8 sm:pb-10 lg:pb-12">
+            <div className="container mx-auto px-6 sm:px-6 lg:px-8 pb-8 sm:pb-10 lg:pb-12 min-h-[400px]">
 
                 {/* Journeys Grid */}
-                {paginatedJourneys.length === 0 ? (
+                {loading ? (
+                    <div className="flex items-center justify-center h-64">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                    </div>
+                ) : error ? (
+                    <div className="flex items-center justify-center h-64 text-red-600">
+                        <p>{error}</p>
+                    </div>
+                ) : paginatedJourneys.length === 0 ? (
                     <div className="text-center py-16">
                         <div className="text-6xl mb-4">🔍</div>
                         <h3 className="text-2xl font-bold text-neutral-900 mb-2">No journeys found</h3>

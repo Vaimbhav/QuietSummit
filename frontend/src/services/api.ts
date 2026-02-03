@@ -154,12 +154,14 @@ export const getJourneys = async (filters?: {
     difficulty?: string;
     region?: string;
     status?: string;
+    timing?: 'upcoming' | 'past';
 }): Promise<Journey[]> => {
     try {
         const params = new URLSearchParams();
         if (filters?.difficulty) params.append('difficulty', filters.difficulty);
         if (filters?.region) params.append('region', filters.region);
         if (filters?.status) params.append('status', filters.status);
+        if (filters?.timing) params.append('timing', filters.timing);
 
         const url = `/journeys${params.toString() ? `?${params.toString()}` : ''}`;
         const response = await api.get(url);

@@ -36,9 +36,42 @@ export default function TravelerInfoStep({
     const [showLoginRequired, setShowLoginRequired] = useState(false)
     const [numberOfTravelers, setNumberOfTravelers] = useState(bookingData.numberOfTravelers || 1)
 
-    // Use departure date from journey (fixed) or fallback
-    const departureDate = journey.departureDates && journey.departureDates.length > 0
-        ? journey.departureDates[0]
+    // Parse dates to handle object structure and seats
+    const availableDates = (journey.departureDates || []).map((d) => {
+        let dateObj: Date
+        let total = 20
+        let booked = 0
+
+        if (typeof d === 'string') {
+            dateObj = new Date(d)
+        } else {
+            const dObj = d as any
+            dateObj = new Date(dObj.date)
+            if (dObj.totalSeats !== undefined) total = dObj.totalSeats
+            if (dObj.bookedSeats !== undefined) booked = dObj.bookedSeats
+        }
+
+        return {
+            date: dateObj,
+            total,
+            booked,
+            seatsLeft: total - booked,
+            label: dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+        }
+    }).filter(d => d.date > new Date()).sort((a, b) => a.date.getTime() - b.date.getTime())
+
+    // Initial date index (find first available future date)
+    const getInitialDateIndex = () => {
+        const idx = availableDates.findIndex(d => d.date > new Date() && d.seatsLeft > 0)
+        return idx !== -1 ? idx : 0
+    }
+
+    const [selectedDateIndex, setSelectedDateIndex] = useState(getInitialDateIndex())
+
+    const selectedDeparture = availableDates[selectedDateIndex]
+    // Use selected date or fallback
+    const departureDate = selectedDeparture
+        ? selectedDeparture.date.toISOString().split('T')[0]
         : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
 
     useEffect(() => {
@@ -94,6 +127,18 @@ export default function TravelerInfoStep({
         if (!userData?.email) {
             alert('Email is required. Please ensure you are logged in with a valid email.')
             return
+        }
+
+        // Validate seats
+        if (selectedDeparture) {
+            if (selectedDeparture.date < new Date()) {
+                alert('This departure date matches a past date. Please select a future date.')
+                return
+            }
+            if (numberOfTravelers > selectedDeparture.seatsLeft) {
+                alert(`Not enough seats available. Only ${selectedDeparture.seatsLeft} seats remaining for this date.`)
+                return
+            }
         }
 
         // Validation
@@ -201,6 +246,36 @@ export default function TravelerInfoStep({
                 {/* Only show form if authenticated and not showing login required */}
                 {isAuthenticated && !showLoginRequired && (
                     <>
+                        {/* Departure Date Selection */}
+                        {availableDates.length > 0 && (
+                            <div className="bg-white rounded-xl p-4 border border-neutral-200">
+                                <div className="mb-3">
+                                    <h3 className="text-base font-bold text-neutral-900">Departure Date</h3>
+                                    <p className="text-neutral-500 text-xs mt-1">Select your preferred date</p>
+                                </div>
+                                <div className="relative">
+                                    <select
+                                        value={selectedDateIndex}
+                                        onChange={(e) => setSelectedDateIndex(Number(e.target.value))}
+                                        className="appearance-none w-full px-4 py-3 text-sm border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white font-medium text-neutral-900"
+                                    >
+                                        {availableDates.map((d, idx) => {
+                                            const isPast = d.date < new Date()
+                                            const isFull = d.seatsLeft <= 0
+                                            return (
+                                                <option key={idx} value={idx} disabled={isPast || isFull}>
+                                                    {d.label} {isPast ? '(Past)' : isFull ? '(Full)' : `(${d.seatsLeft} seats left)`}
+                                                </option>
+                                            )
+                                        })}
+                                    </select>
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                        <ChevronDown className="w-5 h-5 text-neutral-500" />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Number of Travelers */}
                         <div className="bg-white rounded-xl p-4 border border-neutral-200">
                             <div className="flex items-center justify-between">
