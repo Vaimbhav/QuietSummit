@@ -47,7 +47,7 @@ export default function About() {
                 {/* Enhanced gradient fade from hero */}
                 <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary-700/20 via-primary-700/5 to-transparent pointer-events-none" />
 
-                <div className="container mx-auto px-4 -mt-24 relative z-20">
+                <div className="container mx-auto px-6 -mt-24 relative z-20">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -201,7 +201,7 @@ export default function About() {
             <section className="relative py-12 md:py-20 bg-white">
                 {/* Enhanced gradient fade from previous section */}
                 <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-neutral-900/20 via-neutral-900/5 to-transparent pointer-events-none" />
-                <div className="container mx-auto px-4 max-w-6xl">
+                <div className="container mx-auto px-6 max-w-6xl">
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
@@ -284,7 +284,7 @@ export default function About() {
             <section className="relative py-12 md:py-20 bg-neutral-900 text-white">
                 {/* Gradient fade from previous section */}
                 <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
-                <div className="container mx-auto px-4 max-w-6xl">
+                <div className="container mx-auto px-6 max-w-6xl">
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
@@ -350,7 +350,7 @@ export default function About() {
             <section className="relative py-12 md:py-20 bg-white">
                 {/* Gradient fade from previous section */}
                 <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-neutral-900/10 to-transparent pointer-events-none" />
-                <div className="container mx-auto px-4 max-w-6xl">
+                <div className="container mx-auto px-6 max-w-6xl">
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
@@ -409,7 +409,7 @@ export default function About() {
             <section className="relative py-12 md:py-20 bg-primary-700 text-white">
                 {/* Gradient fade from previous section */}
                 <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
-                <div className="container mx-auto px-4 max-w-4xl text-center">
+                <div className="container mx-auto px-6 max-w-4xl text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 40 }}
                         whileInView={{ opacity: 1, y: 0 }}

@@ -70,10 +70,10 @@ export default function PropertyCard({ property, onWishlistChange }: PropertyCar
     return (
         <Link
             to={`/homestays/${property.slug}`}
-            className="group block bg-white rounded-3xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-all duration-500 overflow-hidden border border-neutral-100 hover:border-neutral-200 h-full flex flex-col hover:-translate-y-2 transform"
+            className="group flex flex-col bg-white rounded-3xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] transition-all duration-500 overflow-hidden border border-neutral-100 hover:border-neutral-200 h-full hover:-translate-y-2 transform"
         >
             {/* Image */}
-            <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+            <div className="relative aspect-video overflow-hidden bg-gray-100">
                 <img
                     src={imageUrl}
                     alt={property.title}
@@ -84,7 +84,7 @@ export default function PropertyCard({ property, onWishlistChange }: PropertyCar
                 />
 
                 {/* Gradient Overlay */}
-                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/60 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
 
                 {/* Wishlist Button */}
                 <button

@@ -15,16 +15,16 @@ const badges: TrustBadge[] = [
 
 export default function TrustBadges() {
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {badges.map((badge, index) => {
                 const Icon = badge.icon;
                 return (
                     <div
                         key={index}
-                        className={`flex items-center gap-3 p-4 rounded-2xl border border-gray-100 ${badge.color} transition-all hover:scale-105 hover:shadow-md`}
+                        className={`flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-200 ${badge.color} transition-all hover:scale-105 hover:shadow-md`}
                     >
-                        <Icon className="w-5 h-5 flex-shrink-0" />
-                        <span className="text-sm font-semibold">{badge.label}</span>
+                        <Icon className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
+                        <span className="text-xs sm:text-sm font-semibold text-center sm:text-left leading-tight">{badge.label}</span>
                     </div>
                 );
             })}

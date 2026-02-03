@@ -126,7 +126,7 @@ export default function Profile() {
 
     return (
         <div className="min-h-screen bg-gray-50 py-8">
-            <div className="container mx-auto px-4 max-w-4xl">
+            <div className="container mx-auto px-6 max-w-4xl">
                 {/* Header */}
                 <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
                     <div className="flex items-center gap-6">

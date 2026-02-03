@@ -181,7 +181,7 @@ export default function Homestays() {
                 >
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold text-gray-900">{title}</h3>
-                        <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+                        <button onClick={onClose} className="text-gray-400 hover:text-gray-600" aria-label="Close filter">
                             <X className="w-4 h-4" />
                         </button>
                     </div>
@@ -206,9 +206,9 @@ export default function Homestays() {
     );
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-neutral-50 via-white to-neutral-50 text-neutral-900 font-sans">
+        <div className="min-h-screen bg-linear-to-b from-neutral-50 via-white to-neutral-50 text-neutral-900 font-sans overflow-x-hidden">
             {/* Hero - Premium Luxury */}
-            <section className="relative bg-gradient-to-br from-primary-700 via-primary-600 to-primary-800 text-white py-12 sm:py-20 z-20">
+            <section className="relative bg-linear-to-br from-primary-700 via-primary-600 to-primary-800 text-white py-12 sm:py-20 z-20">
                 {/* Abstract Background Elements */}
                 <div className="absolute inset-0 overflow-hidden opacity-10">
                     <div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full mix-blend-soft-light blur-3xl animate-blob"></div>
@@ -234,7 +234,7 @@ export default function Homestays() {
                     >
                         Discover Your
                         <br />
-                        <span className="bg-gradient-to-r from-white via-blue-50 to-white bg-clip-text text-transparent">Perfect Escape</span>
+                        <span className="bg-linear-to-r from-white via-blue-50 to-white bg-clip-text text-transparent">Perfect Escape</span>
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -252,12 +252,12 @@ export default function Homestays() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="hidden md:block max-w-5xl mx-auto relative px-4 sm:px-0 z-[100]"
+                        className="hidden md:block max-w-5xl mx-auto relative px-4 sm:px-0 z-100"
                         ref={filterRef}
                     >
                         <div className="bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] p-2.5 flex items-center gap-3 border border-white/30 hover:shadow-[0_25px_70px_-15px_rgba(0,0,0,0.4)] transition-all duration-500 relative">
                             <div className="flex-1 flex items-center gap-3 pl-5 pr-2 min-w-0">
-                                <Search className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                                <Search className="w-5 h-5 text-gray-500 shrink-0" />
                                 <input
                                     type="text"
                                     value={locationQuery}
@@ -283,7 +283,8 @@ export default function Homestays() {
                                         updateFilter('search', undefined);
                                         updateFilter('city', undefined);
                                     }}
-                                    className="p-2.5 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 mr-1"
+                                    className="p-2.5 hover:bg-gray-100 rounded-full transition-colors shrink-0 mr-1"
+                                    aria-label="Clear location search"
                                 >
                                     <X className="w-5 h-5 text-gray-500" />
                                 </button>
@@ -296,7 +297,7 @@ export default function Homestays() {
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-full left-0 mt-4 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 overflow-hidden z-[101]"
+                                        className="absolute top-full left-0 mt-4 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 overflow-hidden z-101"
                                     >
                                         {loadingLocation ? (
                                             <div className="p-4 flex items-center gap-2 text-gray-500">
@@ -410,7 +411,10 @@ export default function Homestays() {
 
                             {/* Search Button */}
                             <div className="flex-none">
-                                <button className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 hover:from-primary-700 hover:via-primary-800 hover:to-primary-900 text-white w-12 h-12 sm:w-auto sm:h-auto p-0 sm:px-10 sm:py-4 rounded-full font-bold flex items-center justify-center gap-2.5 transition-all shadow-[0_4px_14px_0_rgba(74,139,112,0.39)] hover:shadow-[0_6px_20px_0_rgba(74,139,112,0.5)] hover:scale-[1.02] active:scale-[0.98] flex-shrink-0 text-base">
+                                <button
+                                    className="bg-linear-to-r from-primary-600 via-primary-700 to-primary-800 hover:from-primary-700 hover:via-primary-800 hover:to-primary-900 text-white w-12 h-12 sm:w-auto sm:h-auto p-0 sm:px-10 sm:py-4 rounded-full font-bold flex items-center justify-center gap-2.5 transition-all shadow-[0_4px_14px_0_rgba(74,139,112,0.39)] hover:shadow-[0_6px_20px_0_rgba(74,139,112,0.5)] hover:scale-[1.02] active:scale-[0.98] shrink-0 text-base"
+                                    aria-label="Search properties"
+                                >
                                     <Search className="w-5 h-5" />
                                     <span className="hidden sm:inline">Search</span>
                                 </button>
@@ -422,7 +426,7 @@ export default function Homestays() {
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="filter-dropdown-content absolute top-full mt-5 left-1/2 -translate-x-1/2 bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 p-8 w-96 z-[9999]"
+                                    className="filter-dropdown-content absolute top-full mt-5 left-1/2 -translate-x-1/2 bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 p-8 w-96 z-9999"
                                 >
                                     <div className="space-y-4">
                                         <div>
@@ -463,7 +467,7 @@ export default function Homestays() {
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="filter-dropdown-content absolute top-full mt-5 left-1/2 -translate-x-1/2 bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 p-5 w-80 z-[9999]"
+                                    className="filter-dropdown-content absolute top-full mt-5 left-1/2 -translate-x-1/2 bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 p-5 w-80 z-9999"
                                 >
                                     <div className="space-y-2">
                                         {typeOptions.map(type => (
@@ -490,7 +494,7 @@ export default function Homestays() {
                                     initial={{ opacity: 0, y: -10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="filter-dropdown-content absolute top-full mt-5 left-1/2 -translate-x-1/2 bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 p-8 w-80 z-[9999]"
+                                    className="filter-dropdown-content absolute top-full mt-5 left-1/2 -translate-x-1/2 bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 p-8 w-80 z-9999"
                                 >
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
@@ -542,7 +546,7 @@ export default function Homestays() {
                     className="w-full bg-white rounded-3xl px-6 py-5 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-neutral-100 hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)] transition-all"
                 >
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-700 flex items-center justify-center shadow-lg">
+                        <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-primary-600 to-primary-700 flex items-center justify-center shadow-lg">
                             <Search className="w-6 h-6 text-white" />
                         </div>
                         <div className="text-left">
@@ -571,7 +575,7 @@ export default function Homestays() {
             </div>
 
             {/* Sticky Filter Bar - HIDDEN (search now in hero) */}
-            <div style={{ display: 'none' }}>
+            <div className="hidden">
                 <div className="max-w-6xl mx-auto">
                     <div className="bg-white/90 backdrop-blur-xl border border-gray-200/50 shadow-sm rounded-full p-2 flex items-center justify-between gap-2 overflow-visible transition-all hover:shadow-md">
 
@@ -579,6 +583,7 @@ export default function Homestays() {
                         <button
                             onClick={() => setIsMobileFilterOpen(true)}
                             className="md:hidden p-2.5 rounded-full border border-gray-200 hover:bg-gray-50 text-gray-700"
+                            aria-label="Open filters"
                         >
                             <SlidersHorizontal className="w-5 h-5" />
                         </button>
@@ -612,6 +617,7 @@ export default function Homestays() {
                                             updateFilter('city', undefined);
                                         }}
                                         className="p-1 hover:bg-gray-100 rounded-full"
+                                        aria-label="Clear location"
                                     >
                                         <X className="w-4 h-4 text-gray-400" />
                                     </button>
@@ -624,7 +630,7 @@ export default function Homestays() {
                                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        className="absolute top-full left-0 mt-4 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 overflow-hidden z-[9999] origin-top-left"
+                                        className="absolute top-full left-0 mt-4 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 overflow-hidden z-9999 origin-top-left"
                                     >
                                         {loadingLocation ? (
                                             <div className="p-4 flex items-center gap-2 text-gray-500">
@@ -803,19 +809,19 @@ export default function Homestays() {
                             {appliedFilters.minPrice && (
                                 <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-800">
                                     Min: ₹{appliedFilters.minPrice}
-                                    <button onClick={() => updateFilter('minPrice', undefined)}><X className="w-3 h-3 hover:text-red-500" /></button>
+                                    <button onClick={() => updateFilter('minPrice', undefined)} aria-label="Remove minimum price filter"><X className="w-3 h-3 hover:text-red-500" /></button>
                                 </span>
                             )}
                             {appliedFilters.maxPrice && (
                                 <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-800">
                                     Max: ₹{appliedFilters.maxPrice}
-                                    <button onClick={() => updateFilter('maxPrice', undefined)}><X className="w-3 h-3 hover:text-red-500" /></button>
+                                    <button onClick={() => updateFilter('maxPrice', undefined)} aria-label="Remove maximum price filter"><X className="w-3 h-3 hover:text-red-500" /></button>
                                 </span>
                             )}
                             {appliedFilters.propertyType && (
                                 <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-800 capitalize">
                                     {appliedFilters.propertyType}
-                                    <button onClick={() => updateFilter('propertyType', undefined)}><X className="w-3 h-3 hover:text-red-500" /></button>
+                                    <button onClick={() => updateFilter('propertyType', undefined)} aria-label="Remove property type filter"><X className="w-3 h-3 hover:text-red-500" /></button>
                                 </span>
                             )}
                             <button onClick={clearAllFilters} className="text-xs text-gray-500 hover:text-black underline">Clear all</button>
@@ -825,7 +831,7 @@ export default function Homestays() {
             </div>
 
             {/* Results Grid */}
-            <div className="container mx-auto px-4 pb-20 max-w-7xl mt-10 md:mt-14">
+            <div className="container mx-auto px-6 pb-20 max-w-7xl mt-10 md:mt-14">
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-20">
                         <Loader />
@@ -898,7 +904,7 @@ export default function Homestays() {
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
                                     onClick={() => setIsMobileFilterOpen(false)}
-                                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998] md:hidden"
+                                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-9998 md:hidden"
                                 />
 
                                 {/* Premium Dropdown Panel */}
@@ -907,11 +913,11 @@ export default function Homestays() {
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: -20, scale: 0.95 }}
                                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                                    className="fixed top-24 left-4 right-4 z-[9999] md:hidden max-w-md mx-auto"
+                                    className="fixed top-24 left-4 right-4 z-9999 md:hidden max-w-md mx-auto"
                                 >
                                     <div className="bg-white/98 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] border border-neutral-200/50 overflow-hidden max-h-[calc(100vh-120px)] flex flex-col">
                                         {/* Compact Header */}
-                                        <div className="bg-gradient-to-r from-neutral-900 to-neutral-800 px-5 py-4 flex items-center justify-between flex-shrink-0">
+                                        <div className="bg-linear-to-r from-neutral-900 to-neutral-800 px-5 py-4 flex items-center justify-between shrink-0">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
                                                     <Search className="w-4 h-4 text-white" />
@@ -952,6 +958,7 @@ export default function Homestays() {
                                                                 updateFilter('city', undefined);
                                                             }}
                                                             className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-200 rounded-full transition-colors z-10"
+                                                            aria-label="Clear location"
                                                         >
                                                             <X className="w-4 h-4 text-gray-500" />
                                                         </button>
@@ -970,7 +977,7 @@ export default function Homestays() {
                                                                 }}
                                                                 className="w-full text-left px-3 py-2.5 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
                                                             >
-                                                                <div className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0">
+                                                                <div className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center shrink-0">
                                                                     <MapPin className="w-4 h-4 text-primary-600" />
                                                                 </div>
                                                                 <div className="min-w-0">
@@ -1068,7 +1075,7 @@ export default function Homestays() {
                                         </div>
 
                                         {/* Footer Actions */}
-                                        <div className="p-4 bg-gray-50 border-t border-gray-100 flex gap-2 flex-shrink-0">
+                                        <div className="p-4 bg-gray-50 border-t border-gray-100 flex gap-2 shrink-0">
                                             <button
                                                 onClick={() => {
                                                     clearAllFilters();
@@ -1087,7 +1094,7 @@ export default function Homestays() {
                                                     applyDetailedFilters();
                                                     setIsMobileFilterOpen(false);
                                                 }}
-                                                className="flex-[2] px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white text-xs font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
+                                                className="flex-2 px-6 py-3 bg-linear-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white text-xs font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
                                             >
                                                 <Check className="w-4 h-4" />
                                                 Apply Filters ({pagination?.total || properties.length})

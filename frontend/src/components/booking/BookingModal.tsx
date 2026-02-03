@@ -183,7 +183,7 @@ export default function BookingModal({
             <div className="flex min-h-full items-center justify-center p-4">
                 <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden border border-gray-100">
                     {/* Header */}
-                    <div className="sticky top-0 bg-gradient-to-br from-primary-50 via-white to-white border-b border-gray-100 px-8 py-6 flex items-center justify-between z-10">
+                    <div className="sticky top-0 bg-linear-to-br from-primary-50 via-white to-white border-b border-gray-100 px-8 py-6 flex items-center justify-between z-10">
                         <div>
                             <h2 className="text-3xl font-black text-gray-900 mb-1">Complete Your Booking</h2>
                             <p className="text-sm text-gray-600 font-medium flex items-center gap-2">
@@ -260,7 +260,7 @@ export default function BookingModal({
                     </div>
 
                     {/* Footer */}
-                    <div className="sticky bottom-0 bg-gradient-to-t from-gray-50 to-white border-t border-gray-100 px-8 py-6 flex items-center justify-between shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                    <div className="sticky bottom-0 bg-linear-to-t from-gray-50 to-white border-t border-gray-100 px-8 py-6 flex items-center justify-between shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                         <div>
                             {currentStep > 1 && (
                                 <button
@@ -275,7 +275,7 @@ export default function BookingModal({
                         <div className="flex items-center gap-6">
                             <div className="text-right">
                                 <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-1">Total Amount</p>
-                                <p className="text-3xl font-black bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">₹{priceBreakdown.totalPrice.toLocaleString()}</p>
+                                <p className="text-3xl font-black bg-linear-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">₹{priceBreakdown.totalPrice.toLocaleString()}</p>
                             </div>
 
                             {currentStep < 3 ? (
@@ -285,7 +285,7 @@ export default function BookingModal({
                                             handleNext();
                                         }
                                     }}
-                                    className="px-10 py-4 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold rounded-2xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+                                    className="px-10 py-4 bg-linear-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold rounded-2xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
                                 >
                                     Continue →
                                 </button>
@@ -293,7 +293,7 @@ export default function BookingModal({
                                 <button
                                     onClick={handleConfirmBooking}
                                     disabled={loading || !acceptedTerms || !acceptedCancellation}
-                                    className="px-10 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold rounded-2xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2.5"
+                                    className="px-10 py-4 bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold rounded-2xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2.5"
                                 >
                                     {loading ? (
                                         <>

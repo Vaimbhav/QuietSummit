@@ -21,7 +21,7 @@ export default function Contact() {
                 </motion.div>
             </section>
 
-            <div className="container mx-auto px-4 py-12">
+            <div className="container mx-auto px-6 py-12">
                 <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {/* Contact Form */}
                     <div className="lg:col-span-2">

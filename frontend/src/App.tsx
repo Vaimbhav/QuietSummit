@@ -186,9 +186,9 @@ function AppContent() {
                     </Routes>
                 </Suspense>
             </main>
-            <div className={(isJourneyDetailPage || isHomestayDetailPage) ? 'hidden md:block' : ''}>
+            {!isJourneyDetailPage && !isHomestayDetailPage && (
                 <Footer />
-            </div>
+            )}
         </div>
     )
 }

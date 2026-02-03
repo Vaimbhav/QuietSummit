@@ -70,16 +70,18 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                             <button
                                 onClick={prevMobileImage}
                                 className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-lg transition-all backdrop-blur-sm"
+                                aria-label="Previous image"
                             >
                                 <ChevronLeft className="w-5 h-5" />
                             </button>
                             <button
                                 onClick={nextMobileImage}
                                 className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-lg transition-all backdrop-blur-sm"
+                                aria-label="Next image"
                             >
                                 <ChevronRight className="w-5 h-5" />
                             </button>
-                            
+
                             {/* Mobile Image Indicator */}
                             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/50 text-white text-xs rounded-full backdrop-blur-sm">
                                 {mobileIndex + 1} / {images.length}
@@ -140,6 +142,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                         <button
                             onClick={() => setShowLightbox(false)}
                             className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors backdrop-blur-sm z-10"
+                            aria-label="Close gallery"
                         >
                             <X className="w-6 h-6" />
                         </button>
@@ -155,12 +158,14 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                                 <button
                                     onClick={prevImage}
                                     className="absolute left-6 p-4 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors backdrop-blur-sm z-10"
+                                    aria-label="Previous image"
                                 >
                                     <ChevronLeft className="w-6 h-6" />
                                 </button>
                                 <button
                                     onClick={nextImage}
                                     className="absolute right-6 p-4 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors backdrop-blur-sm z-10"
+                                    aria-label="Next image"
                                 >
                                     <ChevronRight className="w-6 h-6" />
                                 </button>
@@ -194,7 +199,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                                 <button
                                     key={index}
                                     onClick={() => setCurrentImageIndex(index)}
-                                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${index === currentImageIndex
+                                    className={`shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${index === currentImageIndex
                                         ? 'border-white scale-110'
                                         : 'border-transparent opacity-60 hover:opacity-100'
                                         }`}

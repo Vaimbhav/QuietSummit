@@ -8,6 +8,8 @@
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 		text-rendering: optimizeLegibility;
+		overflow-x: hidden;
+		max-width: 100vw;
 	}
 
 	body {
@@ -15,6 +17,8 @@
 		font-feature-settings:
 			'kern' 1,
 			'liga' 1;
+		overflow-x: hidden;
+		max-width: 100vw;
 	}
 
 	::selection {
@@ -70,11 +74,11 @@
 	}
 
 	.gradient-text {
-		@apply bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 bg-clip-text text-transparent;
+		@apply bg-linear-to-r from-primary-600 via-primary-700 to-primary-800 bg-clip-text text-transparent;
 	}
 
 	.gradient-premium {
-		@apply bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800;
+		@apply bg-linear-to-r from-primary-600 via-primary-700 to-primary-800;
 	}
 
 	.border-luxury {
@@ -87,7 +91,7 @@
 
 	/* Premium Button Styles */
 	.btn-premium {
-		@apply px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98];
+		@apply px-8 py-4 bg-linear-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98];
 	}
 
 	.btn-secondary {
@@ -190,7 +194,7 @@
 }
 
 .premium-calendar .react-datepicker__header {
-	@apply bg-gradient-to-r from-primary-600 to-primary-700 border-b-0 rounded-t-2xl;
+	@apply bg-linear-to-r from-primary-600 to-primary-700 border-b-0 rounded-t-2xl;
 }
 
 .premium-calendar .react-datepicker__current-month,
@@ -216,4 +220,8 @@
 
 .premium-calendar .react-datepicker__day--in-selecting-range {
 	@apply bg-primary-200 text-primary-900;
+}
+
+.tight-letter-spacing {
+	letter-spacing: -0.02em;
 }

@@ -103,7 +103,7 @@ export default function Journeys() {
     }
 
     return (
-        <div className="min-h-screen bg-[#FAF9F7] text-neutral-900">
+        <div className="min-h-screen bg-[#FAF9F7] text-neutral-900 overflow-x-hidden">
             {/* Header */}
             <section className="relative bg-primary-600 text-white pb-28 pt-20 sm:pb-32 sm:pt-24 md:pb-32 lg:pb-36 overflow-hidden">
                 <div className="container mx-auto px-6 sm:px-8 text-center relative z-10">
@@ -393,7 +393,7 @@ export default function Journeys() {
             )}
 
             {/* Journeys Grid Container */}
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-10 lg:pb-12">
+            <div className="container mx-auto px-6 sm:px-6 lg:px-8 pb-8 sm:pb-10 lg:pb-12">
 
                 {/* Journeys Grid */}
                 {paginatedJourneys.length === 0 ? (

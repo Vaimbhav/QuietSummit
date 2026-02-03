@@ -19,7 +19,7 @@ export default function JourneyDetail() {
     const [journey, setJourney] = useState<Journey | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [expandedDay, setExpandedDay] = useState<number | null>(0)
+    const [expandedDay, setExpandedDay] = useState<number | null>(null)
     const [isBookingOpen, setIsBookingOpen] = useState(false)
 
     // Check if there's a saved booking state and auto-open modal
@@ -107,7 +107,7 @@ export default function JourneyDetail() {
                     </div>
                 </div>
 
-                <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-8">
+                <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-8 max-w-full">
                     <button
                         type="button"
                         onClick={(e) => {
@@ -122,7 +122,7 @@ export default function JourneyDetail() {
                     </button>
 
                     {/* Difficulty Badge Positioned Above Gallery */}
-                    <div className="relative mb-4">
+                    <div className="relative mb-4 max-w-full overflow-hidden">
                         <div className="absolute top-4 right-4 z-10 bg-white/95 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg">
                             <span className={`text-xs sm:text-sm font-bold tracking-wider uppercase ${getDifficultyColor(journey.difficulty)}`}>
                                 {journey.difficulty}
@@ -141,10 +141,10 @@ export default function JourneyDetail() {
             </section>
 
             {/* Main Content */}
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
-                <div className="grid xl:grid-cols-3 gap-8 sm:gap-10 lg:gap-12">
+            <div className="container mx-auto px-6 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12 max-w-full">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 lg:gap-12 max-w-full relative">
                     {/* Left Column - Main Content */}
-                    <div className="xl:col-span-2 space-y-8 sm:space-y-10 lg:space-y-12">
+                    <div className="md:col-span-2 space-y-8 sm:space-y-10 lg:space-y-12">
                         {/* Header */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -215,14 +215,14 @@ export default function JourneyDetail() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2 }}
-                                className="glass-luxury rounded-4xl p-8 sm:p-10 shadow-luxury-lg border-luxury"
+                                className="glass-luxury rounded-4xl p-6 sm:p-8 md:p-10 shadow-luxury-lg border-luxury"
                             >
-                                <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 mb-6 sm:mb-8 text-luxury">Ideal For</h2>
-                                <div className="flex flex-wrap gap-3 sm:gap-4">
+                                <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 mb-5 sm:mb-6 md:mb-8 text-luxury">Ideal For</h2>
+                                <div className="flex flex-wrap gap-3 sm:gap-4 -mx-1">
                                     {journey.idealFor.map((item, idx) => (
                                         <span
                                             key={idx}
-                                            className="px-6 py-3 gradient-primary text-white rounded-2xl text-sm font-extrabold shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide"
+                                            className="px-6 py-3 gradient-primary text-white rounded-2xl text-sm font-extrabold shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide mx-1"
                                         >
                                             {item}
                                         </span>
@@ -240,11 +240,11 @@ export default function JourneyDetail() {
                                 className="glass-luxury rounded-4xl p-6 sm:p-8 md:p-10 shadow-luxury-lg border-luxury"
                             >
                                 <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 mb-5 sm:mb-7 text-luxury">Best Time to Visit</h2>
-                                <div className="flex flex-wrap gap-3 sm:gap-4">
+                                <div className="flex flex-wrap gap-3 sm:gap-4 -mx-1">
                                     {journey.season.map((s, idx) => (
                                         <span
                                             key={idx}
-                                            className="flex items-center gap-2 sm:gap-2.5 px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 gradient-accent text-white rounded-2xl text-sm sm:text-base font-extrabold shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300"
+                                            className="flex items-center gap-2 sm:gap-2.5 px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 gradient-accent text-white rounded-2xl text-sm sm:text-base font-extrabold shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 mx-1"
                                         >
                                             {getSeasonIcon(s)}
                                             {s}
@@ -408,12 +408,12 @@ export default function JourneyDetail() {
                     </div>
 
                     {/* Right Column - Booking Card (Desktop) */}
-                    <div className="xl:col-span-1 hidden md:block">
+                    <div className="hidden md:col-span-1 md:block">
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="xl:sticky xl:top-24 bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-7 lg:p-8 border-2 border-primary-200 shadow-lg"
+                            className="sticky top-28 z-10 bg-white/80 backdrop-blur-md rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-7 lg:p-8 border-2 border-primary-200 shadow-lg"
                         >
                             <div className="mb-5 sm:mb-6">
                                 <div className="flex items-baseline gap-2 mb-2">

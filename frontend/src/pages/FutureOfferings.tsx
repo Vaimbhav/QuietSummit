@@ -1,6 +1,6 @@
 export default function FutureOfferings() {
     return (
-        <div className="container mx-auto px-4 pt-8 pb-12 max-w-4xl">
+        <div className="container mx-auto px-6 pt-8 pb-12 max-w-4xl">
             <h1 className="text-4xl font-bold text-neutral-900 mb-8">Future Offerings</h1>
 
             <p className="text-lg text-neutral-700 mb-12">
