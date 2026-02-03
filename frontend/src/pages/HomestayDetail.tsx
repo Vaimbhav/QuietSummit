@@ -36,7 +36,6 @@ export default function PropertyDetail() {
     } | null>(null);
 
     const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-    const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
     // Prevent body scroll when modal is open
     useEffect(() => {
