@@ -298,10 +298,7 @@ async function getRelevantJourneys(message: string): Promise<any[]> {
             if (message.toLowerCase().includes('k') || budgetMatch[0].includes('000')) {
                 budget = budget * 1000
             }
-            query.$or = [
-                { price: { $lte: budget } },
-                { basePrice: { $lte: budget } }
-            ]
+            query.price = { $lte: budget }
         }
 
         // Check for duration mentions
@@ -338,7 +335,7 @@ async function getRelevantJourneys(message: string): Promise<any[]> {
                 title: j.title,
                 destination: j.destination || j.location?.region || 'India',
                 duration: `${j.duration?.days || 0}D/${j.duration?.nights || 0}N`,
-                price: j.price || j.basePrice || 0,
+                price: j.price || 0,
                 highlights: j.includes?.slice(0, 3) || []
             }))
         }
@@ -354,7 +351,7 @@ async function getRelevantJourneys(message: string): Promise<any[]> {
             title: j.title,
             destination: j.destination || j.location?.region || 'India',
             duration: `${j.duration?.days || 0}D/${j.duration?.nights || 0}N`,
-            price: j.price || j.basePrice || 0,
+            price: j.price || 0,
             highlights: j.includes?.slice(0, 3) || []
         }))
     } catch (error) {

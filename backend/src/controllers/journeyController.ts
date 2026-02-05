@@ -23,11 +23,11 @@ export const getAllJourneys = async (req: Request, res: Response) => {
             if (timing === 'upcoming') {
                 // Must have at least one date >= today
                 // Also handle old string dates if necessary, or just rely on date objects
-                filter['departureDates.date'] = { $gte: today }
+                filter['departureDate'] = { $gte: today }
             } else if (timing === 'past') {
                 // All dates must be < today
                 // Can be achieved by excluding those that have future dates
-                filter['departureDates.date'] = { $not: { $gte: today } }
+                filter['departureDate'] = { $not: { $gte: today } }
             }
         }
 

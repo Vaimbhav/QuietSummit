@@ -46,6 +46,7 @@ export interface IBooking extends Document {
     couponDetails?: ICouponDetails
     bookingStatus: 'confirmed' | 'pending' | 'completed' | 'cancelled'
     paymentStatus: 'paid' | 'pending' | 'refunded'
+    paymentType?: 'full' | 'registration'
     paymentDetails?: IPaymentDetails
     specialRequests?: string
     createdAt: Date
@@ -101,8 +102,11 @@ const BookingSchema = new Schema<IBooking>(
             type: String,
             enum: ['paid', 'pending', 'refunded'],
             default: 'paid',
-        },
-        paymentDetails: {
+        }, paymentType: {
+            type: String,
+            enum: ['full', 'registration'],
+            default: 'full',
+        }, paymentDetails: {
             razorpayOrderId: { type: String },
             razorpayPaymentId: { type: String },
             amount: { type: Number },

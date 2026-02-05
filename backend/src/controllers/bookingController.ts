@@ -35,6 +35,7 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             razorpay_order_id,
             razorpay_payment_id,
             razorpay_signature,
+            paymentType // NEW
         } = req.body
 
         // SECURITY: Always use authenticated user's email, ignore body email
@@ -119,6 +120,13 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             }
         } else {
             // Journey validation
+            if (!journey.departureDate) {
+                // If legacy journey or no date set
+                // Continue or fail? New model assumes single date.
+                // Assuming migrateJourneys.ts handles migration or manual fix.
+                // For now, check if date exists.
+            }
+
             if (!departureDate) {
                 res.status(400).json({
                     success: false,
@@ -131,6 +139,16 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             const today = new Date()
             today.setHours(0, 0, 0, 0)
 
+            // Check if passed booking date matches journey date (just day comparison)
+            const journeyDate = new Date(journey.departureDate)
+            if (departureDateTime.toISOString().split('T')[0] !== journeyDate.toISOString().split('T')[0]) {
+                res.status(400).json({
+                    success: false,
+                    error: 'Selected departure date does not match this journey schedule',
+                })
+                return
+            }
+
             if (departureDateTime < today) {
                 res.status(400).json({
                     success: false,
@@ -139,33 +157,17 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
                 return
             }
 
-            // Check availability
-            const targetDateEntry = journey.departureDates?.find((d: any) => {
-                const dDate = d.date ? new Date(d.date) : new Date(d)
-                // Compare dates ignoring time if stored with time, usually stored as ISODate
-                return dDate.toISOString().split('T')[0] === departureDateTime.toISOString().split('T')[0]
-            })
+            // Check capacity
+            const booked = journey.bookedSeats || 0
+            const max = journey.totalSeats || 20 // default fall back
+            const available = max - booked
 
-            if (!targetDateEntry) {
+            if (numberOfTravelers > available) {
                 res.status(400).json({
                     success: false,
-                    error: 'Selected departure date is not available',
+                    error: `Not enough seats available. Only ${available} spots left.`,
                 })
                 return
-            }
-
-            // Check seat capacity if available
-            if (targetDateEntry.totalSeats !== undefined) {
-                const booked = targetDateEntry.bookedSeats || 0
-                const available = targetDateEntry.totalSeats - booked
-
-                if (numberOfTravelers > available) {
-                    res.status(400).json({
-                        success: false,
-                        error: `Not enough seats available. Only ${available} spots left for this date.`,
-                    })
-                    return
-                }
             }
         }
 
@@ -262,6 +264,7 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             couponDetails: couponDetails || undefined,
             bookingStatus: finalStatus,
             paymentStatus: finalPaymentStatus,
+            paymentType: paymentType || 'full', // Default to full
             paymentDetails: {
                 razorpayOrderId: razorpay_order_id || orderId || '',
                 razorpayPaymentId: razorpay_payment_id || paymentId || '',
@@ -279,17 +282,10 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
         // Update journey booked seats if confirmed
         if (!isProperty && finalStatus === 'confirmed') {
             try {
-                // Format date to match query
-                // We need to match the specific array element
-                // The date in DB is Date object.
+                // Simplified update for Single Date Model
                 await Journey.updateOne(
-                    {
-                        _id: journey._id,
-                        "departureDates.date": startDate
-                    },
-                    {
-                        $inc: { "departureDates.$.bookedSeats": numberOfTravelers }
-                    }
+                    { _id: journey._id },
+                    { $inc: { bookedSeats: numberOfTravelers } }
                 )
             } catch (err) {
                 logger.error('Failed to update journey seat count:', err)
@@ -526,7 +522,7 @@ export const calculatePrice = async (req: Request, res: Response): Promise<void>
         }
 
         // Calculate base price
-        let basePrice = (journey.price || journey.basePrice || 15000) * numberOfTravelers
+        let basePrice = journey.price * numberOfTravelers
 
         // Add-on prices
         const addOnPrices: { [key: string]: number } = {
@@ -556,7 +552,7 @@ export const calculatePrice = async (req: Request, res: Response): Promise<void>
                 taxes,
                 total,
                 breakdown: {
-                    pricePerPerson: journey.price || journey.basePrice || 15000,
+                    pricePerPerson: journey.price,
                     numberOfTravelers,
                     addOns: addOns || [],
                     taxRate: '5%',

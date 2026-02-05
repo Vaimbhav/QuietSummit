@@ -21,18 +21,18 @@ export interface IJourney extends Document {
     idealFor: string[]
     season: string[]
     maxGroupSize: number
-    basePrice: number
     margin: number
     includes: string[]
     excludes: string[]
-    // New fields for booking system
-    price?: number
+    // Booking system fields
+    price: number
+    registrationPrice?: number
     destination?: string
-    departureDates?: Array<{
-        date: Date
-        totalSeats: number
-        bookedSeats: number
-    }>
+    // Single departure date & seats
+    departureDate?: Date
+    totalSeats?: number
+    bookedSeats?: number
+
     itinerary: Array<{
         day: number
         title: string
@@ -74,18 +74,19 @@ const JourneySchema = new Schema<IJourney>(
         idealFor: [String],
         season: [String],
         maxGroupSize: { type: Number, default: 10 },
-        basePrice: { type: Number, required: true },
         margin: { type: Number, default: 15 },
         includes: [String],
         excludes: [String],
-        // New fields for booking system
-        price: { type: Number },
+        // Booking system fields
+        price: { type: Number, required: true },
+        registrationPrice: { type: Number },
         destination: { type: String },
-        departureDates: [{
-            date: Date,
-            totalSeats: { type: Number, default: 20 },
-            bookedSeats: { type: Number, default: 0 }
-        }],
+
+        // Single departure date & seats
+        departureDate: { type: Date },
+        totalSeats: { type: Number, default: 20 },
+        bookedSeats: { type: Number, default: 0 },
+
         itinerary: [
             {
                 day: Number,
