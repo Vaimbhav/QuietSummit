@@ -62,10 +62,12 @@ export default function TravelerInfoStep({
     const [selectedDateIndex, setSelectedDateIndex] = useState(getInitialDateIndex())
 
     const selectedDeparture = availableDates[selectedDateIndex]
-    // Use selected date or fallback
+
+    // Use selected date, or empty string if no dates are defined (Registration Mode)
+    // ONLY fallback to 7 days from now if dates exist but somehow aren't selected (edge case)
     const departureDate = selectedDeparture
         ? selectedDeparture.date.toISOString().split('T')[0]
-        : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+        : (availableDates.length === 0 ? '' : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -252,12 +254,17 @@ export default function TravelerInfoStep({
                 {isAuthenticated && !showLoginRequired && (
                     <>
                         {/* Departure Date Selection */}
-                        {availableDates.length > 0 && (
-                            <div className="bg-white rounded-xl p-4 border border-neutral-200">
-                                <div className="mb-3">
-                                    <h3 className="text-base font-bold text-neutral-900">Departure Date</h3>
-                                    <p className="text-neutral-500 text-xs mt-1">Select your preferred date</p>
-                                </div>
+                        <div className="bg-white rounded-xl p-4 border border-neutral-200">
+                            <div className="mb-3">
+                                <h3 className="text-base font-bold text-neutral-900">Departure Date</h3>
+                                <p className="text-neutral-500 text-xs mt-1">
+                                    {availableDates.length > 0
+                                        ? "Select your preferred date"
+                                        : "Dates will be announced based on registrations"}
+                                </p>
+                            </div>
+
+                            {availableDates.length > 0 ? (
                                 <div className="relative">
                                     <select
                                         value={selectedDateIndex}
@@ -278,8 +285,20 @@ export default function TravelerInfoStep({
                                         <ChevronDown className="w-5 h-5 text-neutral-500" />
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            ) : (
+                                <div className="bg-primary-50 border border-primary-100 rounded-xl p-3 flex items-start gap-3">
+                                    <div className="p-1 bg-primary-100 rounded-full mt-0.5">
+                                        <AlertCircle className="w-4 h-4 text-primary-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-primary-800">Registration Only</p>
+                                        <p className="text-xs text-primary-600 mt-0.5 leading-relaxed">
+                                            Register now to join the interest pool. We will coordinate the final departure date with all registered travelers.
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
 
                         {/* Number of Travelers */}
                         <div className="bg-white rounded-xl p-4 border border-neutral-200">

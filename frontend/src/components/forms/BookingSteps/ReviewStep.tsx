@@ -223,7 +223,7 @@ export default function ReviewStep({ journey, bookingData, onBack, onClose, onNe
     }
 
     const formatDate = (dateString?: string) => {
-        if (!dateString) return 'Not selected'
+        if (!dateString) return 'To be decided'
         return new Date(dateString).toLocaleDateString('en-US', {
             weekday: 'short',
             month: 'short',
