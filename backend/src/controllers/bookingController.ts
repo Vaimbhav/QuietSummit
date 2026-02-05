@@ -328,8 +328,8 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
                                 propertyName: journey.title,
                                 guestName: (req.user as any)?.name || member.name,
                                 guestEmail: (req.user as any)?.email || member.email,
-                                checkIn: new Date(startDate).toLocaleDateString(),
-                                checkOut: new Date(endDate).toLocaleDateString(),
+                                checkIn: startDate ? new Date(startDate).toLocaleDateString() : 'N/A',
+                                checkOut: endDate ? new Date(endDate).toLocaleDateString() : 'N/A',
                                 totalPrice: totalAmount,
                                 guests: numberOfTravelers
                             });

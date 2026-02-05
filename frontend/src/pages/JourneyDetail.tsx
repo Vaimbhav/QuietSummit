@@ -602,7 +602,7 @@ export default function JourneyDetail() {
                                     const now = new Date();
                                     const hasValidDate = journey.departureDate && !isNaN(new Date(journey.departureDate as any).getTime());
 
-                                    const dateOk = hasValidDate ? new Date(journey.departureDate) > now : true;
+                                    const dateOk = hasValidDate && journey.departureDate ? new Date(journey.departureDate) > now : true;
                                     const seatsLeft = (journey.totalSeats || 0) - (journey.bookedSeats || 0);
                                     const hasSeats = seatsLeft > 0;
 
@@ -614,22 +614,24 @@ export default function JourneyDetail() {
                                             label = 'Sold Out';
                                         } else {
                                             label = 'Journey Ended';
-                                            return (
-                                                <Button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        openBooking()
-                                                    }}
-                                                    disabled={!isBookable}
-                                                    variant={!isBookable ? "outline" : "primary"}
-                                                    size="lg"
-                                                    className={`w-full mb-3 sm:mb-4 text-base sm:text-lg font-bold py-3 sm:py-4 ${!isBookable ? 'bg-red-50! text-red-600! border-red-600! disabled:opacity-100!' : ''}`}
-                                                >
-                                                    {label}
-                                                </Button>
-                                            )
                                         }
                                     }
+
+                                    return (
+                                        <Button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                openBooking()
+                                            }}
+                                            disabled={!isBookable}
+                                            variant={!isBookable ? "outline" : "primary"}
+                                            size="lg"
+                                            className={`w-full mb-3 sm:mb-4 text-base sm:text-lg font-bold py-3 sm:py-4 ${!isBookable ? 'bg-red-50! text-red-600! border-red-600! disabled:opacity-100!' : ''}`}
+                                        >
+                                            {label}
+                                        </Button>
+                                    )
+                                }}
                             </BookingGuard>
 
                             <Button
@@ -666,7 +668,7 @@ export default function JourneyDetail() {
                         {(openBooking) => {
                             const now = new Date();
                             const hasValidDate = journey.departureDate && !isNaN(new Date(journey.departureDate as any).getTime());
-                            const dateOk = hasValidDate ? new Date(journey.departureDate) > now : true;
+                            const dateOk = hasValidDate && journey.departureDate ? new Date(journey.departureDate) > now : true;
                             const seatsLeft = (journey.totalSeats || 0) - (journey.bookedSeats || 0);
                             const hasSeats = seatsLeft > 0;
 
