@@ -29,7 +29,7 @@ export interface IJourney extends Document {
     registrationPrice?: number
     destination?: string
     // Single departure date & seats
-    departureDate?: Date
+    departureDate?: Date | any
     totalSeats?: number
     bookedSeats?: number
 
@@ -83,7 +83,7 @@ const JourneySchema = new Schema<IJourney>(
         destination: { type: String },
 
         // Single departure date & seats
-        departureDate: { type: Date },
+        departureDate: { type: Schema.Types.Mixed },
         totalSeats: { type: Number, default: 20 },
         bookedSeats: { type: Number, default: 0 },
 

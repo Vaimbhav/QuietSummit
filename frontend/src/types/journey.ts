@@ -44,7 +44,7 @@ export interface Journey {
     price: number;
     registrationPrice?: number;
 
-    departureDate?: string | Date;
+    departureDate?: string | Date | any;
     totalSeats?: number;
     bookedSeats?: number;
 

@@ -532,8 +532,14 @@ export default function Journeys() {
                                                     <span className="text-sm sm:text-base font-extrabold">{getDurationDays(journey.duration)} Days</span>
                                                 </div>
                                                 <div className="flex items-center gap-1 sm:gap-1.5 text-primary-700 font-black">
-                                                    <span className="text-xs font-bold uppercase">From</span>
-                                                    <span className="text-xl sm:text-2xl">₹{journey.price.toLocaleString()}</span>
+                                                    {journey.price ? (
+                                                        <>
+                                                            <span className="text-xs font-bold uppercase">From</span>
+                                                            <span className="text-xl sm:text-2xl">₹{journey.price.toLocaleString()}</span>
+                                                        </>
+                                                    ) : (
+                                                        <span className="text-xl sm:text-2xl">View Details</span>
+                                                    )}
                                                     <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-1.5 group-hover:translate-x-2 transition-transform shrink-0" />
                                                 </div>
                                             </div>

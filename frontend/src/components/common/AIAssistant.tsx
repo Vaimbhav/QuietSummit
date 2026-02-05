@@ -572,7 +572,7 @@ function JourneySuggestionCard({ journey }: { journey: JourneySuggestion }) {
             <p className="text-sm text-gray-600 mb-2">{journey.destination}</p>
             <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-gray-500">{journey.duration}</span>
-                <span className="text-sm font-bold text-blue-600">₹{journey.price.toLocaleString()}</span>
+                <span className="text-sm font-bold text-blue-600">{journey.price ? `₹${journey.price.toLocaleString()}` : ''}</span>
             </div>
             {journey.highlights && journey.highlights.length > 0 && (
                 <div className="flex flex-wrap gap-1 mb-2">

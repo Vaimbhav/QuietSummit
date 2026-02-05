@@ -19,15 +19,21 @@ export const getAllJourneys = async (req: Request, res: Response) => {
         if (timing) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
+            // Use 1970 as a safe lower bound to distinguish valid past dates from "empty" low-sorting types like null or {}
+            const epoch = new Date('1970-01-01');
 
             if (timing === 'upcoming') {
-                // Must have at least one date >= today
-                // Also handle old string dates if necessary, or just rely on date objects
-                filter['departureDate'] = { $gte: today }
+                // Include future dates AND missing/null/empty dates (treated as TBD/Upcoming)
+                filter.$or = [
+                    { departureDate: { $gte: today } },
+                    { departureDate: null },
+                    { departureDate: { $exists: false } },
+                    { departureDate: {} }, // Explicitly check for empty object
+                    { departureDate: { $lt: epoch } } // Catches other non-date types
+                ]
             } else if (timing === 'past') {
-                // All dates must be < today
-                // Can be achieved by excluding those that have future dates
-                filter['departureDate'] = { $not: { $gte: today } }
+                // Strictly past dates that are valid (greater than epoch)
+                filter.departureDate = { $lt: today, $gte: epoch }
             }
         }
 

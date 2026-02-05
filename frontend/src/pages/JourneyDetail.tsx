@@ -537,7 +537,9 @@ export default function JourneyDetail() {
                                     <span className="text-xs sm:text-sm text-neutral-600 font-medium">Starting from</span>
                                 </div>
                                 <div className="flex items-baseline gap-1.5 sm:gap-2">
-                                    <span className="text-3xl sm:text-3xl md:text-4xl font-bold text-neutral-900">₹{journey.price.toLocaleString()}</span>
+                                    <span className="text-3xl sm:text-3xl md:text-4xl font-bold text-neutral-900">
+                                        {journey.price ? `₹${journey.price.toLocaleString()}` : 'Price on Request'}
+                                    </span>
                                     <span className="text-sm sm:text-base text-neutral-600 font-medium">/ person</span>
                                 </div>
                             </div>
@@ -583,7 +585,7 @@ export default function JourneyDetail() {
                                 <div className="mt-4 p-4 bg-primary-50 rounded-xl border border-primary-100">
                                     <div className="flex justify-between items-center mb-2">
                                         <span className="text-sm text-neutral-600 font-medium">Full Price</span>
-                                        <span className="font-bold text-neutral-900">₹{journey.price.toLocaleString()}</span>
+                                        <span className="font-bold text-neutral-900">{journey.price ? `₹${journey.price.toLocaleString()}` : 'On Request'}</span>
                                     </div>
                                     {journey.registrationPrice && (
                                         <div className="flex justify-between items-center pb-2 border-b border-primary-200 mb-2">
@@ -660,7 +662,7 @@ export default function JourneyDetail() {
                     <div className="flex flex-col">
                         <span className="text-xs text-neutral-600 font-medium">Price</span>
                         <div className="flex items-baseline gap-1">
-                            <span className="text-2xl font-bold text-neutral-900">₹{journey.price.toLocaleString()}</span>
+                            <span className="text-2xl font-bold text-neutral-900">{journey.price ? `₹${journey.price.toLocaleString()}` : 'On Request'}</span>
                             <span className="text-xs text-neutral-600">/ person</span>
                         </div>
                     </div>
