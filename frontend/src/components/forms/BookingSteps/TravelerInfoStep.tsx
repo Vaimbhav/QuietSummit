@@ -37,28 +37,21 @@ export default function TravelerInfoStep({
     const [numberOfTravelers, setNumberOfTravelers] = useState(bookingData.numberOfTravelers || 1)
 
     // Parse dates to handle object structure and seats
-    const availableDates = (journey.departureDates || []).map((d) => {
-        let dateObj: Date
-        let total = 20
-        let booked = 0
+    const availableDates = (() => {
+        if (!journey.departureDate) return [];
+        const dateObj = new Date(journey.departureDate);
 
-        if (typeof d === 'string') {
-            dateObj = new Date(d)
-        } else {
-            const dObj = d as any
-            dateObj = new Date(dObj.date)
-            if (dObj.totalSeats !== undefined) total = dObj.totalSeats
-            if (dObj.bookedSeats !== undefined) booked = dObj.bookedSeats
-        }
+        const total = journey.totalSeats ?? 20;
+        const booked = journey.bookedSeats ?? 0;
 
-        return {
+        return [{
             date: dateObj,
             total,
             booked,
             seatsLeft: total - booked,
             label: dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
-        }
-    }).filter(d => d.date > new Date()).sort((a, b) => a.date.getTime() - b.date.getTime())
+        }];
+    })().filter(d => d.date > new Date());
 
     // Initial date index (find first available future date)
     const getInitialDateIndex = () => {
@@ -175,9 +168,9 @@ export default function TravelerInfoStep({
         }
 
         // Calculate pricing
-        const basePrice = journey.basePrice * numberOfTravelers
-        const taxes = basePrice * 0.18
-        const totalAmount = basePrice + taxes
+        const calculatedBasePrice = journey.price * numberOfTravelers
+        const taxes = calculatedBasePrice * 0.18
+        const totalAmount = calculatedBasePrice + taxes
 
         const sanitizedTravelers = travelers.map(t => ({
             ...t,
@@ -189,7 +182,7 @@ export default function TravelerInfoStep({
             travelers: sanitizedTravelers,
             departureDate,
             email: userData?.email || '',
-            basePrice,
+            price: calculatedBasePrice,
             addOnsTotal: 0,
             taxes,
             totalAmount,

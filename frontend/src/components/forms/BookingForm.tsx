@@ -26,7 +26,7 @@ export interface BookingData {
     addOns: string[]
     specialRequests: string
     totalAmount: number
-    basePrice: number
+    price: number
     addOnsTotal: number
     taxes: number
     couponCode?: string
@@ -36,6 +36,7 @@ export interface BookingData {
         code: string
         discount: number
     }
+    paymentType?: 'full' | 'registration'
     // Razorpay payment fields
     paymentId?: string
     orderId?: string
@@ -65,7 +66,7 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
                         roomPreference: 'double',
                         addOns: [],
                         specialRequests: '',
-                        basePrice: journey.basePrice,
+                        price: journey.price,
                     }
                 }
             } catch {
@@ -79,12 +80,14 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
     const [currentStep, setCurrentStep] = useState(initialState.step)
     const [bookingData, setBookingData] = useState<Partial<BookingData>>(initialState.data || {
         journeyId: journey._id,
+        departureDate: journey.departureDate ? new Date(journey.departureDate).toISOString() : '',
         numberOfTravelers: 1,
         travelers: [],
         roomPreference: 'double',
         addOns: [],
         specialRequests: '',
-        basePrice: journey.basePrice,
+        price: journey.price,
+        paymentType: 'full'
     })
 
     const CurrentStepComponent = steps[currentStep - 1].component
@@ -127,7 +130,7 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
             roomPreference: 'double',
             addOns: [],
             specialRequests: '',
-            basePrice: journey.basePrice,
+            price: journey.price,
         })
 
         // Close modal

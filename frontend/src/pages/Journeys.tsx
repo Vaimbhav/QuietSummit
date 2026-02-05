@@ -83,8 +83,8 @@ export default function Journeys() {
 
     // Sorting
     const sortedJourneys = [...filteredJourneys].sort((a, b) => {
-        if (sortBy === 'price') return a.basePrice - b.basePrice
-        if (sortBy === 'price-high') return b.basePrice - a.basePrice
+        if (sortBy === 'price') return a.price - b.price
+        if (sortBy === 'price-high') return b.price - a.price
         if (sortBy === 'duration') return getDurationDays(a.duration) - getDurationDays(b.duration)
         // newest (default) - by createdAt
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -533,7 +533,7 @@ export default function Journeys() {
                                                 </div>
                                                 <div className="flex items-center gap-1 sm:gap-1.5 text-primary-700 font-black">
                                                     <span className="text-xs font-bold uppercase">From</span>
-                                                    <span className="text-xl sm:text-2xl">₹{journey.basePrice.toLocaleString()}</span>
+                                                    <span className="text-xl sm:text-2xl">₹{journey.price.toLocaleString()}</span>
                                                     <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-1.5 group-hover:translate-x-2 transition-transform shrink-0" />
                                                 </div>
                                             </div>

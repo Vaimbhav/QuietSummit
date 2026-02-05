@@ -39,19 +39,21 @@ export interface Journey {
     idealFor: string[];
     season: string[];
     maxGroupSize: number;
-    price: number; // Using basePrice as price
-    basePrice: number;
+
+    // Booking Fields
+    price: number;
+    registrationPrice?: number;
+
+    departureDate?: string | Date;
+    totalSeats?: number;
+    bookedSeats?: number;
+
     margin: number;
     includes: string[];
     excludes: string[];
     itinerary: ItineraryDay[];
     images: string[];
     testimonials: Testimonial[];
-    departureDates?: Array<{
-        date: string | Date;
-        totalSeats: number;
-        bookedSeats: number;
-    }>;
     createdAt: string;
     updatedAt: string;
 }

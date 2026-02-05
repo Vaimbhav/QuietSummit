@@ -13,6 +13,46 @@ import BookingForm from '@components/forms/BookingForm'
 import BookingGuard from '@components/common/BookingGuard'
 import JourneyGallery from '@components/journey/JourneyGallery'
 
+interface AccordionItemProps {
+    title: string
+    icon: React.ReactNode
+    children: React.ReactNode
+    isOpen: boolean
+    onToggle: () => void
+    iconContainerClass?: string
+}
+
+const PremiumAccordionItem = ({ title, icon, children, isOpen, onToggle, iconContainerClass = "gradient-premium text-white" }: AccordionItemProps) => {
+    return (
+        <div className="glass-luxury rounded-2xl overflow-hidden shadow-luxury border-luxury mb-4">
+            <button
+                onClick={onToggle}
+                className="w-full flex items-center justify-between p-4 sm:p-5 bg-white/50 backdrop-blur-sm"
+            >
+                <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-xl shadow-luxury ${iconContainerClass}`}>
+                        {icon}
+                    </div>
+                    <span className="font-bold text-lg text-neutral-900">{title}</span>
+                </div>
+                <div className={`p-1 rounded-full bg-neutral-100 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+                    <ChevronDown className="w-5 h-5 text-neutral-500" />
+                </div>
+            </button>
+            <motion.div
+                initial={false}
+                animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="overflow-hidden"
+            >
+                <div className="p-5 pt-2 border-t border-neutral-100/50 bg-white/30">
+                    {children}
+                </div>
+            </motion.div>
+        </div>
+    )
+}
+
 export default function JourneyDetail() {
     const { id } = useParams()
     const navigate = useNavigate()
@@ -21,6 +61,7 @@ export default function JourneyDetail() {
     const [error, setError] = useState<string | null>(null)
     const [expandedDay, setExpandedDay] = useState<number | null>(null)
     const [isBookingOpen, setIsBookingOpen] = useState(false)
+    const [activeMobileSection, setActiveMobileSection] = useState<string | null>(null)
 
     useEffect(() => {
         const fetchJourney = async () => {
@@ -174,28 +215,15 @@ export default function JourneyDetail() {
                                     Days / {typeof journey.duration === 'number' ? journey.duration - 1 : journey.duration.nights} Nights
                                 </div>
                             </div>
-                            {journey.departureDates && journey.departureDates.length > 0 && (
+                            {journey.departureDate && (
                                 <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
                                     <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
                                     <div className="text-xl sm:text-2xl font-black text-neutral-900 text-premium gradient-text-premium">
-                                        {(() => {
-                                            const futureDates = journey.departureDates!.filter(d => {
-                                                const dateVal = typeof d === 'object' && d !== null && 'date' in d ? d.date : d;
-                                                return new Date(dateVal as string | Date) > new Date();
-                                            }).sort((a, b) => {
-                                                const dA = new Date(typeof a === 'object' && a !== null && 'date' in a ? a.date : a);
-                                                const dB = new Date(typeof b === 'object' && b !== null && 'date' in b ? b.date : b);
-                                                return dA.getTime() - dB.getTime();
-                                            });
-
-                                            const nextDate = futureDates.length > 0 ? futureDates[0] : journey.departureDates![0];
-                                            const dateVal = typeof nextDate === 'object' && nextDate !== null && 'date' in nextDate ? nextDate.date : nextDate;
-
-                                            return new Date(dateVal as string | Date).toLocaleDateString('en-US', {
-                                                month: 'short',
-                                                day: 'numeric'
-                                            })
-                                        })()}
+                                        {new Date(journey.departureDate).toLocaleDateString('en-US', {
+                                            month: 'short',
+                                            day: 'numeric',
+                                            year: 'numeric'
+                                        })}
                                     </div>
                                     <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">Departure Date</div>
                                 </div>
@@ -217,94 +245,177 @@ export default function JourneyDetail() {
                             </div>
                         </motion.div>
 
-                        {/* Ideal For */}
-                        {journey.idealFor && journey.idealFor.length > 0 && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2 }}
-                                className="glass-luxury rounded-4xl p-6 sm:p-8 md:p-10 shadow-luxury-lg border-luxury"
-                            >
-                                <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 mb-5 sm:mb-6 md:mb-8 text-luxury">Ideal For</h2>
-                                <div className="flex flex-wrap gap-3 sm:gap-4 -mx-1">
-                                    {journey.idealFor.map((item, idx) => (
-                                        <span
-                                            key={idx}
-                                            className="px-6 py-3 gradient-primary text-white rounded-2xl text-sm font-extrabold shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide mx-1"
-                                        >
-                                            {item}
-                                        </span>
-                                    ))}
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {/* Best Seasons */}
-                        {journey.season && journey.season.length > 0 && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.25 }}
-                                className="glass-luxury rounded-4xl p-6 sm:p-8 md:p-10 shadow-luxury-lg border-luxury"
-                            >
-                                <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 mb-5 sm:mb-7 text-luxury">Best Time to Visit</h2>
-                                <div className="flex flex-wrap gap-3 sm:gap-4 -mx-1">
-                                    {journey.season.map((s, idx) => (
-                                        <span
-                                            key={idx}
-                                            className="flex items-center gap-2 sm:gap-2.5 px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 gradient-accent text-white rounded-2xl text-sm sm:text-base font-extrabold shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 mx-1"
-                                        >
-                                            {getSeasonIcon(s)}
-                                            {s}
-                                        </span>
-                                    ))}
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {/* Includes & Excludes */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                            className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6"
-                        >
-                            {/* Includes */}
-                            <div className="glass-luxury rounded-4xl p-6 sm:p-8 md:p-10 shadow-luxury-lg border-luxury">
-                                <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-                                    <div className="p-2.5 sm:p-3 gradient-primary rounded-2xl shrink-0 shadow-luxury">
-                                        <Check className="w-6 h-6 sm:w-7 sm:h-7 text-white" strokeWidth={3} />
+                        {/* Mobile Premium Dropdowns (Accordions) */}
+                        <div className="block md:hidden space-y-4">
+                            {/* Ideal For */}
+                            {journey.idealFor && journey.idealFor.length > 0 && (
+                                <PremiumAccordionItem
+                                    title="Ideal For"
+                                    icon={<Star className="w-5 h-5" />}
+                                    isOpen={activeMobileSection === 'idealFor'}
+                                    onToggle={() => setActiveMobileSection(activeMobileSection === 'idealFor' ? null : 'idealFor')}
+                                >
+                                    <div className="flex flex-wrap gap-2">
+                                        {journey.idealFor.map((item, idx) => (
+                                            <span key={idx} className="px-4 py-2 bg-white rounded-xl text-sm font-bold text-neutral-800 border border-neutral-100 shadow-sm flex items-center gap-2">
+                                                <div className="w-1.5 h-1.5 rounded-full gradient-accent"></div>
+                                                {item}
+                                            </span>
+                                        ))}
                                     </div>
-                                    <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-neutral-900 text-luxury">What's Included</h2>
-                                </div>
-                                <ul className="space-y-3 sm:space-y-4">
+                                </PremiumAccordionItem>
+                            )}
+
+                            {/* Best Seasons */}
+                            {journey.season && journey.season.length > 0 && (
+                                <PremiumAccordionItem
+                                    title="Best Time to Visit"
+                                    icon={<Clock className="w-5 h-5" />}
+                                    isOpen={activeMobileSection === 'season'}
+                                    onToggle={() => setActiveMobileSection(activeMobileSection === 'season' ? null : 'season')}
+                                >
+                                    <div className="flex flex-wrap gap-2">
+                                        {journey.season.map((s, idx) => (
+                                            <span key={idx} className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl text-sm font-bold text-neutral-800 border border-neutral-100 shadow-sm">
+                                                {getSeasonIcon(s)}
+                                                {s}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </PremiumAccordionItem>
+                            )}
+
+                            {/* What's Included */}
+                            <PremiumAccordionItem
+                                title="What's Included"
+                                icon={<Check className="w-5 h-5" />}
+                                isOpen={activeMobileSection === 'included'}
+                                onToggle={() => setActiveMobileSection(activeMobileSection === 'included' ? null : 'included')}
+                            >
+                                <ul className="space-y-3">
                                     {journey.includes.map((item, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 sm:gap-4 group">
-                                            <Check className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 shrink-0 mt-0.5 group-hover:scale-110 transition-transform" strokeWidth={2.5} />
-                                            <span className="text-sm sm:text-base md:text-lg text-neutral-700 leading-relaxed font-medium">{item}</span>
+                                        <li key={idx} className="flex items-start gap-3 bg-white/50 p-3 rounded-xl border border-neutral-100/50">
+                                            <div className="mt-0.5 p-1 bg-green-100 rounded-full shrink-0">
+                                                <Check className="w-3.5 h-3.5 text-green-600" strokeWidth={3} />
+                                            </div>
+                                            <span className="text-sm text-neutral-700 font-semibold leading-relaxed">{item}</span>
                                         </li>
                                     ))}
                                 </ul>
-                            </div>
+                            </PremiumAccordionItem>
 
-                            {/* Excludes */}
-                            <div className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 border border-neutral-200 shadow-sm">
-                                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
-                                    <div className="p-1.5 sm:p-2 bg-red-100 rounded-lg shrink-0">
-                                        <X className="w-5 h-5 sm:w-6 sm:h-6 text-red-700" />
-                                    </div>
-                                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-neutral-900 tracking-tight">Not Included</h2>
-                                </div>
-                                <ul className="space-y-2 sm:space-y-2.5 md:space-y-3">
+                            {/* Not Included */}
+                            <PremiumAccordionItem
+                                title="Not Included"
+                                icon={<X className="w-5 h-5" />}
+                                isOpen={activeMobileSection === 'excluded'}
+                                onToggle={() => setActiveMobileSection(activeMobileSection === 'excluded' ? null : 'excluded')}
+                                iconContainerClass="bg-red-100 text-red-600"
+                            >
+                                <ul className="space-y-3">
                                     {journey.excludes.map((item, idx) => (
-                                        <li key={idx} className="flex items-start gap-2 sm:gap-2.5 md:gap-3">
-                                            <X className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-red-600 shrink-0 mt-0.5" />
-                                            <span className="text-xs sm:text-sm md:text-base text-neutral-700 leading-relaxed">{item}</span>
+                                        <li key={idx} className="flex items-start gap-3 bg-white/50 p-3 rounded-xl border border-neutral-100/50">
+                                            <div className="mt-0.5 p-1 bg-red-100 rounded-full shrink-0">
+                                                <X className="w-3.5 h-3.5 text-red-600" strokeWidth={2.5} />
+                                            </div>
+                                            <span className="text-sm text-neutral-600 font-medium leading-relaxed">{item}</span>
                                         </li>
                                     ))}
                                 </ul>
-                            </div>
-                        </motion.div>
+                            </PremiumAccordionItem>
+                        </div>
+
+                        {/* Desktop View (Hidden on Mobile) */}
+                        <div className="hidden md:block space-y-8 sm:space-y-10 lg:space-y-12">
+                            {/* Ideal For */}
+                            {journey.idealFor && journey.idealFor.length > 0 && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.2 }}
+                                    className="glass-luxury rounded-4xl p-6 sm:p-8 md:p-10 shadow-luxury-lg border-luxury"
+                                >
+                                    <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 mb-5 sm:mb-6 md:mb-8 text-luxury">Ideal For</h2>
+                                    <div className="flex flex-wrap gap-3 sm:gap-4 -mx-1">
+                                        {journey.idealFor.map((item, idx) => (
+                                            <span
+                                                key={idx}
+                                                className="px-6 py-3 gradient-primary text-white rounded-2xl text-sm font-extrabold shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide mx-1"
+                                            >
+                                                {item}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {/* Best Seasons */}
+                            {journey.season && journey.season.length > 0 && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.25 }}
+                                    className="glass-luxury rounded-4xl p-6 sm:p-8 md:p-10 shadow-luxury-lg border-luxury"
+                                >
+                                    <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 mb-5 sm:mb-7 text-luxury">Best Time to Visit</h2>
+                                    <div className="flex flex-wrap gap-3 sm:gap-4 -mx-1">
+                                        {journey.season.map((s, idx) => (
+                                            <span
+                                                key={idx}
+                                                className="flex items-center gap-2 sm:gap-2.5 px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 gradient-accent text-white rounded-2xl text-sm sm:text-base font-extrabold shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 mx-1"
+                                            >
+                                                {getSeasonIcon(s)}
+                                                {s}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {/* Includes & Excludes */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6"
+                            >
+                                {/* Includes */}
+                                <div className="glass-luxury rounded-4xl p-6 sm:p-8 md:p-10 shadow-luxury-lg border-luxury">
+                                    <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+                                        <div className="p-2.5 sm:p-3 gradient-primary rounded-2xl shrink-0 shadow-luxury">
+                                            <Check className="w-6 h-6 sm:w-7 sm:h-7 text-white" strokeWidth={3} />
+                                        </div>
+                                        <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-neutral-900 text-luxury">What's Included</h2>
+                                    </div>
+                                    <ul className="space-y-3 sm:space-y-4">
+                                        {journey.includes.map((item, idx) => (
+                                            <li key={idx} className="flex items-start gap-3 sm:gap-4 group">
+                                                <Check className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 shrink-0 mt-0.5 group-hover:scale-110 transition-transform" strokeWidth={2.5} />
+                                                <span className="text-sm sm:text-base md:text-lg text-neutral-700 leading-relaxed font-medium">{item}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                {/* Excludes */}
+                                <div className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 border border-neutral-200 shadow-sm">
+                                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
+                                        <div className="p-1.5 sm:p-2 bg-red-100 rounded-lg shrink-0">
+                                            <X className="w-5 h-5 sm:w-6 sm:h-6 text-red-700" />
+                                        </div>
+                                        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-neutral-900 tracking-tight">Not Included</h2>
+                                    </div>
+                                    <ul className="space-y-2 sm:space-y-2.5 md:space-y-3">
+                                        {journey.excludes.map((item, idx) => (
+                                            <li key={idx} className="flex items-start gap-2 sm:gap-2.5 md:gap-3">
+                                                <X className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-red-600 shrink-0 mt-0.5" />
+                                                <span className="text-xs sm:text-sm md:text-base text-neutral-700 leading-relaxed">{item}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </motion.div>
+                        </div>
 
                         {/* Itinerary */}
                         {journey.itinerary && journey.itinerary.length > 0 && (
@@ -428,7 +539,7 @@ export default function JourneyDetail() {
                                     <span className="text-xs sm:text-sm text-neutral-600 font-medium">Starting from</span>
                                 </div>
                                 <div className="flex items-baseline gap-1.5 sm:gap-2">
-                                    <span className="text-3xl sm:text-3xl md:text-4xl font-bold text-neutral-900">₹{journey.basePrice.toLocaleString()}</span>
+                                    <span className="text-3xl sm:text-3xl md:text-4xl font-bold text-neutral-900">₹{journey.price.toLocaleString()}</span>
                                     <span className="text-sm sm:text-base text-neutral-600 font-medium">/ person</span>
                                 </div>
                             </div>
@@ -440,30 +551,26 @@ export default function JourneyDetail() {
                                         {typeof journey.duration === 'number' ? journey.duration : journey.duration.days} Days / {typeof journey.duration === 'number' ? journey.duration - 1 : journey.duration.nights} Nights
                                     </span>
                                 </div>
-                                {journey.departureDates && journey.departureDates.length > 0 && (
+                                {journey.departureDate && (
                                     <>
                                         <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
                                             <span className="text-sm sm:text-base text-neutral-700 font-medium">Departure</span>
                                             <span className="text-sm sm:text-base text-neutral-900 font-bold">
-                                                {(() => {
-                                                    const d = journey.departureDates![0];
-                                                    const dateVal = typeof d === 'object' && d !== null && 'date' in d ? d.date : d;
-                                                    return new Date(dateVal as string | Date).toLocaleDateString('en-US', {
-                                                        month: 'short',
-                                                        day: 'numeric',
-                                                        year: 'numeric'
-                                                    })
-                                                })()}
+                                                {new Date(journey.departureDate).toLocaleDateString('en-US', {
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                    year: 'numeric'
+                                                })}
                                             </span>
                                         </div>
-                                        {typeof journey.departureDates[0] === 'object' && 'totalSeats' in journey.departureDates[0] && (
+                                        {journey.totalSeats !== undefined && (
                                             <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
                                                 <span className="text-sm sm:text-base text-neutral-700 font-medium">Availability</span>
-                                                <span className={`text-sm sm:text-base font-bold ${(journey.departureDates[0] as any).totalSeats - ((journey.departureDates[0] as any).bookedSeats || 0) < 5
+                                                <span className={`text-sm sm:text-base font-bold ${(journey.totalSeats - (journey.bookedSeats || 0)) < 5
                                                     ? 'text-red-600'
                                                     : 'text-green-600'
                                                     }`}>
-                                                    {(journey.departureDates[0] as any).totalSeats - ((journey.departureDates[0] as any).bookedSeats || 0)} seats left
+                                                    {(journey.totalSeats - (journey.bookedSeats || 0))} seats left
                                                 </span>
                                             </div>
                                         )}
@@ -477,30 +584,37 @@ export default function JourneyDetail() {
                                     <span className="text-sm sm:text-base text-neutral-700 font-medium">Difficulty</span>
                                     <span className="text-sm sm:text-base text-neutral-900 font-bold capitalize">{journey.difficulty}</span>
                                 </div>
+
+                                {/* Booking Options Info */}
+                                <div className="mt-4 p-4 bg-primary-50 rounded-xl border border-primary-100">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="text-sm text-neutral-600 font-medium">Full Price</span>
+                                        <span className="font-bold text-neutral-900">₹{journey.price.toLocaleString()}</span>
+                                    </div>
+                                    {journey.registrationPrice && (
+                                        <div className="flex justify-between items-center pb-2 border-b border-primary-200 mb-2">
+                                            <span className="text-sm text-neutral-600 font-medium">Registration</span>
+                                            <span className="font-bold text-primary-700">₹{journey.registrationPrice.toLocaleString()}</span>
+                                        </div>
+                                    )}
+                                    <p className="text-[10px] sm:text-xs text-primary-800/70 italic text-center">
+                                        *Registration amount is non-refundable. Balance due on departure.
+                                    </p>
+                                </div>
                             </div>
 
                             <BookingGuard onAuthenticated={() => setIsBookingOpen(true)}>
                                 {(openBooking) => {
                                     const now = new Date();
-                                    const dates = journey.departureDates || [];
-                                    const futureDates = dates.filter(d => {
-                                        const dateVal = typeof d === 'object' && d !== null && 'date' in d ? d.date : d;
-                                        return new Date(dateVal as string | Date) > now;
-                                    });
+                                    const isFuture = journey.departureDate ? new Date(journey.departureDate) > now : false;
+                                    const seatsLeft = (journey.totalSeats || 0) - (journey.bookedSeats || 0);
+                                    const hasSeats = seatsLeft > 0;
 
-                                    const hasFutureDates = futureDates.length > 0;
-                                    const hasSeats = futureDates.some(d => {
-                                        if (typeof d === 'object' && 'totalSeats' in d) {
-                                            return (d.totalSeats - ((d as any).bookedSeats || 0)) > 0;
-                                        }
-                                        return true;
-                                    });
-
-                                    const isBookable = hasFutureDates && hasSeats;
+                                    const isBookable = isFuture && hasSeats;
 
                                     let label = 'Book This Journey';
                                     if (!isBookable) {
-                                        if (!hasFutureDates) {
+                                        if (!isFuture) {
                                             label = 'Journey Ended';
                                         } else {
                                             label = 'Sold Out';
@@ -548,34 +662,24 @@ export default function JourneyDetail() {
             <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white border-t-2 border-primary-200 shadow-2xl p-4">
                 <div className="flex items-center justify-between gap-4 max-w-screen-xl mx-auto">
                     <div className="flex flex-col">
-                        <span className="text-xs text-neutral-600 font-medium">Starting from</span>
+                        <span className="text-xs text-neutral-600 font-medium">Price</span>
                         <div className="flex items-baseline gap-1">
-                            <span className="text-2xl font-bold text-neutral-900">₹{journey.basePrice.toLocaleString()}</span>
+                            <span className="text-2xl font-bold text-neutral-900">₹{journey.price.toLocaleString()}</span>
                             <span className="text-xs text-neutral-600">/ person</span>
                         </div>
                     </div>
                     <BookingGuard onAuthenticated={() => setIsBookingOpen(true)}>
                         {(openBooking) => {
                             const now = new Date();
-                            const dates = journey.departureDates || [];
-                            const futureDates = dates.filter(d => {
-                                const dateVal = typeof d === 'object' && d !== null && 'date' in d ? d.date : d;
-                                return new Date(dateVal as string | Date) > now;
-                            });
+                            const isFuture = journey.departureDate ? new Date(journey.departureDate) > now : false;
+                            const seatsLeft = (journey.totalSeats || 0) - (journey.bookedSeats || 0);
+                            const hasSeats = seatsLeft > 0;
 
-                            const hasFutureDates = futureDates.length > 0;
-                            const hasSeats = futureDates.some(d => {
-                                if (typeof d === 'object' && 'totalSeats' in d) {
-                                    return (d.totalSeats - ((d as any).bookedSeats || 0)) > 0;
-                                }
-                                return true;
-                            });
-
-                            const isBookable = hasFutureDates && hasSeats;
+                            const isBookable = isFuture && hasSeats;
 
                             let label = 'Book Now';
                             if (!isBookable) {
-                                if (!hasFutureDates) {
+                                if (!isFuture) {
                                     label = 'Ended';
                                 } else {
                                     label = 'Sold Out';
