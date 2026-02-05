@@ -80,7 +80,7 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
     const [currentStep, setCurrentStep] = useState(initialState.step)
     const [bookingData, setBookingData] = useState<Partial<BookingData>>(initialState.data || {
         journeyId: journey._id,
-        departureDate: journey.departureDate ? new Date(journey.departureDate).toISOString() : '',
+        departureDate: journey.departureDate && !isNaN(new Date(journey.departureDate as any).getTime()) ? new Date(journey.departureDate).toISOString() : '',
         numberOfTravelers: 1,
         travelers: [],
         roomPreference: 'double',

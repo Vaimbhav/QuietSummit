@@ -215,19 +215,17 @@ export default function JourneyDetail() {
                                     Days / {typeof journey.duration === 'number' ? journey.duration - 1 : journey.duration.nights} Nights
                                 </div>
                             </div>
-                            {journey.departureDate && (
-                                <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
-                                    <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
-                                    <div className="text-xl sm:text-2xl font-black text-neutral-900 text-premium gradient-text-premium">
-                                        {new Date(journey.departureDate).toLocaleDateString('en-US', {
-                                            month: 'short',
-                                            day: 'numeric',
-                                            year: 'numeric'
-                                        })}
-                                    </div>
-                                    <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">Departure Date</div>
+                            <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
+                                <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
+                                <div className="text-xl sm:text-2xl font-black text-neutral-900 text-premium gradient-text-premium">
+                                    {journey.departureDate && !isNaN(new Date(journey.departureDate as any).getTime()) ? new Date(journey.departureDate).toLocaleDateString('en-US', {
+                                        month: 'short',
+                                        day: 'numeric',
+                                        year: 'numeric'
+                                    }) : "To be Decided"}
                                 </div>
-                            )}
+                                <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">Departure Date</div>
+                            </div>
                             <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
                                 <Users className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
                                 <div className="text-2xl sm:text-3xl font-black text-neutral-900 text-premium gradient-text-premium">{journey.maxGroupSize}</div>
@@ -551,30 +549,26 @@ export default function JourneyDetail() {
                                         {typeof journey.duration === 'number' ? journey.duration : journey.duration.days} Days / {typeof journey.duration === 'number' ? journey.duration - 1 : journey.duration.nights} Nights
                                     </span>
                                 </div>
-                                {journey.departureDate && (
-                                    <>
-                                        <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
-                                            <span className="text-sm sm:text-base text-neutral-700 font-medium">Departure</span>
-                                            <span className="text-sm sm:text-base text-neutral-900 font-bold">
-                                                {new Date(journey.departureDate).toLocaleDateString('en-US', {
-                                                    month: 'short',
-                                                    day: 'numeric',
-                                                    year: 'numeric'
-                                                })}
-                                            </span>
-                                        </div>
-                                        {journey.totalSeats !== undefined && (
-                                            <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
-                                                <span className="text-sm sm:text-base text-neutral-700 font-medium">Availability</span>
-                                                <span className={`text-sm sm:text-base font-bold ${(journey.totalSeats - (journey.bookedSeats || 0)) < 5
-                                                    ? 'text-red-600'
-                                                    : 'text-green-600'
-                                                    }`}>
-                                                    {(journey.totalSeats - (journey.bookedSeats || 0))} seats left
-                                                </span>
-                                            </div>
-                                        )}
-                                    </>
+                                <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
+                                    <span className="text-sm sm:text-base text-neutral-700 font-medium">Departure</span>
+                                    <span className="text-sm sm:text-base text-neutral-900 font-bold">
+                                        {journey.departureDate && !isNaN(new Date(journey.departureDate as any).getTime()) ? new Date(journey.departureDate).toLocaleDateString('en-US', {
+                                            month: 'short',
+                                            day: 'numeric',
+                                            year: 'numeric'
+                                        }) : "To be Decided"}
+                                    </span>
+                                </div>
+                                {journey.totalSeats !== undefined && (
+                                    <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
+                                        <span className="text-sm sm:text-base text-neutral-700 font-medium">Availability</span>
+                                        <span className={`text-sm sm:text-base font-bold ${(journey.totalSeats - (journey.bookedSeats || 0)) < 5
+                                            ? 'text-red-600'
+                                            : 'text-green-600'
+                                            }`}>
+                                            {(journey.totalSeats - (journey.bookedSeats || 0))} seats left
+                                        </span>
+                                    </div>
                                 )}
                                 <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
                                     <span className="text-sm sm:text-base text-neutral-700 font-medium">Group Size</span>
@@ -606,36 +600,36 @@ export default function JourneyDetail() {
                             <BookingGuard onAuthenticated={() => setIsBookingOpen(true)}>
                                 {(openBooking) => {
                                     const now = new Date();
-                                    const isFuture = journey.departureDate ? new Date(journey.departureDate) > now : false;
+                                    const hasValidDate = journey.departureDate && !isNaN(new Date(journey.departureDate as any).getTime());
+
+                                    const dateOk = hasValidDate ? new Date(journey.departureDate) > now : true;
                                     const seatsLeft = (journey.totalSeats || 0) - (journey.bookedSeats || 0);
                                     const hasSeats = seatsLeft > 0;
 
-                                    const isBookable = isFuture && hasSeats;
+                                    const isBookable = dateOk && hasSeats;
 
                                     let label = 'Book This Journey';
                                     if (!isBookable) {
-                                        if (!isFuture) {
-                                            label = 'Journey Ended';
-                                        } else {
+                                        if (!hasSeats) {
                                             label = 'Sold Out';
+                                        } else {
+                                            label = 'Journey Ended';
+                                            return (
+                                                <Button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        openBooking()
+                                                    }}
+                                                    disabled={!isBookable}
+                                                    variant={!isBookable ? "outline" : "primary"}
+                                                    size="lg"
+                                                    className={`w-full mb-3 sm:mb-4 text-base sm:text-lg font-bold py-3 sm:py-4 ${!isBookable ? 'bg-red-50! text-red-600! border-red-600! disabled:opacity-100!' : ''}`}
+                                                >
+                                                    {label}
+                                                </Button>
+                                            )
                                         }
                                     }
-
-                                    return (
-                                        <Button
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                openBooking()
-                                            }}
-                                            disabled={!isBookable}
-                                            variant={!isBookable ? "outline" : "primary"}
-                                            size="lg"
-                                            className={`w-full mb-3 sm:mb-4 text-base sm:text-lg font-bold py-3 sm:py-4 ${!isBookable ? 'bg-red-50! text-red-600! border-red-600! disabled:opacity-100!' : ''}`}
-                                        >
-                                            {label}
-                                        </Button>
-                                    )
-                                }}
                             </BookingGuard>
 
                             <Button
@@ -671,18 +665,19 @@ export default function JourneyDetail() {
                     <BookingGuard onAuthenticated={() => setIsBookingOpen(true)}>
                         {(openBooking) => {
                             const now = new Date();
-                            const isFuture = journey.departureDate ? new Date(journey.departureDate) > now : false;
+                            const hasValidDate = journey.departureDate && !isNaN(new Date(journey.departureDate as any).getTime());
+                            const dateOk = hasValidDate ? new Date(journey.departureDate) > now : true;
                             const seatsLeft = (journey.totalSeats || 0) - (journey.bookedSeats || 0);
                             const hasSeats = seatsLeft > 0;
 
-                            const isBookable = isFuture && hasSeats;
+                            const isBookable = dateOk && hasSeats;
 
                             let label = 'Book Now';
                             if (!isBookable) {
-                                if (!isFuture) {
-                                    label = 'Ended';
-                                } else {
+                                if (!hasSeats) {
                                     label = 'Sold Out';
+                                } else {
+                                    label = 'Ended';
                                 }
                             }
 

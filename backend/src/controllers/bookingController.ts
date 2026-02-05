@@ -127,34 +127,39 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
                 // For now, check if date exists.
             }
 
-            if (!departureDate) {
-                res.status(400).json({
-                    success: false,
-                    error: 'Departure date is required for journey bookings',
-                })
-                return
-            }
+            // Journey validation
+            const journeyHasDate = journey.departureDate && !isNaN(new Date(journey.departureDate).getTime());
 
-            const departureDateTime = new Date(departureDate)
-            const today = new Date()
-            today.setHours(0, 0, 0, 0)
+            if (journeyHasDate) {
+                if (!departureDate) {
+                    res.status(400).json({
+                        success: false,
+                        error: 'Departure date is required for journey bookings',
+                    })
+                    return
+                }
 
-            // Check if passed booking date matches journey date (just day comparison)
-            const journeyDate = new Date(journey.departureDate)
-            if (departureDateTime.toISOString().split('T')[0] !== journeyDate.toISOString().split('T')[0]) {
-                res.status(400).json({
-                    success: false,
-                    error: 'Selected departure date does not match this journey schedule',
-                })
-                return
-            }
+                const departureDateTime = new Date(departureDate)
+                const today = new Date()
+                today.setHours(0, 0, 0, 0)
 
-            if (departureDateTime < today) {
-                res.status(400).json({
-                    success: false,
-                    error: 'Departure date must be in the future',
-                })
-                return
+                // Check if passed booking date matches journey date (just day comparison)
+                const journeyDate = new Date(journey.departureDate)
+                if (departureDateTime.toISOString().split('T')[0] !== journeyDate.toISOString().split('T')[0]) {
+                    res.status(400).json({
+                        success: false,
+                        error: 'Selected departure date does not match this journey schedule',
+                    })
+                    return
+                }
+
+                if (departureDateTime < today) {
+                    res.status(400).json({
+                        success: false,
+                        error: 'Departure date must be in the future',
+                    })
+                    return
+                }
             }
 
             // Check capacity
@@ -172,8 +177,8 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
         }
 
         // Calculate dates and duration
-        let startDate: Date
-        let endDate: Date
+        let startDate: Date | undefined
+        let endDate: Date | undefined
         let durationDays: number
 
         if (isProperty) {
@@ -181,12 +186,15 @@ export const createBooking = async (req: Request, res: Response): Promise<void> 
             endDate = new Date(checkOut)
             durationDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
         } else {
-            startDate = new Date(departureDate)
-            endDate = new Date(startDate)
             durationDays = typeof journey.duration === 'number'
                 ? journey.duration
                 : (journey.duration?.days || 5)
-            endDate.setDate(endDate.getDate() + durationDays)
+
+            if (departureDate) {
+                startDate = new Date(departureDate)
+                endDate = new Date(startDate)
+                endDate.setDate(endDate.getDate() + durationDays)
+            }
         }
 
         // Calculate correct subtotal (before discount was applied)

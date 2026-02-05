@@ -38,7 +38,7 @@ export default function TravelerInfoStep({
 
     // Parse dates to handle object structure and seats
     const availableDates = (() => {
-        if (!journey.departureDate) return [];
+        if (!journey.departureDate || isNaN(new Date(journey.departureDate as any).getTime())) return [];
         const dateObj = new Date(journey.departureDate);
 
         const total = journey.totalSeats ?? 20;
@@ -144,6 +144,16 @@ export default function TravelerInfoStep({
             }
             if (numberOfTravelers > selectedDeparture.seatsLeft) {
                 alert(`Not enough seats available. Only ${selectedDeparture.seatsLeft} seats remaining for this date.`)
+                return
+            }
+        } else {
+            // General seat check for TBD dates
+            const total = journey.totalSeats ?? 20;
+            const booked = journey.bookedSeats ?? 0;
+            const remaining = total - booked;
+
+            if (numberOfTravelers > remaining) {
+                alert(`Not enough seats available. Only ${remaining} seats remaining.`)
                 return
             }
         }

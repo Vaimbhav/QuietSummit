@@ -67,8 +67,8 @@ const BookingSchema = new Schema<IBooking>(
         },
         journeyTitle: { type: String, required: true },
         destination: { type: String, required: true },
-        startDate: { type: Date, required: true },
-        endDate: { type: Date, required: true },
+        startDate: { type: Date }, // Optional for TBD journeys
+        endDate: { type: Date },   // Optional for TBD journeys
         checkIn: { type: Date },
         checkOut: { type: Date },
         duration: { type: Number, required: true },
