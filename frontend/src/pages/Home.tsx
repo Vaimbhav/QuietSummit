@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion, Variants } from 'framer-motion'
-import { ArrowRight, Mountain, Compass, Users, Shield, Leaf, Sparkles } from 'lucide-react'
+import { ArrowRight, Mountain, Compass, Users, Leaf, Sparkles } from 'lucide-react'
 import SEO from '@components/common/SEO'
 import UnifiedSearchBar from '@components/common/UnifiedSearchBar'
 

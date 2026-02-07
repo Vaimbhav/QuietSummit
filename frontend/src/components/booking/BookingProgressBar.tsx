@@ -13,8 +13,6 @@ export default function BookingProgressBar({ currentStep, steps }: BookingProgre
                     const stepNumber = index + 1;
                     const isActive = stepNumber === currentStep;
                     const isCompleted = stepNumber < currentStep;
-                    const isFirst = index === 0;
-                    const isLast = index === steps.length - 1;
 
                     return (
                         <React.Fragment key={index}>

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ChevronDown, Calendar, Users, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronLeft, ChevronRight, ChevronDown, Calendar, Users } from 'lucide-react';
 import PhoneInput from '../common/PhoneInput';
 
 interface Guest {

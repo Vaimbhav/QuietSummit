@@ -234,7 +234,7 @@ export default function Journeys() {
                                             window.scrollTo({ top: 0, behavior: 'smooth' })
                                         }}
                                         className="appearance-none pl-4 pr-10 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:border-cyan-400 w-full text-sm font-semibold truncate transition-all cursor-pointer shadow-sm hover:shadow-md text-white bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_1rem] bg-no-repeat"
-                                        style={{ background: '#0a0e27', borderColor: 'rgba(92,225,230,0.2)', focusRingColor: 'rgba(92,225,230,0.5)' }}
+                                        style={{ background: '#0a0e27', borderColor: 'rgba(92,225,230,0.2)' }}
                                         aria-label="Filter by adventure type"
                                     >
                                         <option value="upcoming">Upcoming Adventures</option>
