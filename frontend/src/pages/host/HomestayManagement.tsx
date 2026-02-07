@@ -57,9 +57,9 @@ export default function PropertyManagement() {
     }
 
     return (
-        <div className="min-h-screen bg-neutral-50">
+        <div className="min-h-screen bg-[#0a0e27] text-white">
             {/* Premium Header Section */}
-            <div className="bg-primary-600 text-white py-16 sm:py-20 lg:py-24">
+            <div className="text-white py-16 sm:py-20 lg:py-24" style={{ background: 'linear-gradient(135deg, #0a0e27 0%, #1a1d2e 100%)' }}>
                 <div className="container mx-auto px-6 sm:px-8 lg:px-16">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
                         <div className="flex items-start gap-5 lg:gap-8">
@@ -76,7 +76,8 @@ export default function PropertyManagement() {
                                 {/* Mobile Add Property Button */}
                                 <Link
                                     to="/host/homestays/new"
-                                    className="md:hidden inline-flex items-center justify-center gap-3 px-6 py-3.5 bg-white text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors shadow-lg"
+                                    className="md:hidden inline-flex items-center justify-center gap-3 px-6 py-3.5 font-semibold rounded-xl transition-colors shadow-lg"
+                                    style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#ffffff', boxShadow: '0 12px 24px rgba(92,225,230,0.28)' }}
                                 >
                                     <Plus className="w-5 h-5" />
                                     Add Property
@@ -85,7 +86,8 @@ export default function PropertyManagement() {
                         </div>
                         <Link
                             to="/host/homestays/new"
-                            className="hidden md:flex items-center gap-2 px-6 py-3 bg-white text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors shadow-md hover:shadow-lg"
+                            className="hidden md:flex items-center gap-2 px-6 py-3 font-semibold rounded-xl transition-colors shadow-md hover:shadow-lg"
+                            style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#ffffff', boxShadow: '0 12px 24px rgba(92,225,230,0.28)' }}
                         >
                             <Plus className="w-5 h-5" />
                             Add Property
@@ -96,13 +98,13 @@ export default function PropertyManagement() {
 
             <div className="container mx-auto px-6 sm:px-8 lg:px-16 py-10 lg:py-16">
                 {/* Filters */}
-                <div className="bg-white rounded-2xl shadow-md border border-neutral-100 p-6 lg:p-8 mb-10 lg:mb-12">
+                <div className="bg-[#1e2139] rounded-2xl shadow-md border border-[#5ce1e6]/15 p-6 lg:p-8 mb-10 lg:mb-12">
                     {/* Mobile Dropdown */}
                     <div className="md:hidden">
                         <select
                             value={filter}
                             onChange={(e) => setFilter(e.target.value)}
-                            className="w-full px-5 py-4 pr-12 border-2 border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-neutral-300 bg-white appearance-none cursor-pointer text-neutral-900 font-bold text-base shadow-sm"
+                            className="w-full px-5 py-4 pr-12 border border-[#5ce1e6]/20 rounded-xl focus:ring-2 focus:ring-[#5CE1E6]/40 focus:border-[#5CE1E6]/50 transition-all bg-[#0a0e27]/60 appearance-none cursor-pointer text-white font-bold text-base shadow-sm"
                             style={{
                                 backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                                 backgroundPosition: 'right 1rem center',
@@ -120,36 +122,37 @@ export default function PropertyManagement() {
                     <div className="hidden md:flex flex-wrap gap-3">
                         <button
                             onClick={() => setFilter('all')}
-                            className={`px-5 py-2.5 rounded-xl font-semibold transition-all ${filter === 'all'
-                                ? 'bg-primary-600 text-white shadow-md'
-                                : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+                            className={`px-6 py-3 rounded-xl font-semibold transition-all ${filter === 'all'
+                                ? 'text-[#0a0e27] shadow-md'
+                                : 'bg-[#0a0e27]/60 text-[#B0B7C3] hover:bg-[#0a0e27]/80 border border-[#5ce1e6]/15'
                                 }`}
+                            style={filter === 'all' ? { background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)' } : undefined}
                         >
                             All Properties
                         </button>
                         <button
                             onClick={() => setFilter('active')}
-                            className={`px-5 py-2.5 rounded-xl font-semibold transition-all ${filter === 'active'
-                                ? 'bg-green-600 text-white shadow-md'
-                                : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+                            className={`px-6 py-3 rounded-xl font-semibold transition-all ${filter === 'active'
+                                ? 'bg-[#10b981] text-white shadow-md'
+                                : 'bg-[#0a0e27]/60 text-[#B0B7C3] hover:bg-[#0a0e27]/80 border border-[#5ce1e6]/15'
                                 }`}
                         >
                             Active
                         </button>
                         <button
                             onClick={() => setFilter('pending')}
-                            className={`px-5 py-2.5 rounded-xl font-semibold transition-all ${filter === 'pending'
-                                ? 'bg-amber-600 text-white shadow-md'
-                                : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+                            className={`px-6 py-3 rounded-xl font-semibold transition-all ${filter === 'pending'
+                                ? 'bg-[#f59e0b] text-white shadow-md'
+                                : 'bg-[#0a0e27]/60 text-[#B0B7C3] hover:bg-[#0a0e27]/80 border border-[#5ce1e6]/15'
                                 }`}
                         >
                             Pending
                         </button>
                         <button
                             onClick={() => setFilter('inactive')}
-                            className={`px-5 py-2.5 rounded-xl font-semibold transition-all ${filter === 'inactive'
-                                ? 'bg-neutral-600 text-white shadow-md'
-                                : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+                            className={`px-6 py-3 rounded-xl font-semibold transition-all ${filter === 'inactive'
+                                ? 'bg-[#374151] text-white shadow-md'
+                                : 'bg-[#0a0e27]/60 text-[#B0B7C3] hover:bg-[#0a0e27]/80 border border-[#5ce1e6]/15'
                                 }`}
                         >
                             Inactive
@@ -159,22 +162,23 @@ export default function PropertyManagement() {
 
                 {/* Error State */}
                 {error && (
-                    <div className="bg-red-50 border-l-4 border-red-500 text-red-800 px-6 py-4 rounded-lg mb-8 shadow-sm">
+                    <div className="bg-[#2a1113] border-l-4 border-red-500 text-red-200 px-6 py-4 rounded-lg mb-8 shadow-sm">
                         {error}
                     </div>
                 )}
 
                 {/* Properties Grid */}
                 {properties.length === 0 ? (
-                    <div className="bg-white rounded-2xl shadow-md border border-neutral-100 p-16 lg:p-20 text-center">
-                        <div className="w-20 h-20 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-8">
-                            <Plus className="w-10 h-10 text-neutral-400" />
+                    <div className="bg-[#1e2139] rounded-2xl shadow-md border border-[#5ce1e6]/15 p-16 lg:p-20 text-center">
+                        <div className="w-20 h-20 bg-[#0a0e27]/60 rounded-full flex items-center justify-center mx-auto mb-8 border border-[#5ce1e6]/20">
+                            <Plus className="w-10 h-10 text-[#5CE1E6]" />
                         </div>
-                        <h3 className="text-2xl font-bold text-neutral-900 mb-3">No properties found</h3>
-                        <p className="text-neutral-600 mb-8 text-lg">Start by adding your first property</p>
+                        <h3 className="text-2xl font-bold text-white mb-3">No properties found</h3>
+                        <p className="text-[#B0B7C3] mb-8 text-lg">Start by adding your first property</p>
                         <Link
                             to="/host/homestays/new"
-                            className="inline-flex items-center gap-2 px-8 py-3.5 bg-primary-600 text-white rounded-xl hover:bg-primary-700 font-semibold shadow-md hover:shadow-lg transition-all"
+                            className="inline-flex items-center gap-2 px-8 py-3.5 font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                            style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#ffffff', boxShadow: '0 12px 24px rgba(92,225,230,0.28)' }}
                         >
                             <Plus className="w-5 h-5" />
                             Add Property
@@ -183,7 +187,7 @@ export default function PropertyManagement() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
                         {properties.map((property) => (
-                            <div key={property._id} className="bg-white rounded-2xl shadow-md border border-neutral-100 overflow-hidden hover:shadow-xl transition-all">
+                            <div key={property._id} className="bg-[#1e2139] rounded-2xl shadow-md border border-[#5ce1e6]/15 overflow-hidden hover:shadow-xl transition-all">
                                 {/* Image */}
                                 <div className="relative h-56">
                                     <img
@@ -208,22 +212,22 @@ export default function PropertyManagement() {
 
                                 {/* Content */}
                                 <div className="p-7">
-                                    <h3 className="font-bold text-neutral-900 mb-3 line-clamp-1 text-lg">{property.title}</h3>
-                                    <p className="text-sm text-neutral-600 mb-5 flex items-center gap-1.5">
+                                    <h3 className="font-bold text-white mb-3 line-clamp-1 text-lg">{property.title}</h3>
+                                    <p className="text-sm text-[#B0B7C3] mb-5 flex items-center gap-1.5">
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                         </svg>
                                         {property.address?.city}, {property.address?.state}
                                     </p>
-                                    <div className="flex items-center justify-between mb-6 pb-6 border-b border-neutral-100">
+                                    <div className="flex items-center justify-between mb-6 pb-6 border-b border-[#5ce1e6]/15">
                                         <div>
-                                            <span className="text-2xl font-bold text-neutral-900">
+                                            <span className="text-2xl font-bold text-white">
                                                 ₹{property.pricing?.basePrice}
                                             </span>
-                                            <span className="text-sm text-neutral-500">/night</span>
+                                            <span className="text-sm text-[#B0B7C3]">/night</span>
                                         </div>
-                                        <div className="flex items-center gap-2 text-sm text-neutral-600 bg-neutral-50 px-3 py-1.5 rounded-lg">
+                                        <div className="flex items-center gap-2 text-sm text-[#B0B7C3] bg-[#0a0e27]/60 px-3 py-1.5 rounded-lg border border-[#5ce1e6]/15">
                                             <Calendar className="w-4 h-4" />
                                             <span className="font-medium">{property.capacity?.bedrooms} beds</span>
                                         </div>
@@ -233,21 +237,22 @@ export default function PropertyManagement() {
                                     <div className="flex gap-3">
                                         <Link
                                             to={`/homestays/${property.slug}`}
-                                            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-neutral-200 text-neutral-700 rounded-xl hover:bg-neutral-50 hover:border-neutral-300 text-sm font-semibold transition-all"
+                                            className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 border border-[#5ce1e6]/25 text-[#B0B7C3] rounded-xl hover:bg-[#0a0e27]/60 text-sm font-semibold transition-all"
                                         >
                                             <Eye className="w-4 h-4" />
                                             View
                                         </Link>
                                         <Link
                                             to={`/host/homestays/${property._id}/edit`}
-                                            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 text-sm font-semibold shadow-md hover:shadow-lg transition-all"
+                                            className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                                            style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#ffffff', boxShadow: '0 8px 18px rgba(92,225,230,0.22)' }}
                                         >
                                             <Edit className="w-4 h-4" />
                                             Edit
                                         </Link>
                                         <button
                                             onClick={() => setDeleteConfirm(property._id)}
-                                            className="px-4 py-3 border-2 border-red-200 text-red-600 rounded-xl hover:bg-red-50 hover:border-red-300 transition-all"
+                                            className="px-4 py-2.5 border border-red-400/40 text-red-300 rounded-xl hover:bg-red-500/10 transition-all"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
@@ -261,18 +266,18 @@ export default function PropertyManagement() {
                 {/* Delete Confirmation Modal */}
                 {deleteConfirm && (
                     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                        <div className="bg-white rounded-2xl p-10 max-w-md w-full shadow-2xl">
-                            <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Trash2 className="w-6 h-6 text-red-600" />
+                        <div className="bg-[#1e2139] rounded-2xl p-10 max-w-md w-full shadow-2xl border border-[#5ce1e6]/15">
+                            <div className="w-14 h-14 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-400/40">
+                                <Trash2 className="w-6 h-6 text-red-300" />
                             </div>
-                            <h3 className="text-2xl font-bold text-neutral-900 mb-4 text-center">Delete Property?</h3>
-                            <p className="text-neutral-600 mb-10 text-center">
+                            <h3 className="text-2xl font-bold text-white mb-4 text-center">Delete Property?</h3>
+                            <p className="text-[#B0B7C3] mb-10 text-center">
                                 Are you sure you want to delete this property? This action cannot be undone.
                             </p>
                             <div className="flex gap-4">
                                 <button
                                     onClick={() => setDeleteConfirm(null)}
-                                    className="flex-1 px-6 py-3.5 border-2 border-neutral-300 text-neutral-700 rounded-xl hover:bg-neutral-50 font-semibold transition-all"
+                                    className="flex-1 px-6 py-3.5 border border-[#5ce1e6]/25 text-[#B0B7C3] rounded-xl hover:bg-[#0a0e27]/60 font-semibold transition-all"
                                 >
                                     Cancel
                                 </button>

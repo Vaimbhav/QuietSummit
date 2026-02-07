@@ -6,7 +6,8 @@ interface CardProps {
     className?: string
     hoverable?: boolean
     padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
-    variant?: 'default' | 'luxury' | 'premium' | 'glass'
+    variant?: 'default' | 'luxury' | 'premium' | 'glass' | 'dark'
+    style?: React.CSSProperties
 }
 
 export default function Card({
@@ -14,7 +15,8 @@ export default function Card({
     className = '',
     hoverable = true,
     padding = 'md',
-    variant = 'default'
+    variant = 'default',
+    style
 }: CardProps) {
     const paddingClasses = {
         none: '',
@@ -28,7 +30,8 @@ export default function Card({
         default: 'bg-white border border-neutral-100 shadow-sm hover:shadow-md',
         luxury: 'bg-white border border-neutral-100 shadow-md hover:shadow-lg',
         premium: 'bg-white border border-neutral-100 shadow-md hover:shadow-lg',
-        glass: 'bg-white/80 backdrop-blur-md border border-neutral-200/50 shadow-sm hover:shadow-md'
+        glass: 'bg-white/10 backdrop-blur-md border border-white/20 shadow-lg',
+        dark: '' // No default classes for dark variant, allow full customization
     }
 
     return (
@@ -38,6 +41,7 @@ export default function Card({
             transition={{ duration: 0.3 }}
             whileHover={hoverable ? { y: -4 } : {}}
             className={`rounded-2xl transition-all duration-200 ${paddingClasses[padding]} ${variantClasses[variant]} ${className}`}
+            style={style}
         >
             {children}
         </motion.div>

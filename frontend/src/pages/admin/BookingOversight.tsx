@@ -120,7 +120,7 @@ export default function BookingOversight() {
                             <select
                                 value={filters.bookingStatus}
                                 onChange={(e) => setFilters(prev => ({ ...prev, bookingStatus: e.target.value, paymentStatus: '' }))}
-                                className="pl-9 pr-8 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 w-full hover:border-gray-300 transition-colors cursor-pointer appearance-none"
+                                className="pl-9 pr-10 py-2.5 rounded-xl border-2 border-gray-200 bg-white text-sm font-semibold text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 w-full hover:border-primary-400 transition-all cursor-pointer appearance-none shadow-sm hover:shadow-md bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_0.75rem] bg-no-repeat"
                             >
                                 <option value="">Filter by Status</option>
                                 <option value="confirmed">Confirmed</option>
@@ -128,9 +128,6 @@ export default function BookingOversight() {
                                 <option value="cancelled">Cancelled</option>
                                 <option value="completed">Completed</option>
                             </select>
-                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <ChevronLeft className="h-4 w-4 text-gray-400 -rotate-90" />
-                            </div>
                         </div>
                     </div>
                 </div>

@@ -216,79 +216,88 @@ export default function BookingForm({ journey, isOpen, onClose }: BookingFormPro
                     />
 
                     {/* Modal */}
-                    <div className="fixed inset-0 flex items-center justify-center z-[9999] p-4 overflow-y-auto">
+                    <div className="fixed inset-0 flex items-center justify-center z-[9999] p-3 sm:p-4 overflow-hidden">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             transition={{ duration: 0.3, ease: 'easeOut' }}
                             onClick={(e) => e.stopPropagation()}
-                            className="glass-luxury rounded-4xl shadow-luxury-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden relative my-8 border-luxury"
+                            className="rounded-3xl shadow-2xl max-w-3xl w-full h-[95vh] sm:h-[90vh] overflow-hidden relative flex flex-col border"
+                            style={{
+                                background: 'linear-gradient(165deg, #0b1224 0%, #0f172a 40%, #0c1325 100%)',
+                                backdropFilter: 'blur(16px)',
+                                borderColor: 'rgba(92, 225, 230, 0.25)'
+                            }}
                         >
                             {/* Close button */}
                             <button
                                 onClick={handleClose}
-                                className="absolute top-4 right-4 p-2 rounded-full hover:bg-neutral-100 transition-colors z-10 bg-white shadow-md"
+                                className="absolute top-3 right-3 p-2 rounded-full transition-colors z-10"
+                                style={{ background: 'rgba(255,255,255,0.04)' }}
                                 aria-label="Close booking form"
                             >
-                                <X className="w-5 h-5" />
+                                <X className="w-5 h-5 text-slate-200" />
                             </button>
 
                             {/* Progress Bar */}
-                            <div className="px-6 md:px-10 pt-8 pb-8 bg-white/80 backdrop-blur-xl border-b border-neutral-100 sticky top-0 z-20">
-                                <div className="mb-8 text-center md:text-left">
-                                    <h2 className="text-2xl md:text-3xl font-black text-neutral-900 mb-2 tracking-tight">
+                            <div className="px-5 md:px-7 pt-5 pb-4 flex-shrink-0" style={{ borderBottom: '1px solid rgba(92,225,230,0.22)' }}>
+                                <div className="mb-4 text-center">
+                                    <h2 className="text-xl md:text-2xl font-black text-white mb-1">
                                         Book Your Journey
                                     </h2>
-                                    <div className="flex items-center justify-center md:justify-start gap-2 text-neutral-600 text-sm md:text-base flex-wrap">
-                                        <span className="font-bold text-primary-600">{journey.title}</span>
-                                        <span className="w-1.5 h-1.5 rounded-full bg-neutral-300 hidden md:block"></span>
-                                        <span className="hidden md:block">{journey.destination}</span>
+                                    <div className="flex items-center justify-center gap-1.5 text-slate-300 text-xs flex-wrap">
+                                        <span className="font-semibold" style={{ color: '#5CE1E6' }}>{journey.title}</span>
                                     </div>
                                 </div>
 
                                 {/* Steps indicator */}
-                                <div className="flex items-center justify-between max-w-3xl mx-auto px-4 md:px-0">
-                                    {steps.map((step, index) => {
-                                        const StepIcon = step.icon
-                                        return (
-                                            <div key={step.id} className={`flex items-center ${index === steps.length - 1 ? 'flex-none' : 'flex-1'}`}>
-                                                <div className="flex flex-col items-center relative z-10 min-w-[60px] md:min-w-[80px]">
-                                                    <div
-                                                        className={`w-10 h-10 md:w-14 md:h-14 rounded-full md:rounded-2xl flex items-center justify-center font-bold text-sm transition-all duration-500 ${currentStep > step.id
-                                                            ? 'bg-gradient-to-br from-primary-600 to-accent-600 text-white shadow-lg shadow-primary-200 scale-100'
-                                                            : currentStep === step.id
-                                                                ? 'bg-gradient-to-br from-primary-600 to-accent-600 text-white ring-4 ring-primary-100 shadow-xl shadow-primary-200 scale-110'
-                                                                : 'bg-white border-2 border-neutral-200 text-neutral-400'
-                                                            }`}
-                                                    >
-                                                        {currentStep > step.id ? (
-                                                            <Check className="w-5 h-5 md:w-6 md:h-6" />
-                                                        ) : (
-                                                            <StepIcon className="w-5 h-5 md:w-6 md:h-6" />
-                                                        )}
-                                                    </div>
-                                                    <span className={`text-[10px] md:text-xs font-bold mt-2 tracking-wide uppercase transition-colors duration-300 ${currentStep === step.id ? 'text-primary-600' : 'text-neutral-400'
-                                                        }`}>
-                                                        {step.name}
-                                                    </span>
-                                                </div>
-                                                {index < steps.length - 1 && (
-                                                    <div className="flex-1 mx-2 md:mx-4 h-1 rounded-full bg-neutral-100 overflow-hidden relative">
+                                <div className="max-w-xl mx-auto rounded-2xl p-2 sm:p-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <div className="flex items-center justify-between">
+                                        {steps.map((step, index) => {
+                                            const StepIcon = step.icon
+                                            return (
+                                                <div key={step.id} className={`flex items-center ${index === steps.length - 1 ? 'flex-none' : 'flex-1'}`}>
+                                                    <div className="flex items-center gap-3 relative z-10">
                                                         <div
-                                                            className={`absolute inset-0 bg-gradient-to-r from-primary-600 to-accent-600 transition-transform duration-500 origin-left ${currentStep > step.id ? 'scale-x-100' : 'scale-x-0'
-                                                                }`}
-                                                        />
+                                                            className={`w-9 h-9 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-300`}
+                                                            style={{
+                                                                background: currentStep >= step.id ? '#5CE1E6' : 'rgba(255,255,255,0.07)',
+                                                                color: currentStep >= step.id ? '#0b1224' : '#9ca3af',
+                                                                border: currentStep === step.id ? '2px solid rgba(92,225,230,0.8)' : '1px solid rgba(255,255,255,0.08)'
+                                                            }}
+                                                        >
+                                                            {currentStep > step.id ? (
+                                                                <Check className="w-4 h-4" />
+                                                            ) : (
+                                                                <StepIcon className="w-4 h-4" />
+                                                            )}
+                                                        </div>
+                                                        <span className={`text-xs font-bold uppercase transition-colors duration-300`}
+                                                            style={{ color: currentStep === step.id ? '#5CE1E6' : '#9ca3af' }}>
+                                                            {step.name}
+                                                        </span>
                                                     </div>
-                                                )}
-                                            </div>
-                                        )
-                                    })}
+                                                    {index < steps.length - 1 && (
+                                                        <div className="flex-1 mx-4 h-0.5 rounded-full overflow-hidden relative" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                                                            <div
+                                                                className={`absolute inset-0 transition-transform duration-300 origin-left`}
+                                                                style={{
+                                                                    background: 'linear-gradient(90deg, #5CE1E6 0%, #38bdf8 100%)',
+                                                                    transform: currentStep > step.id ? 'scaleX(1)' : 'scaleX(0)'
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Step Content */}
-                            <div className="overflow-y-auto" style={{ maxHeight: 'calc(90vh - 250px)' }}>
+                            <div className="flex-1 overflow-y-auto">
                                 <AnimatePresence mode="wait">
                                     <motion.div
                                         key={currentStep}

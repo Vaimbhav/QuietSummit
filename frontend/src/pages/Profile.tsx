@@ -128,7 +128,7 @@ export default function Profile() {
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="container mx-auto px-6 max-w-4xl">
                 {/* Header */}
-                <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+                <div className="bg-dark-card rounded-xl shadow-sm p-6 border border-dark-border mb-6">
                     <div className="flex items-center gap-6">
                         <div className="w-24 h-24 bg-linear-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
                             {profile?.profileImage ? (
@@ -168,13 +168,13 @@ export default function Profile() {
                 )}
 
                 {/* Profile Form */}
-                <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6">
+                <form onSubmit={handleSubmit} className="bg-dark-card rounded-xl shadow-sm p-6 border border-dark-border">
                     <h2 className="text-xl font-semibold text-gray-900 mb-6">Personal Information</h2>
 
                     <div className="space-y-6">
                         {/* Name */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-neutral-200 mb-2">
                                 <User className="w-4 h-4 inline mr-2" />
                                 Full Name
                             </label>
@@ -190,7 +190,7 @@ export default function Profile() {
 
                         {/* Phone */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                            <label className="block text-sm font-medium text-neutral-200 mb-2">Phone Number</label>
                             <input
                                 type="tel"
                                 name="phone"
@@ -202,7 +202,7 @@ export default function Profile() {
 
                         {/* Date of Birth */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-neutral-200 mb-2">
                                 Date of Birth
                             </label>
                             <input
@@ -216,7 +216,7 @@ export default function Profile() {
 
                         {/* Bio */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                            <label className="block text-sm font-medium text-neutral-200 mb-2">Bio</label>
                             <textarea
                                 name="bio"
                                 value={formData.bio}
@@ -229,7 +229,7 @@ export default function Profile() {
 
                         {/* Interests */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-neutral-200 mb-2">
                                 Interests
                             </label>
                             <input
@@ -248,7 +248,7 @@ export default function Profile() {
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Street</label>
+                                    <label className="block text-sm font-medium text-neutral-200 mb-2">Street</label>
                                     <input
                                         type="text"
                                         name="address.street"
@@ -258,7 +258,7 @@ export default function Profile() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                                    <label className="block text-sm font-medium text-neutral-200 mb-2">City</label>
                                     <input
                                         type="text"
                                         name="address.city"
@@ -268,7 +268,7 @@ export default function Profile() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
+                                    <label className="block text-sm font-medium text-neutral-200 mb-2">State</label>
                                     <input
                                         type="text"
                                         name="address.state"
@@ -278,7 +278,7 @@ export default function Profile() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                                    <label className="block text-sm font-medium text-neutral-200 mb-2">Country</label>
                                     <input
                                         type="text"
                                         name="address.country"
@@ -288,7 +288,7 @@ export default function Profile() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Zip Code</label>
+                                    <label className="block text-sm font-medium text-neutral-200 mb-2">Zip Code</label>
                                     <input
                                         type="text"
                                         name="address.zipCode"

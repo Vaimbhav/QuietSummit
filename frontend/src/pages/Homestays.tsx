@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    X, Loader2, MapPin,
+    X, MapPin,
     Search, SlidersHorizontal, Check
 } from 'lucide-react';
 import { createPortal } from 'react-dom';
@@ -18,9 +18,8 @@ export default function Homestays() {
     const [filterOptions, setFilterOptions] = useState<any>(null);
 
     // UI State for Filters
-    const [activeFilter, setActiveFilter] = useState<string | null>(null);
     const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-    const filterRef = useRef<HTMLDivElement>(null);
+    const [isPriceDropdownOpen, setIsPriceDropdownOpen] = useState(false);
     const isInitialLoad = useRef(true);
 
     // Applied filters (these trigger API calls)
@@ -47,7 +46,6 @@ export default function Homestays() {
     // Location Auto-complete State
     const [locationQuery, setLocationQuery] = useState(searchParams.get('city') || '');
     const [locationSuggestions, setLocationSuggestions] = useState<Array<{ city: string; state: string; count: number }>>([]);
-    const [loadingLocation, setLoadingLocation] = useState(false);
 
     // Determine active filter count
     const activeFilterCount = [
@@ -58,25 +56,24 @@ export default function Homestays() {
         appliedFilters.city
     ].filter(Boolean).length;
 
-    // Property type options
-    const typeOptions = ['Villa', 'Cabin', 'Cottage', 'Farmhouse', 'Treehouse', 'Other'];
-
     useEffect(() => {
         loadFilterOptions();
+    }, []);
 
-        // Click outside to close filters
+    // Close price dropdown when clicking outside
+    useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            const target = event.target as Node;
-            // Don't close if clicking inside the filter dropdown itself
-            const isClickInsideDropdown = (target as HTMLElement).closest('.filter-dropdown-content');
-
-            if (filterRef.current && !filterRef.current.contains(target) && !isClickInsideDropdown) {
-                setActiveFilter(null);
+            const target = event.target as HTMLElement;
+            if (isPriceDropdownOpen && !target.closest('.price-dropdown')) {
+                setIsPriceDropdownOpen(false);
             }
         };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+
+        if (isPriceDropdownOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, [isPriceDropdownOpen]);
 
     // Fetch location suggestions
     useEffect(() => {
@@ -85,14 +82,11 @@ export default function Homestays() {
                 setLocationSuggestions([]);
                 return;
             }
-            setLoadingLocation(true);
             try {
                 const response = await getLocationSuggestions(locationQuery);
                 setLocationSuggestions(response.suggestions || []);
             } catch (error) {
                 console.error('Error:', error);
-            } finally {
-                setLoadingLocation(false);
             }
         };
         const timeoutId = setTimeout(fetchLocationSuggestions, 300);
@@ -102,6 +96,15 @@ export default function Homestays() {
     useEffect(() => {
         loadProperties();
     }, [appliedFilters]);
+
+    // Sync draft filters with applied filters
+    useEffect(() => {
+        setDraftFilters({
+            minPrice: appliedFilters.minPrice?.toString() || '',
+            maxPrice: appliedFilters.maxPrice?.toString() || '',
+            guests: appliedFilters.guests?.toString() || '',
+        });
+    }, [appliedFilters.minPrice, appliedFilters.maxPrice, appliedFilters.guests]);
 
     const loadFilterOptions = async () => {
         try {
@@ -157,7 +160,6 @@ export default function Homestays() {
         };
         setAppliedFilters(newFilters);
         updateUrl(newFilters);
-        setActiveFilter(null);
     };
 
     const clearAllFilters = () => {
@@ -167,115 +169,52 @@ export default function Homestays() {
         setLocationQuery('');
         updateUrl(reset);
     };
-
-    // Render Filter Popover Helper
-    const FilterPopover = ({ title, isActive, onClose, children }: { title: string, isActive: boolean, onClose: () => void, children: React.ReactNode }) => (
-        <AnimatePresence>
-            {isActive && (
-                <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute top-full mt-2 left-0 w-80 bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 p-6 z-50 overflow-hidden"
-                >
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-semibold text-gray-900">{title}</h3>
-                        <button onClick={onClose} className="text-gray-400 hover:text-gray-600" aria-label="Close filter">
-                            <X className="w-4 h-4" />
-                        </button>
-                    </div>
-                    {children}
-                    <div className="mt-6 pt-4 border-t border-gray-50 flex justify-end gap-2">
-                        <button
-                            onClick={onClose}
-                            className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={applyDetailedFilters}
-                            className="px-4 py-2 text-sm font-medium bg-black text-white rounded-lg hover:bg-gray-800"
-                        >
-                            Apply
-                        </button>
-                    </div>
-                </motion.div>
-            )}
-        </AnimatePresence>
-    );
-
     return (
-        <div className="min-h-screen bg-linear-to-b from-neutral-50 via-white to-neutral-50 text-neutral-900 font-sans overflow-x-hidden">
+        <div className="min-h-screen text-white overflow-x-hidden" style={{ background: '#0a0e27' }}>
             {/* Hero - Premium Luxury */}
-            <section className="relative bg-linear-to-br from-primary-700 via-primary-600 to-primary-800 text-white py-12 sm:py-20 z-20">
+            <section className="relative text-white pb-28 pt-16 sm:pb-32 sm:pt-20 md:pb-16 overflow-hidden" style={{ background: '#0a0e27' }}>
                 {/* Abstract Background Elements */}
-                <div className="absolute inset-0 overflow-hidden opacity-10">
-                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full mix-blend-soft-light blur-3xl animate-blob"></div>
-                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white rounded-full mix-blend-soft-light blur-3xl animate-blob animation-delay-2000"></div>
+                <div className="absolute inset-0 opacity-40 pointer-events-none">
+                    <div className="absolute top-0 right-0 w-1/2 h-1/2 blur-3xl rounded-full" style={{ background: 'rgba(92,225,230,0.3)' }} />
+                    <div className="absolute bottom-0 left-0 w-1/3 h-1/3 blur-3xl rounded-full" style={{ background: 'rgba(74,144,226,0.25)' }} />
                 </div>
 
                 <div className="container mx-auto px-6 sm:px-8 text-center relative z-10">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="mb-3"
+                        transition={{ duration: 0.5 }}
                     >
-                        <span className="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-sm font-semibold border border-white/20">
-                            ✨ Premium Collection
-                        </span>
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 tracking-tight">
+                            Our Stays
+                        </h1>
+                        <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+                            Handpicked retreats where luxury meets nature. Your sanctuary awaits.
+                        </p>
                     </motion.div>
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight mb-4 leading-tight"
-                        style={{ letterSpacing: '-0.03em' }}
-                    >
-                        Discover Your
-                        <br />
-                        <span className="bg-linear-to-r from-white via-blue-50 to-white bg-clip-text text-transparent">Perfect Escape</span>
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                        className="text-lg md:text-2xl max-w-3xl mx-auto leading-relaxed mb-6 text-white/90 font-light"
-                    >
-                        Handpicked retreats where luxury meets nature.
-                        <br className="hidden sm:block" />
-                        Your sanctuary awaits.
-                    </motion.p>
+                </div>
+            </section>
 
-                    {/* Premium Search Bar */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="hidden md:block max-w-5xl mx-auto relative px-4 sm:px-0 z-100"
-                        ref={filterRef}
-                    >
-                        <div className="bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] p-2.5 flex items-center gap-3 border border-white/30 hover:shadow-[0_25px_70px_-15px_rgba(0,0,0,0.4)] transition-all duration-500 relative">
-                            <div className="flex-1 flex items-center gap-3 pl-5 pr-2 min-w-0">
-                                <Search className="w-5 h-5 text-gray-500 shrink-0" />
-                                <input
-                                    type="text"
-                                    value={locationQuery}
-                                    onChange={(e) => {
-                                        setLocationQuery(e.target.value);
-                                        setActiveFilter('location');
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                            updateFilter('search', locationQuery);
-                                            setActiveFilter(null);
-                                        }
-                                    }}
-                                    onClick={() => setActiveFilter('location')}
-                                    placeholder="Where would you like to go?"
-                                    className="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none text-gray-900 placeholder:text-gray-500 font-medium text-base sm:text-lg py-4 min-w-0 w-0"
-                                />
-                            </div>
+            {/* Desktop Filter Bar */}
+            <div className="hidden md:block border-b" style={{ borderColor: 'rgba(92,225,230,0.1)', background: '#0a0e27' }}>
+                <div className="container mx-auto px-6 py-6">
+                    <div className="flex items-center gap-4">
+                        {/* Location Search */}
+                        <div className="flex-1 relative">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#B0B7C3] pointer-events-none z-10" />
+                            <input
+                                type="text"
+                                value={locationQuery}
+                                onChange={(e) => setLocationQuery(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && locationQuery) {
+                                        updateFilter('search', locationQuery);
+                                        updateFilter('city', locationQuery);
+                                    }
+                                }}
+                                placeholder="Search by city or location..."
+                                className="w-full pl-12 pr-4 py-3.5 bg-[#1e2139] border-2 border-[#5ce1e6]/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5ce1e6]/50 focus:border-[#5ce1e6] text-sm font-medium transition-all text-white placeholder:text-[#B0B7C3]"
+                            />
                             {locationQuery && (
                                 <button
                                     onClick={() => {
@@ -283,279 +222,214 @@ export default function Homestays() {
                                         updateFilter('search', undefined);
                                         updateFilter('city', undefined);
                                     }}
-                                    className="p-2.5 hover:bg-gray-100 rounded-full transition-colors shrink-0 mr-1"
-                                    aria-label="Clear location search"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 hover:bg-[#0a0e27] rounded-lg transition-colors z-10"
+                                    aria-label="Clear search"
                                 >
-                                    <X className="w-5 h-5 text-gray-500" />
+                                    <X className="w-4 h-4 text-[#B0B7C3]" />
                                 </button>
                             )}
 
-                            {/* Location Suggestions Dropdown */}
-                            <AnimatePresence>
-                                {activeFilter === 'location' && (locationSuggestions.length > 0 || loadingLocation) && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="absolute top-full left-0 mt-4 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 overflow-hidden z-101"
-                                    >
-                                        {loadingLocation ? (
-                                            <div className="p-4 flex items-center gap-2 text-gray-500">
-                                                <Loader2 className="w-4 h-4 animate-spin" /> Looking...
+                            {/* Desktop Location Suggestions */}
+                            {locationQuery.length > 0 && locationSuggestions.length > 0 && (
+                                <div className="absolute top-full mt-2 left-0 right-0 bg-[#1e2139] border-2 border-[#5ce1e6]/20 rounded-xl p-2 max-h-64 overflow-y-auto shadow-xl z-50">
+                                    {locationSuggestions.map((loc, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => {
+                                                setLocationQuery(loc.city);
+                                                updateFilter('city', loc.city);
+                                            }}
+                                            className="w-full text-left px-3 py-2.5 hover:bg-[#0a0e27] rounded-lg flex items-center gap-3 transition-colors"
+                                        >
+                                            <div className="w-8 h-8 rounded-full bg-[#0a0e27] flex items-center justify-center shrink-0">
+                                                <MapPin className="w-4 h-4 text-[#5CE1E6]" />
                                             </div>
-                                        ) : (
-                                            locationSuggestions.map((loc, i) => (
-                                                <button
-                                                    key={i}
-                                                    onClick={() => {
-                                                        setLocationQuery(loc.city);
-                                                        updateFilter('city', loc.city);
-                                                        setActiveFilter(null);
-                                                    }}
-                                                    className="w-full text-left px-4 py-3 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
-                                                >
-                                                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                                                        <MapPin className="w-4 h-4 text-gray-600" />
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-medium text-gray-900">{loc.city}</div>
-                                                        <div className="text-xs text-gray-500">{loc.state}</div>
-                                                    </div>
-                                                </button>
-                                            ))
-                                        )}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-
-                            {/* Dividers */}
-                            <div className="hidden md:block w-px h-12 bg-gray-200"></div>
-
-                            <div className="hidden md:flex items-center gap-2">
-                                {/* Price Filter */}
-                                <button
-                                    onClick={() => {
-                                        if (activeFilter !== 'price') {
-                                            setDraftFilters(prev => ({
-                                                ...prev,
-                                                minPrice: appliedFilters.minPrice ? String(appliedFilters.minPrice) : '',
-                                                maxPrice: appliedFilters.maxPrice ? String(appliedFilters.maxPrice) : ''
-                                            }));
-                                            setActiveFilter('price');
-                                        } else {
-                                            setActiveFilter(null);
-                                        }
-                                    }}
-                                    className={`px-5 py-3 rounded-2xl border-2 transition-all font-semibold text-sm ${activeFilter === 'price'
-                                        ? 'border-primary-500 bg-primary-50 text-primary-900 shadow-sm'
-                                        : (appliedFilters.minPrice || appliedFilters.maxPrice)
-                                            ? 'border-gray-900 bg-gray-900 text-white shadow-sm'
-                                            : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                                        }`}
-                                >
-                                    {(appliedFilters.minPrice || appliedFilters.maxPrice)
-                                        ? `₹${appliedFilters.minPrice || 0}-${appliedFilters.maxPrice || '∞'}`
-                                        : 'Price Range'
-                                    }
-                                </button>
-
-                                {/* Type Filter */}
-                                <button
-                                    onClick={() => setActiveFilter(activeFilter === 'type' ? null : 'type')}
-                                    className={`px-5 py-3 rounded-2xl border-2 transition-all font-semibold text-sm ${activeFilter === 'type'
-                                        ? 'border-primary-500 bg-primary-50 text-primary-900 shadow-sm'
-                                        : appliedFilters.propertyType
-                                            ? 'border-gray-900 bg-gray-900 text-white shadow-sm'
-                                            : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                                        }`}
-                                >
-                                    {appliedFilters.propertyType || 'Property Type'}
-                                </button>
-
-                                {/* Guests Filter */}
-                                <button
-                                    onClick={() => {
-                                        if (activeFilter !== 'guests') {
-                                            setDraftFilters(prev => ({
-                                                ...prev,
-                                                guests: appliedFilters.guests ? String(appliedFilters.guests) : '1'
-                                            }));
-                                            setActiveFilter('guests');
-                                        } else {
-                                            setActiveFilter(null);
-                                        }
-                                    }}
-                                    className={`px-5 py-3 rounded-2xl border-2 transition-all font-semibold text-sm ${activeFilter === 'guests'
-                                        ? 'border-primary-500 bg-primary-50 text-primary-900 shadow-sm'
-                                        : appliedFilters.guests
-                                            ? 'border-gray-900 bg-gray-900 text-white shadow-sm'
-                                            : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                                        }`}
-                                >
-                                    {appliedFilters.guests ? `${appliedFilters.guests} Guests` : 'Add Guests'}
-                                </button>
-                            </div>
-
-                            {/* Reset Button - Desktop */}
-                            {activeFilterCount > 0 && (
-                                <div className="hidden md:block flex-none">
-                                    <button
-                                        onClick={clearAllFilters}
-                                        className="px-5 py-3 rounded-2xl border-2 border-red-200 bg-red-50 text-red-700 hover:bg-red-100 hover:border-red-300 transition-all font-semibold text-sm flex items-center gap-2 shadow-sm hover:shadow-md"
-                                    >
-                                        <X className="w-4 h-4" />
-                                        Reset ({activeFilterCount})
-                                    </button>
+                                            <div className="min-w-0">
+                                                <div className="font-semibold text-white text-sm truncate">{loc.city}</div>
+                                                <div className="text-xs text-[#B0B7C3]">{loc.state} · {loc.count} properties</div>
+                                            </div>
+                                        </button>
+                                    ))}
                                 </div>
                             )}
+                        </div>
 
-                            {/* Search Button */}
-                            <div className="flex-none">
-                                <button
-                                    className="bg-linear-to-r from-primary-600 via-primary-700 to-primary-800 hover:from-primary-700 hover:via-primary-800 hover:to-primary-900 text-white w-12 h-12 sm:w-auto sm:h-auto p-0 sm:px-10 sm:py-4 rounded-full font-bold flex items-center justify-center gap-2.5 transition-all shadow-[0_4px_14px_0_rgba(74,139,112,0.39)] hover:shadow-[0_6px_20px_0_rgba(74,139,112,0.5)] hover:scale-[1.02] active:scale-[0.98] shrink-0 text-base"
-                                    aria-label="Search properties"
+                        {/* Price Range Dropdown */}
+                        <div className="relative price-dropdown">
+                            <button
+                                onClick={() => setIsPriceDropdownOpen(!isPriceDropdownOpen)}
+                                className="px-4 py-3.5 bg-[#1e2139] border-2 border-[#5ce1e6]/20 rounded-xl hover:border-[#5ce1e6]/50 focus:outline-none focus:ring-2 focus:ring-[#5ce1e6]/50 focus:border-[#5ce1e6] transition-all text-white text-sm font-medium whitespace-nowrap min-w-[150px] flex items-center justify-between"
+                            >
+                                <span>
+                                    {(appliedFilters.minPrice || appliedFilters.maxPrice)
+                                        ? `₹${appliedFilters.minPrice || 0}-${appliedFilters.maxPrice || '∞'}`
+                                        : 'Price Range'}
+                                </span>
+                                <svg
+                                    className={`w-4 h-4 transition-transform ${isPriceDropdownOpen ? 'rotate-180' : ''}`}
+                                    fill="none"
+                                    stroke="#5CE1E6"
+                                    viewBox="0 0 24 24"
                                 >
-                                    <Search className="w-5 h-5" />
-                                    <span className="hidden sm:inline">Search</span>
-                                </button>
-                            </div>
-                        </div>     {/* Filter Dropdowns */}
-                        <AnimatePresence>
-                            {activeFilter === 'price' && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className="filter-dropdown-content absolute top-full mt-5 left-1/2 -translate-x-1/2 bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 p-8 w-96 z-9999"
-                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            {/* Price Dropdown Panel */}
+                            {isPriceDropdownOpen && (
+                                <div className="absolute top-full mt-2 left-0 bg-[#1e2139]/80 backdrop-blur-xl border-2 border-[#5ce1e6]/30 rounded-2xl p-5 shadow-2xl z-50 w-80">
                                     <div className="space-y-4">
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">Min Price</label>
-                                            <input
-                                                type="number"
-                                                value={draftFilters.minPrice || ''}
-                                                onChange={(e) => setDraftFilters(p => ({ ...p, minPrice: e.target.value }))}
-                                                placeholder="₹500"
-                                                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">Max Price</label>
-                                            <input
-                                                type="number"
-                                                value={draftFilters.maxPrice || ''}
-                                                onChange={(e) => setDraftFilters(p => ({ ...p, maxPrice: e.target.value }))}
-                                                placeholder="₹5000"
-                                                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900"
-                                            />
-                                        </div>
-                                        <button
-                                            onClick={() => {
-                                                applyDetailedFilters();
-                                                setActiveFilter(null);
-                                            }}
-                                            className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-semibold transition-colors"
-                                        >
-                                            Apply
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            )}
+                                        <label className="text-xs font-bold text-white uppercase tracking-wider block mb-3">Price Range</label>
 
-                            {activeFilter === 'type' && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className="filter-dropdown-content absolute top-full mt-5 left-1/2 -translate-x-1/2 bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 p-5 w-80 z-9999"
-                                >
-                                    <div className="space-y-2">
-                                        {typeOptions.map(type => (
-                                            <button
-                                                key={type}
-                                                onClick={() => {
-                                                    updateFilter('propertyType', type);
-                                                    setActiveFilter(null);
-                                                }}
-                                                className={`w-full text-left px-4 py-3 rounded-xl transition-all font-medium border-2 ${appliedFilters.propertyType === type
-                                                    ? 'bg-primary-50 text-primary-700 border-primary-500'
-                                                    : 'hover:bg-gray-50 text-gray-700 border-transparent hover:border-gray-300'
-                                                    }`}
-                                            >
-                                                {type}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </motion.div>
-                            )}
+                                        <div className="space-y-4">
+                                            <div className="relative">
+                                                <label className="text-xs font-medium text-[#B0B7C3] mb-1.5 block">Minimum Price</label>
+                                                <span className="absolute left-3 bottom-3 text-[#5CE1E6] text-sm font-semibold">₹</span>
+                                                <input
+                                                    type="number"
+                                                    value={draftFilters.minPrice}
+                                                    onChange={(e) => setDraftFilters({ ...draftFilters, minPrice: e.target.value })}
+                                                    placeholder="Enter minimum"
+                                                    className="w-full pl-7 pr-4 py-3 bg-[#0a0e27]/50 backdrop-blur-sm border-2 border-[#5ce1e6]/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5ce1e6]/50 focus:border-[#5ce1e6] text-sm font-medium transition-all text-white placeholder:text-[#B0B7C3]/50"
+                                                />
+                                            </div>
 
-                            {activeFilter === 'guests' && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className="filter-dropdown-content absolute top-full mt-5 left-1/2 -translate-x-1/2 bg-white/98 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 p-8 w-80 z-9999"
-                                >
-                                    <div className="space-y-4">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-gray-700 font-semibold">Guests</span>
-                                            <div className="flex items-center gap-3">
-                                                <button
-                                                    onClick={() => setDraftFilters(p => ({ ...p, guests: Math.max(1, (Number(p.guests) || 1) - 1).toString() }))}
-                                                    className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 font-medium text-gray-700"
-                                                >−</button>
-                                                <span className="w-12 text-center font-bold text-lg text-gray-900">{draftFilters.guests || 1}</span>
-                                                <button
-                                                    onClick={() => setDraftFilters(p => ({ ...p, guests: ((Number(p.guests) || 1) + 1).toString() }))}
-                                                    className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 font-medium text-gray-700"
-                                                >+</button>
+                                            <div className="relative">
+                                                <label className="text-xs font-medium text-[#B0B7C3] mb-1.5 block">Maximum Price</label>
+                                                <span className="absolute left-3 bottom-3 text-[#5CE1E6] text-sm font-semibold">₹</span>
+                                                <input
+                                                    type="number"
+                                                    value={draftFilters.maxPrice}
+                                                    onChange={(e) => setDraftFilters({ ...draftFilters, maxPrice: e.target.value })}
+                                                    placeholder="Enter maximum"
+                                                    className="w-full pl-7 pr-4 py-3 bg-[#0a0e27]/50 backdrop-blur-sm border-2 border-[#5ce1e6]/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5ce1e6]/50 focus:border-[#5ce1e6] text-sm font-medium transition-all text-white placeholder:text-[#B0B7C3]/50"
+                                                />
                                             </div>
                                         </div>
+
                                         <button
                                             onClick={() => {
                                                 applyDetailedFilters();
-                                                setActiveFilter(null);
+                                                setIsPriceDropdownOpen(false);
                                             }}
-                                            className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-semibold transition-colors"
+                                            className="w-full px-5 py-3.5 rounded-xl font-semibold text-sm text-white transition-all hover:shadow-lg hover:shadow-[#5ce1e6]/20 active:scale-98"
+                                            style={{ background: 'linear-gradient(135deg, #3d9da3 0%, #2d6b9e 100%)' }}
                                         >
-                                            Apply
+                                            Apply Filters
                                         </button>
                                     </div>
-                                </motion.div>
+                                </div>
                             )}
-                        </AnimatePresence>
-                    </motion.div>
-                </div>
+                        </div>
 
-                {/* Bottom wave effect */}
-                <div className="absolute bottom-0 left-0 right-0">
-                    <svg viewBox="0 0 1440 120" className="w-full h-12 fill-[#FAF9F7]">
-                        <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
-                    </svg>
+                        {/* Property Type Filter */}
+                        <div className="relative">
+                            <select
+                                value={appliedFilters.propertyType || ''}
+                                onChange={(e) => updateFilter('propertyType', e.target.value || undefined)}
+                                className="px-4 py-3.5 bg-[#1e2139] border-2 border-[#5ce1e6]/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5ce1e6]/50 focus:border-[#5ce1e6] appearance-none cursor-pointer transition-all text-white text-sm font-medium min-w-[150px] pr-10"
+                                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4,6L8,10L12,6' stroke='%235CE1E6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`, backgroundPosition: 'center right 1rem', backgroundRepeat: 'no-repeat' }}
+                                aria-label="Filter by property type"
+                            >
+                                <option value="">All Types</option>
+                                {filterOptions?.propertyTypes?.map((type: string) => (
+                                    <option key={type} value={type} className="capitalize">{type}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Guests Filter */}
+                        <div className="relative">
+                            <select
+                                value={appliedFilters.guests || ''}
+                                onChange={(e) => updateFilter('guests', e.target.value ? Number(e.target.value) : undefined)}
+                                className="px-4 py-3.5 bg-[#1e2139] border-2 border-[#5ce1e6]/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5ce1e6]/50 focus:border-[#5ce1e6] appearance-none cursor-pointer transition-all text-white text-sm font-medium min-w-[130px] pr-10"
+                                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4,6L8,10L12,6' stroke='%235CE1E6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`, backgroundPosition: 'center right 1rem', backgroundRepeat: 'no-repeat' }}
+                                aria-label="Filter by number of guests"
+                            >
+                                <option value="">Any Guests</option>
+                                {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                                    <option key={num} value={num}>{num} {num === 1 ? 'Guest' : 'Guests'}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Clear Filters */}
+                        {activeFilterCount > 0 && (
+                            <button
+                                onClick={clearAllFilters}
+                                className="px-4 py-3.5 rounded-xl font-medium text-sm text-white transition-all border-2 border-red-500/20 hover:bg-red-500/10"
+                                style={{ background: 'rgba(239, 68, 68, 0.1)' }}
+                            >
+                                Clear ({activeFilterCount})
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Active Filter Chips */}
+                    {activeFilterCount > 0 && (
+                        <div className="flex flex-wrap items-center gap-2 mt-4">
+                            <span className="text-xs font-medium text-[#B0B7C3]">Active filters:</span>
+                            {appliedFilters.city && (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e2139] border border-[#5ce1e6]/20 text-xs font-medium text-white">
+                                    <MapPin className="w-3 h-3 text-[#5CE1E6]" />
+                                    {appliedFilters.city}
+                                    <button onClick={() => updateFilter('city', undefined)} className="hover:text-red-400 transition-colors" aria-label="Remove location filter">
+                                        <X className="w-3 h-3" />
+                                    </button>
+                                </span>
+                            )}
+                            {(appliedFilters.minPrice || appliedFilters.maxPrice) && (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e2139] border border-[#5ce1e6]/20 text-xs font-medium text-white">
+                                    ₹{appliedFilters.minPrice || 0}-{appliedFilters.maxPrice || '∞'}
+                                    <button onClick={() => { updateFilter('minPrice', undefined); updateFilter('maxPrice', undefined); }} className="hover:text-red-400 transition-colors" aria-label="Remove price filter">
+                                        <X className="w-3 h-3" />
+                                    </button>
+                                </span>
+                            )}
+                            {appliedFilters.guests && (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e2139] border border-[#5ce1e6]/20 text-xs font-medium text-white">
+                                    {appliedFilters.guests} Guests
+                                    <button onClick={() => updateFilter('guests', undefined)} className="hover:text-red-400 transition-colors" aria-label="Remove guests filter">
+                                        <X className="w-3 h-3" />
+                                    </button>
+                                </span>
+                            )}
+                            {appliedFilters.propertyType && (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1e2139] border border-[#5ce1e6]/20 text-xs font-medium text-white capitalize">
+                                    {appliedFilters.propertyType}
+                                    <button onClick={() => updateFilter('propertyType', undefined)} className="hover:text-red-400 transition-colors" aria-label="Remove property type filter">
+                                        <X className="w-3 h-3" />
+                                    </button>
+                                </span>
+                            )}
+                        </div>
+                    )}
                 </div>
-            </section>
+            </div>
 
             {/* Mobile Filter Button - Overlapping */}
-            <div className="md:hidden container mx-auto px-6 -mt-16 sm:-mt-20 relative z-20 mb-6">
+            <div className="md:hidden container mx-auto px-4 -mt-14 sm:-mt-16 relative z-20 mb-8">
                 <motion.button
                     onClick={() => setIsMobileFilterOpen(true)}
                     whileTap={{ scale: 0.98 }}
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="w-full bg-white rounded-3xl px-6 py-5 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-neutral-100 hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)] transition-all"
+                    className="w-full rounded-2xl px-5 py-4 flex items-center justify-between shadow-lg border transition-all"
+                    style={{ background: '#1e2139', borderColor: 'rgba(92,225,230,0.2)', boxShadow: '0 12px 28px rgba(0,0,0,0.4)' }}
                 >
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-primary-600 to-primary-700 flex items-center justify-center shadow-lg">
-                            <Search className="w-6 h-6 text-white" />
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm" style={{ background: 'linear-gradient(135deg, #3d9da3 0%, #2d6b9e 100%)' }}>
+                            <Search className="w-5 h-5 text-white" />
                         </div>
                         <div className="text-left">
-                            <div className="text-base font-bold text-neutral-900">
+                            <div className="text-sm font-bold text-white">
                                 {locationQuery || appliedFilters.propertyType || appliedFilters.guests
                                     ? 'Filters Applied'
                                     : 'Search & Filter'}
                             </div>
-                            <div className="text-sm text-neutral-600 font-medium">
+                            <div className="text-xs font-medium" style={{ color: '#B0B7C3' }}>
                                 {activeFilterCount > 0
                                     ? `${activeFilterCount} active • ${properties.length} properties`
                                     : `${properties.length} ${properties.length === 1 ? 'property' : 'properties'}`
@@ -563,271 +437,8 @@ export default function Homestays() {
                             </div>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        {activeFilterCount > 0 && (
-                            <div className="w-6 h-6 rounded-full bg-primary-600 flex items-center justify-center">
-                                <span className="text-xs font-bold text-white">{activeFilterCount}</span>
-                            </div>
-                        )}
-                        <SlidersHorizontal className="w-6 h-6 text-neutral-600" />
-                    </div>
+                    <SlidersHorizontal className="w-6 h-6" style={{ color: '#B0B7C3' }} />
                 </motion.button>
-            </div>
-
-            {/* Sticky Filter Bar - HIDDEN (search now in hero) */}
-            <div className="hidden">
-                <div className="max-w-6xl mx-auto">
-                    <div className="bg-white/90 backdrop-blur-xl border border-gray-200/50 shadow-sm rounded-full p-2 flex items-center justify-between gap-2 overflow-visible transition-all hover:shadow-md">
-
-                        {/* Mobile Filter Toggle */}
-                        <button
-                            onClick={() => setIsMobileFilterOpen(true)}
-                            className="md:hidden p-2.5 rounded-full border border-gray-200 hover:bg-gray-50 text-gray-700"
-                            aria-label="Open filters"
-                        >
-                            <SlidersHorizontal className="w-5 h-5" />
-                        </button>
-
-                        {/* Location Search - The "Input" */}
-                        <div className="relative flex-1 group">
-                            <div className="flex items-center pl-4 pr-2 gap-3">
-                                <Search className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
-                                <input
-                                    type="text"
-                                    value={locationQuery}
-                                    onChange={(e) => {
-                                        setLocationQuery(e.target.value);
-                                        setActiveFilter('location');
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                            updateFilter('search', locationQuery);
-                                            setActiveFilter(null);
-                                        }
-                                    }}
-                                    onClick={() => setActiveFilter('location')}
-                                    placeholder="Where to?"
-                                    className="w-full bg-transparent border-none focus:ring-0 focus:outline-none outline-none text-gray-900 placeholder:text-gray-400 font-medium h-10 p-0"
-                                />
-                                {locationQuery && (
-                                    <button
-                                        onClick={() => {
-                                            setLocationQuery('');
-                                            updateFilter('search', undefined);
-                                            updateFilter('city', undefined);
-                                        }}
-                                        className="p-1 hover:bg-gray-100 rounded-full"
-                                        aria-label="Clear location"
-                                    >
-                                        <X className="w-4 h-4 text-gray-400" />
-                                    </button>
-                                )}
-                            </div>
-
-                            <AnimatePresence>
-                                {activeFilter === 'location' && (locationSuggestions.length > 0 || loadingLocation) && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        className="absolute top-full left-0 mt-4 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 overflow-hidden z-9999 origin-top-left"
-                                    >
-                                        {loadingLocation ? (
-                                            <div className="p-4 flex items-center gap-2 text-gray-500">
-                                                <Loader2 className="w-4 h-4 animate-spin" /> Looking...
-                                            </div>
-                                        ) : (
-                                            locationSuggestions.map((loc, i) => (
-                                                <button
-                                                    key={i}
-                                                    onClick={() => {
-                                                        setLocationQuery(loc.city);
-                                                        updateFilter('city', loc.city);
-                                                        setActiveFilter(null);
-                                                    }}
-                                                    className="w-full text-left px-4 py-3 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
-                                                >
-                                                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                                                        <MapPin className="w-4 h-4 text-gray-600" />
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-medium text-gray-900">{loc.city}</div>
-                                                        <div className="text-xs text-gray-500">{loc.state}</div>
-                                                    </div>
-                                                </button>
-                                            ))
-                                        )}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-
-                        {/* Divider */}
-                        <div className="w-px h-8 bg-gray-200 hidden md:block" />
-
-                        {/* Filter Pills */}
-                        <div className="hidden md:flex items-center gap-2">
-
-                            {/* Price Filter */}
-                            <div className="relative">
-                                <button
-                                    onClick={() => setActiveFilter(activeFilter === 'price' ? null : 'price')}
-                                    className={`h-10 px-4 rounded-full border transition-all text-sm font-medium flex items-center gap-2 ${(appliedFilters.minPrice || appliedFilters.maxPrice)
-                                        ? 'border-black bg-black text-white hover:bg-gray-800'
-                                        : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
-                                        }`}
-                                >
-                                    Price
-                                    {(appliedFilters.minPrice || appliedFilters.maxPrice) && <Check className="w-3.5 h-3.5" />}
-                                </button>
-                                <FilterPopover
-                                    title="Price Range"
-                                    isActive={activeFilter === 'price'}
-                                    onClose={() => setActiveFilter(null)}
-                                >
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="text-xs font-semibold text-gray-500 uppercase">Min Price</label>
-                                            <div className="relative mt-1">
-                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
-                                                <input
-                                                    type="number"
-                                                    value={draftFilters.minPrice}
-                                                    onChange={(e) => setDraftFilters({ ...draftFilters, minPrice: e.target.value })}
-                                                    className="w-full pl-7 pr-3 py-2 border rounded-lg focus:ring-black focus:border-black"
-                                                    placeholder="0"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="text-xs font-semibold text-gray-500 uppercase">Max Price</label>
-                                            <div className="relative mt-1">
-                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
-                                                <input
-                                                    type="number"
-                                                    value={draftFilters.maxPrice}
-                                                    onChange={(e) => setDraftFilters({ ...draftFilters, maxPrice: e.target.value })}
-                                                    className="w-full pl-7 pr-3 py-2 border rounded-lg focus:ring-black focus:border-black"
-                                                    placeholder="Any"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </FilterPopover>
-                            </div>
-
-                            {/* Type Filter */}
-                            <div className="relative">
-                                <button
-                                    onClick={() => setActiveFilter(activeFilter === 'type' ? null : 'type')}
-                                    className={`h-10 px-4 rounded-full border transition-all text-sm font-medium flex items-center gap-2 ${appliedFilters.propertyType
-                                        ? 'border-black bg-black text-white hover:bg-gray-800'
-                                        : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
-                                        }`}
-                                >
-                                    Type
-                                    {appliedFilters.propertyType && <Check className="w-3.5 h-3.5" />}
-                                </button>
-                                <AnimatePresence>
-                                    {activeFilter === 'type' && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            className="absolute top-full mt-2 left-0 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50"
-                                        >
-
-                                            {filterOptions?.propertyTypes?.map((type: string) => (
-                                                <button
-                                                    key={type}
-                                                    onClick={() => { updateFilter('propertyType', type); setActiveFilter(null); }}
-                                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm capitalize ${appliedFilters.propertyType === type ? 'bg-black text-white font-medium' : 'text-gray-700 hover:bg-gray-50'}`}
-                                                >
-                                                    {type}
-                                                </button>
-                                            ))}
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-
-                            {/* Guests Filter */}
-                            <div className="relative">
-                                <button
-                                    onClick={() => setActiveFilter(activeFilter === 'guests' ? null : 'guests')}
-                                    className={`h-10 px-4 rounded-full border transition-all text-sm font-medium flex items-center gap-2 ${appliedFilters.guests
-                                        ? 'border-black bg-black text-white hover:bg-gray-800'
-                                        : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
-                                        }`}
-                                >
-                                    Guests
-                                    {appliedFilters.guests && <span className="bg-white/20 px-1.5 rounded text-xs">{appliedFilters.guests}</span>}
-                                </button>
-                                <FilterPopover
-                                    title="Guests"
-                                    isActive={activeFilter === 'guests'}
-                                    onClose={() => setActiveFilter(null)}
-                                >
-                                    <div className="space-y-4">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-gray-700 font-medium">Guests</span>
-                                            <div className="flex items-center gap-3">
-                                                <button
-                                                    onClick={() => setDraftFilters(p => ({ ...p, guests: Math.max(1, (Number(p.guests) || 1) - 1).toString() }))}
-                                                    className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-50"
-                                                >-</button>
-                                                <span className="w-4 text-center">{draftFilters.guests || 1}</span>
-                                                <button
-                                                    onClick={() => setDraftFilters(p => ({ ...p, guests: ((Number(p.guests) || 1) + 1).toString() }))}
-                                                    className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-50"
-                                                >+</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </FilterPopover>
-                            </div>
-
-                            {/* More Filters (Placeholder for Bed/Bath) */}
-                            {/* <button className="h-10 w-10 rounded-full border border-gray-200 flex items-center justify-center hover:border-black transition-colors">
-                                 <SlidersHorizontal className="w-4 h-4" />
-                             </button> */}
-                        </div>
-
-                        {/* Search Action */}
-                        <button
-                            onClick={() => setActiveFilter(null)}
-                            className="h-10 w-10 md:w-auto md:px-6 bg-primary-600 hover:bg-primary-700 text-white rounded-full flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-lg shadow-primary-600/20"
-                        >
-                            <Search className="w-4 h-4" />
-                            <span className="hidden md:inline font-medium">Search</span>
-                        </button>
-                    </div>
-
-                    {/* Active Filters Summary (Chips) */}
-                    {activeFilterCount > 0 && (
-                        <div className="mt-4 flex flex-wrap gap-2 justify-center">
-                            {appliedFilters.minPrice && (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-800">
-                                    Min: ₹{appliedFilters.minPrice}
-                                    <button onClick={() => updateFilter('minPrice', undefined)} aria-label="Remove minimum price filter"><X className="w-3 h-3 hover:text-red-500" /></button>
-                                </span>
-                            )}
-                            {appliedFilters.maxPrice && (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-800">
-                                    Max: ₹{appliedFilters.maxPrice}
-                                    <button onClick={() => updateFilter('maxPrice', undefined)} aria-label="Remove maximum price filter"><X className="w-3 h-3 hover:text-red-500" /></button>
-                                </span>
-                            )}
-                            {appliedFilters.propertyType && (
-                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-800 capitalize">
-                                    {appliedFilters.propertyType}
-                                    <button onClick={() => updateFilter('propertyType', undefined)} aria-label="Remove property type filter"><X className="w-3 h-3 hover:text-red-500" /></button>
-                                </span>
-                            )}
-                            <button onClick={clearAllFilters} className="text-xs text-gray-500 hover:text-black underline">Clear all</button>
-                        </div>
-                    )}
-                </div>
             </div>
 
             {/* Results Grid */}
@@ -838,10 +449,14 @@ export default function Homestays() {
                     </div>
                 ) : properties.length === 0 ? (
                     <div className="text-center py-20">
-                        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🏚️</div>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">No properties found</h3>
-                        <p className="text-gray-500 mb-6">Try slightly fewer filters to see more results.</p>
-                        <button onClick={clearAllFilters} className="px-6 py-2.5 bg-black text-white rounded-xl hover:bg-gray-800 transition-colors">
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl" style={{ background: '#1e2139' }}>🏚️</div>
+                        <h3 className="text-xlf font-semibold text-white mb-2">No properties found</h3>
+                        <p className="mb-6" style={{ color: '#B0B7C3' }}>Try slightly fewer filters to see more results.</p>
+                        <button
+                            onClick={clearAllFilters}
+                            className="px-6 py-2.5 rounded-xl font-medium text-white transition-all border border-[#5ce1e6]/20 hover:bg-[#1e2139]"
+                            style={{ background: 'linear-gradient(135deg, #3d9da3 0%, #2d6b9e 100%)' }}
+                        >
                             Clear all filters
                         </button>
                     </div>
@@ -872,17 +487,17 @@ export default function Homestays() {
                                 <button
                                     onClick={() => updateFilter('page', Math.max(1, (appliedFilters.page || 1) - 1))}
                                     disabled={!pagination.hasMore || (appliedFilters.page || 1) === 1}
-                                    className="px-5 py-2.5 rounded-full border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm transition-colors"
+                                    className="px-5 py-2.5 rounded-full border border-[#5ce1e6]/20 hover:bg-[#1e2139] disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm transition-colors text-white"
                                 >
                                     Previous
                                 </button>
-                                <span className="text-sm font-medium text-gray-600">
+                                <span className="text-sm font-medium text-[#B0B7C3]">
                                     Page {appliedFilters.page || 1} of {pagination.totalPages}
                                 </span>
                                 <button
                                     onClick={() => updateFilter('page', (appliedFilters.page || 1) + 1)}
                                     disabled={!pagination.hasMore}
-                                    className="px-5 py-2.5 rounded-full border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm transition-colors"
+                                    className="px-5 py-2.5 rounded-full border border-[#5ce1e6]/20 hover:bg-[#1e2139] disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm transition-colors text-white"
                                 >
                                     Next
                                 </button>
@@ -915,9 +530,9 @@ export default function Homestays() {
                                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                                     className="fixed top-24 left-4 right-4 z-9999 md:hidden max-w-md mx-auto"
                                 >
-                                    <div className="bg-white/98 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] border border-neutral-200/50 overflow-hidden max-h-[calc(100vh-120px)] flex flex-col">
+                                    <div className="bg-[#1e2139] backdrop-blur-xl rounded-3xl border border-[#5ce1e6]/20 overflow-hidden max-h-[calc(100vh-120px)] flex flex-col" style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
                                         {/* Compact Header */}
-                                        <div className="bg-linear-to-r from-neutral-900 to-neutral-800 px-5 py-4 flex items-center justify-between shrink-0">
+                                        <div className="px-5 py-4 flex items-center justify-between shrink-0 border-b border-[#5ce1e6]/10" style={{ background: 'linear-gradient(135deg, #3d9da3 0%, #2d6b9e 100%)' }}>
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
                                                     <Search className="w-4 h-4 text-white" />
@@ -937,18 +552,18 @@ export default function Homestays() {
                                         <div className="p-4 space-y-4 overflow-y-auto flex-1">
                                             {/* Location Search */}
                                             <div>
-                                                <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                                    <div className="w-1 h-1 rounded-full bg-primary-500"></div>
+                                                <label className="text-[10px] font-bold text-[#B0B7C3] mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                                    <div className="w-1 h-1 rounded-full bg-[#5CE1E6]"></div>
                                                     Search Location
                                                 </label>
                                                 <div className="relative">
-                                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 z-10" />
+                                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#B0B7C3] z-10" />
                                                     <input
                                                         type="text"
                                                         value={locationQuery}
                                                         onChange={(e) => setLocationQuery(e.target.value)}
                                                         placeholder="Where would you like to go?"
-                                                        className="w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm font-semibold transition-all"
+                                                        className="w-full pl-10 pr-3 py-3 bg-[#0a0e27] border-2 border-[#5ce1e6]/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#5ce1e6]/50 focus:border-[#5ce1e6] text-sm font-semibold transition-all text-white placeholder:text-[#B0B7C3]"
                                                     />
                                                     {locationQuery && (
                                                         <button
@@ -967,7 +582,7 @@ export default function Homestays() {
 
                                                 {/* Location Suggestions */}
                                                 {locationQuery.length > 0 && locationSuggestions.length > 0 && (
-                                                    <div className="mt-2 bg-white border-2 border-gray-200 rounded-2xl p-2 max-h-48 overflow-y-auto">
+                                                    <div className="mt-2 bg-[#0a0e27] border-2 border-[#5ce1e6]/20 rounded-2xl p-2 max-h-48 overflow-y-auto">
                                                         {locationSuggestions.map((loc, i) => (
                                                             <button
                                                                 key={i}
@@ -975,14 +590,14 @@ export default function Homestays() {
                                                                     setLocationQuery(loc.city);
                                                                     updateFilter('city', loc.city);
                                                                 }}
-                                                                className="w-full text-left px-3 py-2.5 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
+                                                                className="w-full text-left px-3 py-2.5 hover:bg-[#1e2139] rounded-xl flex items-center gap-3 transition-colors"
                                                             >
-                                                                <div className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center shrink-0">
-                                                                    <MapPin className="w-4 h-4 text-primary-600" />
+                                                                <div className="w-8 h-8 rounded-full bg-[#1e2139] flex items-center justify-center shrink-0">
+                                                                    <MapPin className="w-4 h-4 text-[#5CE1E6]" />
                                                                 </div>
                                                                 <div className="min-w-0">
-                                                                    <div className="font-semibold text-gray-900 text-sm truncate">{loc.city}</div>
-                                                                    <div className="text-xs text-gray-500">{loc.state}</div>
+                                                                    <div className="font-semibold text-white text-sm truncate">{loc.city}</div>
+                                                                    <div className="text-xs text-[#B0B7C3]">{loc.state}</div>
                                                                 </div>
                                                             </button>
                                                         ))}
@@ -992,29 +607,29 @@ export default function Homestays() {
 
                                             {/* Price Range */}
                                             <div>
-                                                <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                                    <div className="w-1 h-1 rounded-full bg-primary-500"></div>
+                                                <label className="text-[10px] font-bold text-[#B0B7C3] mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                                    <div className="w-1 h-1 rounded-full bg-[#5CE1E6]"></div>
                                                     Price Range
                                                 </label>
                                                 <div className="flex gap-2">
                                                     <div className="flex-1 relative">
-                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">₹</span>
+                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#B0B7C3] text-xs">₹</span>
                                                         <input
                                                             type="number"
                                                             value={draftFilters.minPrice}
                                                             onChange={(e) => setDraftFilters({ ...draftFilters, minPrice: e.target.value })}
                                                             placeholder="Min"
-                                                            className="w-full pl-6 pr-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 text-sm font-medium transition-all"
+                                                            className="w-full pl-6 pr-2 py-2.5 bg-[#0a0e27] border border-[#5ce1e6]/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5ce1e6]/50 text-sm font-medium transition-all text-white placeholder:text-[#B0B7C3]"
                                                         />
                                                     </div>
                                                     <div className="flex-1 relative">
-                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">₹</span>
+                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#B0B7C3] text-xs">₹</span>
                                                         <input
                                                             type="number"
                                                             value={draftFilters.maxPrice}
                                                             onChange={(e) => setDraftFilters({ ...draftFilters, maxPrice: e.target.value })}
                                                             placeholder="Max"
-                                                            className="w-full pl-6 pr-2 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 text-sm font-medium transition-all"
+                                                            className="w-full pl-6 pr-2 py-2.5 bg-[#0a0e27] border border-[#5ce1e6]/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5ce1e6]/50 text-sm font-medium transition-all text-white placeholder:text-[#B0B7C3]"
                                                         />
                                                     </div>
                                                 </div>
@@ -1022,16 +637,16 @@ export default function Homestays() {
 
                                             {/* Property Type */}
                                             <div>
-                                                <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                                    <div className="w-1 h-1 rounded-full bg-primary-500"></div>
+                                                <label className="text-[10px] font-bold text-[#B0B7C3] mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                                    <div className="w-1 h-1 rounded-full bg-[#5CE1E6]"></div>
                                                     Type
                                                 </label>
                                                 <div className="grid grid-cols-2 gap-2">
                                                     <button
                                                         onClick={() => updateFilter('propertyType', undefined)}
                                                         className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${!appliedFilters.propertyType
-                                                            ? 'bg-neutral-900 text-white shadow-lg'
-                                                            : 'bg-neutral-50 border border-neutral-200 text-neutral-700 hover:border-neutral-300 hover:bg-neutral-100'
+                                                            ? 'bg-linear-to-br from-[#3d9da3] to-[#2d6b9e] text-white shadow-lg'
+                                                            : 'bg-[#0a0e27] border border-[#5ce1e6]/20 text-[#B0B7C3] hover:border-[#5ce1e6]/50 hover:bg-[#1e2139]'
                                                             }`}
                                                     >
                                                         All
@@ -1041,8 +656,8 @@ export default function Homestays() {
                                                             key={type}
                                                             onClick={() => updateFilter('propertyType', type)}
                                                             className={`px-3 py-2 rounded-xl text-xs font-semibold capitalize transition-all duration-200 ${appliedFilters.propertyType === type
-                                                                ? 'bg-neutral-900 text-white shadow-lg'
-                                                                : 'bg-neutral-50 border border-neutral-200 text-neutral-700 hover:border-neutral-300 hover:bg-neutral-100'
+                                                                ? 'bg-linear-to-br from-[#3d9da3] to-[#2d6b9e] text-white shadow-lg'
+                                                                : 'bg-[#0a0e27] border border-[#5ce1e6]/20 text-[#B0B7C3] hover:border-[#5ce1e6]/50 hover:bg-[#1e2139]'
                                                                 }`}
                                                         >
                                                             {type}
@@ -1053,21 +668,21 @@ export default function Homestays() {
 
                                             {/* Guests */}
                                             <div>
-                                                <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                                    <div className="w-1 h-1 rounded-full bg-primary-500"></div>
+                                                <label className="text-[10px] font-bold text-[#B0B7C3] mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                                    <div className="w-1 h-1 rounded-full bg-[#5CE1E6]"></div>
                                                     Guests
                                                 </label>
-                                                <div className="flex items-center justify-between p-3 bg-neutral-50 rounded-xl border border-neutral-200">
-                                                    <span className="text-sm font-medium text-neutral-700">Count</span>
+                                                <div className="flex items-center justify-between p-3 bg-[#0a0e27] rounded-xl border border-[#5ce1e6]/20">
+                                                    <span className="text-sm font-medium text-white">Count</span>
                                                     <div className="flex items-center gap-3">
                                                         <button
                                                             onClick={() => setDraftFilters(p => ({ ...p, guests: Math.max(1, (Number(p.guests) || 1) - 1).toString() }))}
-                                                            className="w-8 h-8 rounded-lg bg-white border border-neutral-200 flex items-center justify-center text-neutral-600 hover:bg-neutral-100 active:scale-95 transition-all"
+                                                            className="w-8 h-8 rounded-lg bg-[#1e2139] border border-[#5ce1e6]/20 text-white flex items-center justify-center hover:bg-[#2a2f4a] active:scale-95 transition-all"
                                                         >-</button>
-                                                        <span className="w-6 text-center font-bold text-neutral-900">{draftFilters.guests || 1}</span>
+                                                        <span className="w-6 text-center font-bold text-white">{draftFilters.guests || 1}</span>
                                                         <button
                                                             onClick={() => setDraftFilters(p => ({ ...p, guests: ((Number(p.guests) || 1) + 1).toString() }))}
-                                                            className="w-8 h-8 rounded-lg bg-white border border-neutral-200 flex items-center justify-center text-neutral-600 hover:bg-neutral-100 active:scale-95 transition-all"
+                                                            className="w-8 h-8 rounded-lg bg-[#1e2139] border border-[#5ce1e6]/20 text-white flex items-center justify-center hover:bg-[#2a2f4a] active:scale-95 transition-all"
                                                         >+</button>
                                                     </div>
                                                 </div>
@@ -1075,13 +690,13 @@ export default function Homestays() {
                                         </div>
 
                                         {/* Footer Actions */}
-                                        <div className="p-4 bg-gray-50 border-t border-gray-100 flex gap-2 shrink-0">
+                                        <div className="p-4 bg-[#0a0e27] border-t border-[#5ce1e6]/10 flex gap-2 shrink-0">
                                             <button
                                                 onClick={() => {
                                                     clearAllFilters();
                                                     setLocationQuery('');
                                                 }}
-                                                className="flex-1 px-4 py-3 rounded-2xl text-xs font-bold text-neutral-700 bg-white hover:bg-neutral-100 transition-colors border-2 border-gray-200 flex items-center justify-center gap-2"
+                                                className="flex-1 px-4 py-3 rounded-2xl text-xs font-bold text-white bg-[#1e2139] hover:bg-[#2a2f4a] transition-colors border-2 border-[#5ce1e6]/20 flex items-center justify-center gap-2"
                                             >
                                                 <X className="w-4 h-4" />
                                                 Reset All
@@ -1094,7 +709,8 @@ export default function Homestays() {
                                                     applyDetailedFilters();
                                                     setIsMobileFilterOpen(false);
                                                 }}
-                                                className="flex-2 px-6 py-3 bg-linear-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white text-xs font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
+                                                className="flex-2 px-6 py-3 text-white text-xs font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
+                                                style={{ background: 'linear-gradient(135deg, #3d9da3 0%, #2d6b9e 100%)' }}
                                             >
                                                 <Check className="w-4 h-4" />
                                                 Apply Filters ({pagination?.total || properties.length})

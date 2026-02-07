@@ -11,6 +11,7 @@ interface PhoneInputProps {
     error?: string
     defaultCountry?: string
     countryCode?: string // Controlled country code
+    darkMode?: boolean
 }
 
 export default function PhoneInput({
@@ -21,7 +22,8 @@ export default function PhoneInput({
     required = false,
     error,
     defaultCountry = 'IN',
-    countryCode
+    countryCode,
+    darkMode = false
 }: PhoneInputProps) {
     // If countryCode is provided (controlled), use it. Otherwise fall back to internal state or default.
     const [internalCountry, setInternalCountry] = useState<Country>(
@@ -50,43 +52,54 @@ export default function PhoneInput({
         onChange(newValue, selectedCountry.code, valid)
     }
 
+    // Styles based on darkMode
+    const containerClasses = darkMode
+        ? "bg-[#0b162c] border-[1px] border-[rgba(92,225,230,0.2)] text-gray-200"
+        : "bg-white border-neutral-300 hover:border-primary-500 focus:ring-primary-300";
+
+    const dropdownClasses = darkMode
+        ? "bg-[#0f172a] border-[rgba(92,225,230,0.2)] text-gray-200"
+        : "bg-white border-neutral-200 text-neutral-900";
+
+    const itemHoverClass = darkMode ? "hover:bg-[#1e293b]" : "hover:bg-primary-50";
+
     return (
-        <div className="space-y-2">
+        <div className="space-y-1">
             {label && (
-                <label className="block text-sm font-medium text-neutral-700">
+                <label className={`block text-[11px] font-bold ${darkMode ? 'text-gray-400' : 'text-neutral-700'}`}>
                     {label}
-                    {required && <span className="text-red-500 ml-1">*</span>}
+                    {required && <span className="text-red-400 ml-0.5">*</span>}
                 </label>
             )}
 
-            <div className="relative space-y-3">
+            <div className="relative flex flex-col md:flex-row gap-3">
                 {/* Country Selector */}
-                <div className="relative">
+                <div className="relative md:w-1/3">
                     <button
                         type="button"
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        className="w-full flex items-center gap-2 px-3 py-3 bg-white border border-neutral-300 rounded-lg hover:border-primary-500 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className={`w-full h-12 flex items-center gap-2 px-3 rounded-lg transition-colors focus:outline-none focus:ring-1 focus:ring-teal-500 ${containerClasses}`}
                     >
-                        <span className="text-2xl">{selectedCountry.flag}</span>
-                        <span className="text-sm font-medium flex-1 text-left">{selectedCountry.name}</span>
-                        <span className="text-sm font-medium text-neutral-600">{selectedCountry.dialCode}</span>
-                        <ChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                        <span className="text-lg leading-none">{selectedCountry.flag}</span>
+                        <span className="text-sm font-medium flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis truncate">{selectedCountry.name}</span>
+                        <span className="text-sm font-medium opacity-80">{selectedCountry.dialCode}</span>
+                        <ChevronDown className={`w-4 h-4 transition-transform flex-shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                     </button>
 
                     {/* Dropdown */}
                     {isDropdownOpen && (
-                        <div className="absolute top-full left-0 mt-1 w-full bg-white border border-neutral-200 rounded-lg shadow-xl z-50 max-h-64 overflow-y-auto">
+                        <div className={`absolute top-full left-0 mt-1 w-[300px] md:w-full rounded-lg shadow-xl z-50 max-h-64 overflow-y-auto border ${dropdownClasses}`}>
                             {countries.map((country) => (
                                 <button
                                     key={country.code}
                                     type="button"
                                     onClick={() => handleCountryChange(country)}
-                                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-primary-50 transition-colors text-left"
+                                    className={`w-full flex items-center gap-3 px-4 py-3 transition-colors text-left ${itemHoverClass}`}
                                 >
-                                    <span className="text-2xl">{country.flag}</span>
-                                    <div className="flex-1">
-                                        <p className="text-sm font-medium text-neutral-900">{country.name}</p>
-                                        <p className="text-xs text-neutral-600">{country.dialCode}</p>
+                                    <span className="text-xl">{country.flag}</span>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium truncate">{country.name}</p>
+                                        <p className="text-xs opacity-70">{country.dialCode}</p>
                                     </div>
                                 </button>
                             ))}
@@ -95,43 +108,20 @@ export default function PhoneInput({
                 </div>
 
                 {/* Phone Number Input */}
-                <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
-                        <Phone className="w-5 h-5" />
+                <div className="relative flex-1">
+                    <div className={`absolute left-3 top-1/2 -translate-y-1/2 ${darkMode ? 'text-gray-500' : 'text-neutral-400'}`}>
+                        <Phone className="w-4 h-4" />
                     </div>
                     <input
                         type="tel"
-                        value={value || ''}
+                        value={value}
                         onChange={handlePhoneChange}
-                        placeholder={placeholder || selectedCountry.placeholder}
-                        required={required}
-                        className={`w-full pl-10 pr-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2 ${error
-                            ? 'border-red-300 focus:ring-red-500'
-                            : value && !isValid
-                                ? 'border-amber-300 focus:ring-amber-500'
-                                : value && isValid
-                                    ? 'border-green-300 focus:ring-green-500'
-                                    : 'border-neutral-300 focus:ring-primary-500'
-                            }`}
+                        placeholder={placeholder}
+                        className={`w-full h-12 pl-10 pr-4 text-sm rounded-lg border transition-all focus:outline-none focus:ring-1 focus:ring-teal-500 ${containerClasses}`}
                     />
-                    {value && (
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                            {isValid ? (
-                                <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center">
-                                    <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                </div>
-                            ) : (
-                                <div className="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center">
-                                    <svg className="w-3 h-3 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                                    </svg>
-                                </div>
-                            )}
-                        </div>
-                    )}
                 </div>
+
+
             </div>
 
             {/* Helper Text */}

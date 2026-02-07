@@ -277,13 +277,14 @@ export default function PropertyForm() {
     }
 
     return (
-        <div className="min-h-screen bg-neutral-50">
+        <div className="min-h-screen bg-[#0a0e27] text-white [&_.bg-white]:bg-[#1e2139] [&_.border-neutral-100]:border-[#5ce1e6]/15 [&_.text-neutral-900]:text-white [&_.text-neutral-700]:text-[#B0B7C3] [&_.text-neutral-600]:text-[#B0B7C3] [&_.text-gray-700]:text-[#B0B7C3] [&_.text-gray-600]:text-[#B0B7C3] [&_.text-gray-500]:text-[#B0B7C3] [&_.border-gray-300]:border-[#5ce1e6]/20 [&_.border-neutral-200]:border-[#5ce1e6]/20 [&_.border-gray-200]:border-[#5ce1e6]/20 [&_.border-neutral-300]:border-[#5ce1e6]/30 [&_.bg-neutral-50]:bg-[#0a0e27]/60 [&_.bg-blue-50]:bg-[#0a0e27]/60 [&_.bg-amber-50]:bg-[#0a0e27]/60 [&_.bg-pink-50]:bg-[#0a0e27]/60 [&_.bg-green-50]:bg-[#0a0e27]/60 [&_input]:bg-[#0a0e27]/60 [&_textarea]:bg-[#0a0e27]/60 [&_select]:bg-[#0a0e27]/60 [&_input]:text-white [&_textarea]:text-white [&_select]:text-white [&_input]:placeholder-[#B0B7C3] [&_textarea]:placeholder-[#B0B7C3]">
             {/* Premium Header Section */}
-            <div className="bg-primary-600 text-white py-8 lg:py-12">
+            <div className="text-white py-8 lg:py-12" style={{ background: 'linear-gradient(135deg, #0a0e27 0%, #1a1d2e 100%)' }}>
                 <div className="container mx-auto px-6 sm:px-8 lg:px-16">
                     <button
                         onClick={() => navigate('/host/homestays')}
-                        className="flex items-center gap-2 text-white hover:text-white mb-6 transition-all px-4 py-2 border-2 border-white/30 rounded-xl hover:bg-white/10 hover:border-white/50 font-medium"
+                        className="flex items-center gap-2 text-white hover:text-white mb-6 transition-all px-5 py-2.5 border border-[#5ce1e6]/40 rounded-xl hover:bg-[#0a0e27]/60 font-semibold"
+                        style={{ background: 'rgba(10,14,39,0.6)' }}
                     >
                         <ArrowLeft className="w-5 h-5" />
                         Back to Properties
@@ -349,24 +350,16 @@ export default function PropertyForm() {
                                 <label className="block text-sm font-semibold text-neutral-700 mb-2">
                                     Property Type *
                                 </label>
-                                <div className="relative">
-                                    <select
-                                        required
-                                        value={formData.propertyType}
-                                        onChange={(e) => handleInputChange('propertyType', e.target.value)}
-                                        className="w-full px-4 py-3 pr-12 border border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-neutral-300 bg-white appearance-none cursor-pointer text-neutral-900 font-medium shadow-sm hover:shadow-md"
-                                        style={{
-                                            backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                                            backgroundPosition: 'right 0.75rem center',
-                                            backgroundRepeat: 'no-repeat',
-                                            backgroundSize: '1.5em 1.5em',
-                                        }}
-                                    >
-                                        {PROPERTY_TYPES.map(type => (
-                                            <option key={type} value={type}>{type}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                                <select
+                                    required
+                                    value={formData.propertyType}
+                                    onChange={(e) => handleInputChange('propertyType', e.target.value)}
+                                    className="w-full px-4 py-3 pr-12 border-2 border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-primary-400 bg-white appearance-none cursor-pointer text-neutral-900 font-semibold shadow-sm hover:shadow-md bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_1rem] bg-no-repeat"
+                                >
+                                    {PROPERTY_TYPES.map(type => (
+                                        <option key={type} value={type}>{type}</option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -411,27 +404,22 @@ export default function PropertyForm() {
                                 <label className="block text-sm font-semibold text-neutral-700 mb-2">
                                     Country *
                                 </label>
-                                <div className="relative">
-                                    <select
-                                        required
-                                        value={formData.address?.country}
-                                        onChange={(e) => {
-                                            const newCountry = e.target.value;
-                                            handleNestedChange('address', 'country', newCountry);
-                                            // Reset state if switching to India to force dropdown usage
-                                            if (newCountry === 'India') {
-                                                handleNestedChange('address', 'state', '');
-                                            }
-                                        }}
-                                        className="w-full px-4 py-3 pr-12 border border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-neutral-300 bg-white appearance-none cursor-pointer text-neutral-900 font-medium shadow-sm hover:shadow-md"
-                                    >
-                                        <option value="India">India</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                    <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-neutral-500">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                                    </div>
-                                </div>
+                                <select
+                                    required
+                                    value={formData.address?.country}
+                                    onChange={(e) => {
+                                        const newCountry = e.target.value;
+                                        handleNestedChange('address', 'country', newCountry);
+                                        // Reset state if switching to India to force dropdown usage
+                                        if (newCountry === 'India') {
+                                            handleNestedChange('address', 'state', '');
+                                        }
+                                    }}
+                                    className="w-full px-4 py-3 pr-12 border-2 border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-primary-400 bg-white appearance-none cursor-pointer text-neutral-900 font-semibold shadow-sm hover:shadow-md bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_1rem] bg-no-repeat"
+                                >
+                                    <option value="India">India</option>
+                                    <option value="Other">Other</option>
+                                </select>
                             </div>
 
                             <div>
@@ -439,22 +427,17 @@ export default function PropertyForm() {
                                     State *
                                 </label>
                                 {formData.address?.country === 'India' ? (
-                                    <div className="relative">
-                                        <select
-                                            required
-                                            value={formData.address?.state}
-                                            onChange={(e) => handleNestedChange('address', 'state', e.target.value)}
-                                            className="w-full px-4 py-3 pr-12 border border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-neutral-300 bg-white appearance-none cursor-pointer text-neutral-900 font-medium shadow-sm hover:shadow-md"
-                                        >
-                                            <option value="">Select State</option>
-                                            {INDIAN_STATES.map(state => (
-                                                <option key={state} value={state}>{state}</option>
-                                            ))}
-                                        </select>
-                                        <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-neutral-500">
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                                        </div>
-                                    </div>
+                                    <select
+                                        required
+                                        value={formData.address?.state}
+                                        onChange={(e) => handleNestedChange('address', 'state', e.target.value)}
+                                        className="w-full px-4 py-3 pr-12 border-2 border-neutral-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all hover:border-primary-400 bg-white appearance-none cursor-pointer text-neutral-900 font-semibold shadow-sm hover:shadow-md bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_1rem] bg-no-repeat"
+                                    >
+                                        <option value="">Select State</option>
+                                        {INDIAN_STATES.map(state => (
+                                            <option key={state} value={state}>{state}</option>
+                                        ))}
+                                    </select>
                                 ) : (
                                     <input
                                         type="text"
@@ -569,13 +552,13 @@ export default function PropertyForm() {
                                         key={amenity.id}
                                         type="button"
                                         onClick={() => handleAmenityToggle(amenity.id)}
-                                        className={`flex items-center gap-3 p-4 border-2 rounded-lg transition-all ${isSelected
-                                            ? 'border-primary-500 bg-primary-50'
-                                            : 'border-gray-200 hover:border-gray-300'
+                                        className={`flex items-center gap-3 p-4 border-2 rounded-xl transition-all shadow-sm hover:shadow-md ${isSelected
+                                            ? 'border-[#5CE1E6]/60 bg-[#0a0e27]/70'
+                                            : 'border-gray-200 hover:border-gray-300 bg-white'
                                             }`}
                                     >
-                                        <Icon className={`w-5 h-5 ${isSelected ? 'text-primary-600' : 'text-gray-400'}`} />
-                                        <span className={`text-sm font-medium ${isSelected ? 'text-primary-900' : 'text-gray-700'}`}>
+                                        <Icon className={`w-5 h-5 ${isSelected ? 'text-[#5CE1E6]' : 'text-gray-400'}`} />
+                                        <span className={`text-sm font-medium ${isSelected ? 'text-white' : 'text-gray-700'}`}>
                                             {amenity.label}
                                         </span>
                                     </button>
@@ -612,7 +595,7 @@ export default function PropertyForm() {
                                 <button
                                     type="button"
                                     onClick={handleImageUrlAdd}
-                                    className="px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600"
+                                    className="px-5 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 text-gray-700 font-semibold shadow-sm"
                                 >
                                     Add URL
                                 </button>
@@ -637,7 +620,7 @@ export default function PropertyForm() {
                                             <button
                                                 type="button"
                                                 onClick={() => handleImageRemove(index)}
-                                                className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                                className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
                                             >
                                                 <X className="w-4 h-4" />
                                             </button>
@@ -818,21 +801,21 @@ export default function PropertyForm() {
 
                     {/* Cancellation Policy */}
                     <div className="bg-white rounded-2xl shadow-md border border-neutral-100 p-6 lg:p-8 hover:shadow-lg transition-shadow">
-                        <h2 className="text-xl lg:text-2xl font-bold text-neutral-900 mb-6 lg:mb-8">Cancellation Policy</h2>
+                        <h2 className="text-xl lg:text-2xl font-bold text-white mb-6 lg:mb-8">Cancellation Policy</h2>
                         <div className="space-y-3">
                             {CANCELLATION_POLICIES.map(policy => (
-                                <label key={policy.value} className="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer hover:border-primary-300 transition-colors">
+                                <label key={policy.value} className="flex items-start gap-3 p-4 border border-[#5ce1e6]/25 rounded-xl cursor-pointer hover:border-[#5CE1E6]/60 transition-colors bg-[#0a0e27]/60">
                                     <input
                                         type="radio"
                                         name="cancellationPolicy"
                                         value={policy.value}
                                         checked={formData.cancellationPolicy === policy.value}
                                         onChange={(e) => handleInputChange('cancellationPolicy', e.target.value)}
-                                        className="mt-1 w-5 h-5 text-primary-600 focus:ring-primary-500"
+                                        className="mt-1 w-5 h-5 text-[#5CE1E6] focus:ring-[#5CE1E6]/40"
                                     />
                                     <div>
-                                        <p className="font-medium text-gray-900">{policy.label.split(' - ')[0]}</p>
-                                        <p className="text-sm text-gray-600">{policy.label.split(' - ')[1]}</p>
+                                        <p className="font-medium text-white">{policy.label.split(' - ')[0]}</p>
+                                        <p className="text-sm text-[#B0B7C3]">{policy.label.split(' - ')[1]}</p>
                                     </div>
                                 </label>
                             ))}
@@ -843,11 +826,11 @@ export default function PropertyForm() {
                                 type="checkbox"
                                 checked={formData.instantBook}
                                 onChange={(e) => handleInputChange('instantBook', e.target.checked)}
-                                className="w-5 h-5 text-primary-600 rounded focus:ring-primary-500"
+                                className="w-5 h-5 text-[#5CE1E6] rounded focus:ring-[#5CE1E6]/40"
                             />
                             <div>
-                                <span className="text-sm font-medium text-gray-900">Enable Instant Book</span>
-                                <p className="text-sm text-gray-600">Guests can book without waiting for approval</p>
+                                <span className="text-sm font-medium text-white">Enable Instant Book</span>
+                                <p className="text-sm text-[#B0B7C3]">Guests can book without waiting for approval</p>
                             </div>
                         </label>
                     </div>
@@ -857,14 +840,15 @@ export default function PropertyForm() {
                         <button
                             type="button"
                             onClick={() => navigate('/host/homestays')}
-                            className="flex-1 px-6 py-3.5 border-2 border-neutral-300 text-neutral-700 rounded-xl hover:bg-neutral-50 hover:border-neutral-400 font-semibold transition-all"
+                            className="flex-1 px-7 py-3.5 border-2 border-neutral-300 text-neutral-700 rounded-xl hover:bg-neutral-50 hover:border-neutral-400 font-semibold transition-all"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={submitting}
-                            className="flex-1 px-6 py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transition-all"
+                            className="flex-1 px-7 py-3.5 text-white rounded-xl font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transition-all"
+                            style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)' }}
                         >
                             {submitting ? (
                                 <>

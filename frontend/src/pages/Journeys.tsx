@@ -111,9 +111,13 @@ export default function Journeys() {
     }, [currentPage])
 
     return (
-        <div className="min-h-screen bg-[#FAF9F7] text-neutral-900 overflow-x-hidden">
+        <div className="min-h-screen text-white overflow-x-hidden" style={{ background: '#0a0e27' }}>
             {/* Header */}
-            <section className="relative bg-primary-600 text-white pb-28 pt-20 sm:pb-32 sm:pt-24 md:pb-32 lg:pb-36 overflow-hidden">
+            <section className="relative text-white pb-24 pt-16 sm:pb-28 sm:pt-20 md:pb-32 lg:pb-36 overflow-hidden" style={{ background: '#0a0e27' }}>
+                <div className="absolute inset-0 opacity-40 pointer-events-none">
+                    <div className="absolute top-0 right-0 w-1/2 h-1/2 blur-3xl rounded-full" style={{ background: 'rgba(92,225,230,0.3)' }} />
+                    <div className="absolute bottom-0 left-0 w-1/3 h-1/3 blur-3xl rounded-full" style={{ background: 'rgba(74,144,226,0.25)' }} />
+                </div>
                 <div className="container mx-auto px-6 sm:px-8 text-center relative z-10">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -131,53 +135,62 @@ export default function Journeys() {
             </section>
 
             {/* Mobile Filter Button - Overlapping */}
-            <div className="md:hidden container mx-auto px-6 -mt-16 sm:-mt-20 relative z-20 mb-6">
+            <div className="md:hidden container mx-auto px-4 -mt-14 sm:-mt-16 relative z-20 mb-8">
                 <motion.button
                     onClick={() => setIsFilterOpen(true)}
                     whileTap={{ scale: 0.98 }}
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="w-full bg-white rounded-2xl px-6 py-5 flex items-center justify-between shadow-lg border border-neutral-200 hover:shadow-xl transition-all"
+                    className="w-full rounded-2xl px-5 py-4 flex items-center justify-between shadow-lg border transition-all"
+                    style={{ background: '#1e2139', borderColor: 'rgba(92,225,230,0.2)', boxShadow: '0 12px 28px rgba(0,0,0,0.4)' }}
                 >
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-primary-600 flex items-center justify-center shadow-sm">
-                            <Filter className="w-6 h-6 text-white" />
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm" style={{ background: 'linear-gradient(135deg, #3d9da3 0%, #2d6b9e 100%)' }}>
+                            <Filter className="w-5 h-5 text-white" />
                         </div>
                         <div className="text-left">
-                            <div className="text-base font-bold text-neutral-900">Filters</div>
-                            <div className="text-sm text-neutral-600 font-medium">{filteredJourneys.length} {filteredJourneys.length === 1 ? 'journey' : 'journeys'}</div>
+                            <div className="text-sm font-bold text-white">Filters</div>
+                            <div className="text-xs font-medium" style={{ color: '#B0B7C3' }}>{filteredJourneys.length} {filteredJourneys.length === 1 ? 'journey' : 'journeys'}</div>
                         </div>
                     </div>
-                    <ChevronDown className="w-6 h-6 text-neutral-600" />
+                    <ChevronDown className="w-5 h-5" style={{ color: '#B0B7C3' }} />
                 </motion.button>
             </div>
 
             {/* Desktop Filter Section - Overlapping */}
-            <div className="hidden md:block container mx-auto px-6 sm:px-8 md:-mt-20 lg:-mt-24 relative z-20">
+            <div className="hidden md:block container mx-auto px-4 sm:px-6 md:-mt-16 lg:-mt-20 relative z-20">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white p-8 rounded-2xl shadow-lg border border-neutral-100 mb-12"
+                    className="p-6 rounded-2xl shadow-lg border mb-10"
+                    style={{ background: '#1e2139', borderColor: 'rgba(92,225,230,0.15)', boxShadow: '0 12px 30px rgba(0,0,0,0.4)' }}
                 >
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-5">
                         {/* Difficulty Filter */}
                         <div className="flex items-center justify-between">
                             <div className="flex-1">
-                                <label className="text-sm font-semibold text-neutral-900 mb-4 block">
+                                <label className="text-xs font-semibold text-white mb-3 block uppercase tracking-wide">
                                     Difficulty Level
                                 </label>
-                                <div className="flex gap-2.5 flex-wrap">
+                                <div className="flex gap-2 flex-wrap">
                                     {(['all', 'easy', 'moderate', 'challenging'] as const).map((level) => (
                                         <Button
                                             key={level}
-                                            variant={filter === level ? 'luxury' : 'ghost'}
+                                            variant="ghost"
                                             size="sm"
                                             onClick={() => {
                                                 setFilter(level)
                                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                                             }}
-                                            className="text-xs sm:text-sm font-extrabold"
+                                            className={`text-xs font-extrabold transition-all duration-300 ${filter !== level ? 'hover:bg-white/5' : ''}`}
+                                            style={filter === level ? {
+                                                backgroundColor: '#5CE1E6',
+                                                color: '#0a0e27',
+                                                boxShadow: 'none'
+                                            } : {
+                                                color: '#B0B7C3'
+                                            }}
                                         >
                                             {level.charAt(0).toUpperCase() + level.slice(1)}
                                         </Button>
@@ -194,20 +207,23 @@ export default function Journeys() {
                                         setSortBy('newest')
                                         setTiming('upcoming')
                                     }}
-                                    className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-neutral-500 hover:text-red-600 transition-colors group mt-6"
+                                    className="flex items-center gap-2 px-3 py-2 text-xs font-bold transition-colors group mt-5"
+                                    style={{ color: '#B0B7C3' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.color = '#ff6b6b'}
+                                    onMouseLeave={(e) => e.currentTarget.style.color = '#B0B7C3'}
                                 >
-                                    <div className="p-1.5 rounded-full bg-neutral-100 group-hover:bg-red-50 transition-colors">
-                                        <RotateCcw className="w-4 h-4" />
+                                    <div className="p-1.5 rounded-full transition-colors" style={{ background: '#1e2139' }}>
+                                        <RotateCcw className="w-3.5 h-3.5" />
                                     </div>
                                     Clear Filters
                                 </button>
                             )}
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 sm:gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                             {/* Adventure Type Filter */}
                             <div className="relative md:col-span-1">
-                                <label className="text-xs sm:text-sm font-extrabold text-neutral-900 mb-2 sm:mb-3 block uppercase tracking-wide">
+                                <label className="text-xs font-extrabold text-white mb-2 block uppercase tracking-wide">
                                     Adventure Type
                                 </label>
                                 <div className="relative">
@@ -217,19 +233,19 @@ export default function Journeys() {
                                             setTiming(e.target.value as 'upcoming' | 'past')
                                             window.scrollTo({ top: 0, behavior: 'smooth' })
                                         }}
-                                        className="appearance-none pl-5 pr-12 py-3.5 border-2 border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-primary-600 bg-white w-full text-sm sm:text-base font-semibold truncate transition-all cursor-pointer shadow-sm hover:shadow-md"
+                                        className="appearance-none pl-4 pr-10 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:border-cyan-400 w-full text-sm font-semibold truncate transition-all cursor-pointer shadow-sm hover:shadow-md text-white bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_1rem] bg-no-repeat"
+                                        style={{ background: '#0a0e27', borderColor: 'rgba(92,225,230,0.2)', focusRingColor: 'rgba(92,225,230,0.5)' }}
                                         aria-label="Filter by adventure type"
                                     >
                                         <option value="upcoming">Upcoming Adventures</option>
                                         <option value="past">Past Expeditions</option>
                                     </select>
-                                    <ChevronDown className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500 pointer-events-none" />
                                 </div>
                             </div>
 
                             {/* Region Filter */}
                             <div className="relative md:col-span-1">
-                                <label className="text-xs sm:text-sm font-extrabold text-neutral-900 mb-2 sm:mb-3 block uppercase tracking-wide">
+                                <label className="text-xs font-extrabold text-white mb-2 block uppercase tracking-wide">
                                     Region
                                 </label>
                                 <div className="relative">
@@ -239,7 +255,8 @@ export default function Journeys() {
                                             setSelectedRegion(e.target.value)
                                             window.scrollTo({ top: 0, behavior: 'smooth' })
                                         }}
-                                        className="appearance-none pl-5 pr-12 py-3.5 border-2 border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-primary-600 bg-white w-full text-sm sm:text-base font-semibold truncate transition-all cursor-pointer shadow-sm hover:shadow-md"
+                                        className="appearance-none pl-4 pr-10 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:border-cyan-400 w-full text-sm font-semibold truncate transition-all cursor-pointer shadow-sm hover:shadow-md text-white bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_1rem] bg-no-repeat"
+                                        style={{ background: '#0a0e27', borderColor: 'rgba(92,225,230,0.2)' }}
                                         aria-label="Filter by region"
                                     >
                                         <option value="">All Regions</option>
@@ -249,13 +266,12 @@ export default function Journeys() {
                                             </option>
                                         ))}
                                     </select>
-                                    <ChevronDown className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500 pointer-events-none" />
                                 </div>
                             </div>
 
                             {/* Sort By */}
                             <div className="relative md:col-span-1">
-                                <label className="text-xs sm:text-sm font-extrabold text-neutral-900 mb-2 sm:mb-3 block uppercase tracking-wide">
+                                <label className="text-xs font-extrabold text-white mb-2 block uppercase tracking-wide">
                                     Sort By
                                 </label>
                                 <div className="relative">
@@ -265,7 +281,8 @@ export default function Journeys() {
                                             setSortBy(e.target.value as any)
                                             window.scrollTo({ top: 0, behavior: 'smooth' })
                                         }}
-                                        className="appearance-none pl-5 pr-12 py-3.5 border-2 border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-primary-600 bg-white w-full text-sm sm:text-base font-semibold truncate transition-all cursor-pointer shadow-sm hover:shadow-md"
+                                        className="appearance-none pl-4 pr-10 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:border-cyan-400 w-full text-sm font-semibold truncate transition-all cursor-pointer shadow-sm hover:shadow-md text-white bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_1rem] bg-no-repeat"
+                                        style={{ background: '#0a0e27', borderColor: 'rgba(92,225,230,0.2)' }}
                                         aria-label="Sort journeys"
                                     >
                                         <option value="newest">Newest</option>
@@ -273,14 +290,13 @@ export default function Journeys() {
                                         <option value="price-high">Price (High to Low)</option>
                                         <option value="duration">Duration (Short to Long)</option>
                                     </select>
-                                    <ChevronDown className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500 pointer-events-none" />
                                 </div>
                             </div>
 
                             {/* Results Count */}
                             <div className="flex items-end md:col-span-1">
-                                <div className="text-sm sm:text-base gradient-primary px-5 sm:px-6 py-3 sm:py-3.5 rounded-2xl w-full text-center md:text-right font-extrabold text-white shadow-luxury">
-                                    <span className="text-lg">{filteredJourneys.length}</span> {filteredJourneys.length === 1 ? 'found' : 'found'}
+                                <div className="text-sm px-4 py-2.5 rounded-xl w-full text-center md:text-right font-extrabold text-white shadow-lg" style={{ background: 'linear-gradient(135deg, #3d9da3 0%, #2d6b9e 100%)' }}>
+                                    <span className="text-base">{filteredJourneys.length}</span> {filteredJourneys.length === 1 ? 'found' : 'found'}
                                 </div>
                             </div>
                         </div>
@@ -308,45 +324,60 @@ export default function Journeys() {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
                                 transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                                className="fixed top-32 left-4 right-4 z-[9999] md:hidden max-w-md mx-auto"
+                                className="fixed top-28 left-4 right-4 z-[9999] md:hidden max-w-md mx-auto"
                             >
-                                <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] border border-neutral-200/50 overflow-hidden">
+                                <div className="backdrop-blur-xl rounded-3xl overflow-hidden" style={{
+                                    background: 'rgba(30, 33, 57, 0.95)',
+                                    border: '1px solid rgba(92, 225, 230, 0.2)',
+                                    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)'
+                                }}>
                                     {/* Compact Header */}
-                                    <div className="bg-gradient-to-r from-neutral-900 to-neutral-800 px-5 py-4 flex items-center justify-between">
+                                    <div className="px-5 py-4 flex items-center justify-between" style={{
+                                        background: 'rgba(10, 14, 39, 0.6)',
+                                        borderBottom: '1px solid rgba(92, 225, 230, 0.1)'
+                                    }}>
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                                                <Filter className="w-4 h-4 text-white" />
+                                            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{
+                                                background: 'rgba(92, 225, 230, 0.15)',
+                                                border: '1px solid rgba(92, 225, 230, 0.3)'
+                                            }}>
+                                                <Filter className="w-5 h-5" style={{ color: '#5CE1E6' }} />
                                             </div>
-                                            <h3 className="text-base font-bold text-white">Filter & Sort</h3>
+                                            <h3 className="text-lg font-bold text-white">Filter & Sort</h3>
                                         </div>
                                         <button
                                             onClick={() => setIsFilterOpen(false)}
-                                            className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+                                            className="p-1.5 rounded-lg transition-colors"
+                                            style={{ background: 'rgba(255, 255, 255, 0.05)' }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'}
                                             aria-label="Close filters"
                                         >
-                                            <X className="w-4 h-4 text-white/80" />
+                                            <X className="w-5 h-5 text-white/80" />
                                         </button>
                                     </div>
 
                                     {/* Compact Filter Content */}
-                                    <div className="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
+                                    <div className="p-5 space-y-4 max-h-[65vh] overflow-y-auto">
                                         {/* Journey Type */}
-                                        <div className="flex bg-neutral-100 p-1 rounded-xl">
+                                        <div className="flex p-1 rounded-2xl" style={{ background: 'rgba(10, 14, 39, 0.5)' }}>
                                             <button
                                                 onClick={() => setTiming('upcoming')}
-                                                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${timing === 'upcoming'
-                                                    ? 'bg-white text-primary-700 shadow-sm'
-                                                    : 'text-neutral-500'
-                                                    }`}
+                                                className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all"
+                                                style={timing === 'upcoming'
+                                                    ? { background: 'rgba(92, 225, 230, 0.2)', color: '#5CE1E6', border: '1px solid rgba(92, 225, 230, 0.3)' }
+                                                    : { background: 'transparent', color: '#B0B7C3' }
+                                                }
                                             >
                                                 Upcoming
                                             </button>
                                             <button
                                                 onClick={() => setTiming('past')}
-                                                className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${timing === 'past'
-                                                    ? 'bg-white text-primary-700 shadow-sm'
-                                                    : 'text-neutral-500'
-                                                    }`}
+                                                className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all"
+                                                style={timing === 'past'
+                                                    ? { background: 'rgba(92, 225, 230, 0.2)', color: '#5CE1E6', border: '1px solid rgba(92, 225, 230, 0.3)' }
+                                                    : { background: 'transparent', color: '#B0B7C3' }
+                                                }
                                             >
                                                 Past
                                             </button>
@@ -354,19 +385,28 @@ export default function Journeys() {
 
                                         {/* Difficulty Filter */}
                                         <div>
-                                            <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                                <div className="w-1 h-1 rounded-full bg-primary-500"></div>
-                                                Difficulty
+                                            <label className="text-xs font-bold mb-2 uppercase tracking-wider flex items-center gap-2" style={{ color: '#5CE1E6' }}>
+                                                <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#5CE1E6' }}></div>
+                                                DIFFICULTY
                                             </label>
-                                            <div className="grid grid-cols-2 gap-2">
+                                            <div className="grid grid-cols-2 gap-2.5">
                                                 {(['all', 'easy', 'moderate', 'challenging'] as const).map((level) => (
                                                     <button
                                                         key={level}
                                                         onClick={() => setFilter(level)}
-                                                        className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${filter === level
-                                                            ? 'bg-neutral-900 text-white shadow-lg'
-                                                            : 'bg-neutral-50 border border-neutral-200 text-neutral-700 hover:border-neutral-300 hover:bg-neutral-100'
-                                                            }`}
+                                                        className="px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200"
+                                                        style={filter === level
+                                                            ? {
+                                                                background: 'linear-gradient(135deg, #3d9da3 0%, #2d6b9e 100%)',
+                                                                color: 'white',
+                                                                boxShadow: '0 4px 15px rgba(61, 157, 163, 0.3)'
+                                                            }
+                                                            : {
+                                                                background: 'rgba(10, 14, 39, 0.5)',
+                                                                color: '#B0B7C3',
+                                                                border: '1px solid rgba(92, 225, 230, 0.15)'
+                                                            }
+                                                        }
                                                     >
                                                         {level.charAt(0).toUpperCase() + level.slice(1)}
                                                     </button>
@@ -378,71 +418,97 @@ export default function Journeys() {
                                         <div className="grid grid-cols-2 gap-3">
                                             {/* Region Filter */}
                                             <div>
-                                                <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                                    <div className="w-1 h-1 rounded-full bg-primary-500"></div>
-                                                    Region
+                                                <label className="text-xs font-bold mb-2 uppercase tracking-wider flex items-center gap-2" style={{ color: '#5CE1E6' }}>
+                                                    <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#5CE1E6' }}></div>
+                                                    REGION
                                                 </label>
                                                 <div className="relative">
                                                     <select
                                                         value={selectedRegion}
                                                         onChange={(e) => setSelectedRegion(e.target.value)}
-                                                        className="appearance-none pl-3 pr-7 py-2 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900 bg-white w-full text-xs font-medium text-neutral-700 transition-all cursor-pointer hover:border-neutral-300"
+                                                        className="appearance-none pl-3 pr-8 py-2.5 rounded-xl focus:outline-none focus:ring-2 w-full text-sm font-semibold transition-all cursor-pointer bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_0.75rem] bg-no-repeat"
+                                                        style={{
+                                                            background: 'rgba(10, 14, 39, 0.5)',
+                                                            border: '1px solid rgba(92, 225, 230, 0.2)',
+                                                            color: 'white'
+                                                        }}
                                                         aria-label="Filter by region"
                                                     >
-                                                        <option value="">All</option>
+                                                        <option value="" style={{ background: '#1e2139', color: 'white' }}>All</option>
                                                         {regions.map((region) => (
-                                                            <option key={region} value={region}>
+                                                            <option key={region} value={region} style={{ background: '#1e2139', color: 'white' }}>
                                                                 {region}
                                                             </option>
                                                         ))}
                                                     </select>
-                                                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
                                                 </div>
                                             </div>
 
                                             {/* Sort By */}
                                             <div>
-                                                <label className="text-[10px] font-bold text-neutral-600 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                                    <div className="w-1 h-1 rounded-full bg-primary-500"></div>
-                                                    Sort
+                                                <label className="text-xs font-bold mb-2 uppercase tracking-wider flex items-center gap-2" style={{ color: '#5CE1E6' }}>
+                                                    <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#5CE1E6' }}></div>
+                                                    SORT
                                                 </label>
                                                 <div className="relative">
                                                     <select
                                                         value={sortBy}
                                                         onChange={(e) => setSortBy(e.target.value as any)}
-                                                        className="appearance-none pl-3 pr-7 py-2 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:border-neutral-900 bg-white w-full text-xs font-medium text-neutral-700 transition-all cursor-pointer hover:border-neutral-300"
+                                                        className="appearance-none pl-3 pr-8 py-2.5 rounded-xl focus:outline-none focus:ring-2 w-full text-sm font-semibold transition-all cursor-pointer bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_0.75rem] bg-no-repeat"
+                                                        style={{
+                                                            background: 'rgba(10, 14, 39, 0.5)',
+                                                            border: '1px solid rgba(92, 225, 230, 0.2)',
+                                                            color: 'white'
+                                                        }}
                                                         aria-label="Sort journeys"
                                                     >
-                                                        <option value="newest">Newest</option>
-                                                        <option value="price">Price ↑</option>
-                                                        <option value="price-high">Price ↓</option>
-                                                        <option value="duration">Duration</option>
+                                                        <option value="newest" style={{ background: '#1e2139', color: 'white' }}>Newest</option>
+                                                        <option value="price" style={{ background: '#1e2139', color: 'white' }}>Price ↑</option>
+                                                        <option value="price-high" style={{ background: '#1e2139', color: 'white' }}>Price ↓</option>
+                                                        <option value="duration" style={{ background: '#1e2139', color: 'white' }}>Duration</option>
                                                     </select>
-                                                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" />
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Compact Results Badge */}
-                                        <div className="rounded-xl px-4 py-2.5 text-center bg-gradient-to-r from-neutral-900 to-neutral-800 shadow-lg">
+                                        <div className="rounded-xl px-4 py-3 text-center" style={{
+                                            background: 'linear-gradient(135deg, #3d9da3 0%, #2d6b9e 100%)',
+                                            boxShadow: '0 4px 20px rgba(61, 157, 163, 0.25)'
+                                        }}>
                                             <div className="flex items-center justify-center gap-2">
-                                                <span className="text-xl font-black text-white">{filteredJourneys.length}</span>
-                                                <span className="text-xs font-semibold text-white/80 uppercase tracking-wide">
-                                                    {filteredJourneys.length === 1 ? 'Journey' : 'Journeys'}
+                                                <span className="text-2xl font-black text-white">{filteredJourneys.length}</span>
+                                                <span className="text-sm font-bold text-white uppercase tracking-wider">
+                                                    {filteredJourneys.length === 1 ? 'JOURNEY' : 'JOURNEYS'}
                                                 </span>
                                             </div>
                                         </div>
 
                                         {/* Compact Action Buttons */}
-                                        <div className="flex gap-2 pt-1">
+                                        <div className="flex gap-3">
                                             <button
                                                 onClick={() => {
                                                     setFilter('all')
                                                     setSelectedRegion('')
                                                     setSortBy('newest')
+                                                    setTiming('upcoming')
                                                 }}
-                                                className="flex-1 px-4 py-2.5 rounded-xl text-xs font-bold text-neutral-700 bg-neutral-100 hover:bg-neutral-200 transition-colors border border-neutral-200"
+                                                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2"
+                                                style={{
+                                                    background: 'rgba(10, 14, 39, 0.5)',
+                                                    color: '#B0B7C3',
+                                                    border: '1px solid rgba(92, 225, 230, 0.2)'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.currentTarget.style.background = 'rgba(10, 14, 39, 0.7)';
+                                                    e.currentTarget.style.borderColor = 'rgba(92, 225, 230, 0.4)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.currentTarget.style.background = 'rgba(10, 14, 39, 0.5)';
+                                                    e.currentTarget.style.borderColor = 'rgba(92, 225, 230, 0.2)';
+                                                }}
                                             >
+                                                <RotateCcw className="w-4 h-4" />
                                                 Reset
                                             </button>
                                             <button
@@ -450,7 +516,12 @@ export default function Journeys() {
                                                     setIsFilterOpen(false)
                                                     window.scrollTo({ top: 0, behavior: 'smooth' })
                                                 }}
-                                                className="flex-[2] px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-neutral-900 hover:bg-neutral-800 transition-colors shadow-lg"
+                                                className="flex-[2] px-4 py-2.5 rounded-xl text-sm font-bold transition-all"
+                                                style={{
+                                                    background: 'linear-gradient(135deg, #3d9da3 0%, #2d6b9e 100%)',
+                                                    color: 'white',
+                                                    boxShadow: '0 4px 15px rgba(61, 157, 163, 0.3)'
+                                                }}
                                             >
                                                 Apply Filters
                                             </button>
@@ -465,32 +536,39 @@ export default function Journeys() {
             )}
 
             {/* Journeys Grid Container */}
-            <div className="container mx-auto px-6 sm:px-6 lg:px-8 pb-8 sm:pb-10 lg:pb-12 min-h-[400px]">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 lg:pb-10 min-h-[400px]">
 
                 {/* Journeys Grid */}
                 {loading ? (
                     <div className="flex items-center justify-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-300"></div>
                     </div>
                 ) : error ? (
-                    <div className="flex items-center justify-center h-64 text-red-600">
+                    <div className="flex items-center justify-center h-64 text-red-400">
                         <p>{error}</p>
                     </div>
                 ) : paginatedJourneys.length === 0 ? (
-                    <div className="text-center py-16">
-                        <div className="text-6xl mb-4">🔍</div>
-                        <h3 className="text-2xl font-bold text-neutral-900 mb-2">No journeys found</h3>
-                        <p className="text-neutral-600 mb-4">Try adjusting your filters</p>
-                        <Button
+                    <div className="text-center py-14">
+                        <h3 className="text-2xl font-bold text-white mb-2">No journeys found</h3>
+                        <p className="mb-6" style={{ color: '#B0B7C3' }}>Try adjusting your filters</p>
+                        <button
                             onClick={() => {
                                 setFilter('all')
                                 setSelectedRegion('')
+                                setSortBy('newest')
+                                setTiming('upcoming')
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
                             }}
-                            variant="primary"
+                            className="px-8 py-3 rounded-xl text-sm font-bold transition-all inline-flex items-center gap-2"
+                            style={{
+                                background: 'linear-gradient(135deg, #3d9da3 0%, #2d6b9e 100%)',
+                                color: 'white',
+                                boxShadow: '0 4px 15px rgba(61, 157, 163, 0.3)'
+                            }}
                         >
+                            <RotateCcw className="w-4 h-4" />
                             Reset Filters
-                        </Button>
+                        </button>
                     </div>
                 ) : (
                     <>
@@ -502,7 +580,8 @@ export default function Journeys() {
                                         whileInView={{ opacity: 1, y: 0 }}
                                         viewport={{ once: true }}
                                         whileHover={{ y: -12, scale: 1.01, transition: { duration: 0.3 } }}
-                                        className="glass-luxury rounded-4xl overflow-hidden shadow-luxury-lg hover:shadow-luxury-2xl transition-all duration-500 h-full flex flex-col border-luxury"
+                                        className="rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 h-full flex flex-col border"
+                                        style={{ background: '#1e2139', borderColor: 'rgba(92,225,230,0.15)', boxShadow: '0 12px 28px rgba(0,0,0,0.35)' }}
                                     >
                                         <div className="relative h-56 sm:h-64 md:h-72 overflow-hidden">
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500 z-10"></div>
@@ -511,27 +590,27 @@ export default function Journeys() {
                                                 alt={journey.title}
                                                 className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                                             />
-                                            <div className="absolute top-4 sm:top-5 right-4 sm:right-5 glass-luxury px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs font-extrabold tracking-widest uppercase text-primary-700 shadow-luxury z-20 border-luxury">
+                                            <div className="absolute top-4 sm:top-5 right-4 sm:right-5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl text-xs font-extrabold tracking-widest uppercase shadow-lg z-20 border" style={{ background: 'rgba(30,33,57,0.9)', backdropFilter: 'blur(10px)', color: '#5CE1E6', borderColor: 'rgba(92,225,230,0.3)' }}>
                                                 {journey.difficulty}
                                             </div>
                                         </div>
                                         <div className="p-6 sm:p-7 lg:p-8 flex flex-col grow">
-                                            <div className="flex items-center gap-2 text-primary-700 text-xs sm:text-sm font-extrabold mb-3 sm:mb-4">
+                                            <div className="flex items-center gap-2 text-xs sm:text-sm font-extrabold mb-3 sm:mb-4" style={{ color: '#5CE1E6' }}>
                                                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                                                 <span className="tracking-wide truncate uppercase">{journey.location.region}, {journey.location.country}</span>
                                             </div>
-                                            <h3 className="text-xl sm:text-2xl font-black mb-3 sm:mb-4 group-hover:text-primary-700 transition-colors leading-tight text-premium line-clamp-2">
+                                            <h3 className="text-xl sm:text-2xl font-black mb-3 sm:mb-4 transition-colors leading-tight line-clamp-2" style={{ color: 'white' }}>
                                                 {journey.title}
                                             </h3>
-                                            <p className="text-neutral-600 text-sm sm:text-base leading-relaxed line-clamp-3 mb-5 sm:mb-7 grow font-medium">
+                                            <p className="text-sm sm:text-base leading-relaxed line-clamp-3 mb-5 sm:mb-7 grow font-medium" style={{ color: '#B0B7C3' }}>
                                                 {journey.description}
                                             </p>
-                                            <div className="flex items-center justify-between pt-4 sm:pt-5 border-t-2 border-neutral-100 mt-auto">
-                                                <div className="flex items-center gap-2 sm:gap-2.5 text-neutral-700">
+                                            <div className="flex items-center justify-between pt-4 sm:pt-5 border-t mt-auto" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                                                <div className="flex items-center gap-2 sm:gap-2.5" style={{ color: '#B0B7C3' }}>
                                                     <Calendar className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                                                     <span className="text-sm sm:text-base font-extrabold">{getDurationDays(journey.duration)} Days</span>
                                                 </div>
-                                                <div className="flex items-center gap-1 sm:gap-1.5 text-primary-700 font-black">
+                                                <div className="flex items-center gap-1 sm:gap-1.5 font-black" style={{ color: '#5CE1E6' }}>
                                                     {journey.price ? (
                                                         <>
                                                             <span className="text-xs font-bold uppercase">From</span>
@@ -551,24 +630,26 @@ export default function Journeys() {
 
                         {/* Pagination */}
                         {totalPages > 1 && (
-                            <div className="flex justify-center items-center gap-1.5 sm:gap-2 mt-8 sm:mt-10 lg:mt-12 flex-wrap">
+                            <div className="flex justify-center items-center gap-1.5 mt-7 sm:mt-8 lg:mt-10 flex-wrap">
                                 <button
                                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                     disabled={currentPage === 1}
-                                    className="p-1.5 sm:p-2 rounded-lg border border-neutral-300 hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    className="p-1.5 rounded-lg border disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    style={{ borderColor: 'rgba(92,225,230,0.2)', background: 'rgba(30,33,57,0.5)' }}
                                     aria-label="Previous page"
                                 >
-                                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    <ChevronLeft className="w-4 h-4" style={{ color: '#B0B7C3' }} />
                                 </button>
 
                                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                                     <button
                                         key={page}
                                         onClick={() => setCurrentPage(page)}
-                                        className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-sm sm:text-base font-medium transition-colors ${currentPage === page
-                                            ? 'bg-primary-600 text-white'
-                                            : 'border border-neutral-300 hover:bg-neutral-100'
-                                            }`}
+                                        className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                                        style={currentPage === page
+                                            ? { background: 'linear-gradient(135deg, #3d9da3 0%, #2d6b9e 100%)', color: 'white', boxShadow: '0 4px 12px rgba(61, 157, 163, 0.3)' }
+                                            : { border: '1px solid rgba(92,225,230,0.2)', color: '#B0B7C3', background: 'rgba(30,33,57,0.5)' }
+                                        }
                                     >
                                         {page}
                                     </button>
@@ -577,10 +658,11 @@ export default function Journeys() {
                                 <button
                                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                     disabled={currentPage === totalPages}
-                                    className="p-1.5 sm:p-2 rounded-lg border border-neutral-300 hover:bg-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    className="p-1.5 rounded-lg border disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    style={{ borderColor: 'rgba(92,225,230,0.2)', background: 'rgba(30,33,57,0.5)' }}
                                     aria-label="Next page"
                                 >
-                                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    <ChevronRight className="w-4 h-4" style={{ color: '#B0B7C3' }} />
                                 </button>
                             </div>
                         )}

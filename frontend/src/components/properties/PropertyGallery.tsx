@@ -69,14 +69,14 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                         <div className="md:hidden">
                             <button
                                 onClick={prevMobileImage}
-                                className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-lg transition-all backdrop-blur-sm"
+                                className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-lg transition-all backdrop-blur-sm z-20"
                                 aria-label="Previous image"
                             >
                                 <ChevronLeft className="w-5 h-5" />
                             </button>
                             <button
                                 onClick={nextMobileImage}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-lg transition-all backdrop-blur-sm"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white text-gray-800 rounded-full shadow-lg transition-all backdrop-blur-sm z-20"
                                 aria-label="Next image"
                             >
                                 <ChevronRight className="w-5 h-5" />

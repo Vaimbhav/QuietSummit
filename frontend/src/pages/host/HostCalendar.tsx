@@ -153,12 +153,12 @@ export default function HostCalendar() {
 
     if (properties.length === 0) {
         return (
-            <div className="min-h-screen bg-gray-50 py-8">
+            <div className="min-h-screen bg-[#0a0e27] py-8 text-white">
                 <div className="container mx-auto px-6 max-w-7xl">
-                    <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-                        <CalendarIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">No Active Properties</h3>
-                        <p className="text-gray-600">You need to have active properties to manage your calendar</p>
+                    <div className="bg-[#1e2139] rounded-xl shadow-sm p-12 text-center border border-[#5ce1e6]/15">
+                        <CalendarIcon className="w-16 h-16 text-[#5CE1E6]/70 mx-auto mb-4" />
+                        <h3 className="text-xl font-semibold text-white mb-2">No Active Properties</h3>
+                        <p className="text-[#B0B7C3]">You need to have active properties to manage your calendar</p>
                     </div>
                 </div>
             </div>
@@ -166,9 +166,9 @@ export default function HostCalendar() {
     }
 
     return (
-        <div className="min-h-screen bg-neutral-50">
+        <div className="min-h-screen bg-[#0a0e27] text-white">
             {/* Premium Hero Section with Overlapping Cards */}
-            <section className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white pt-8 lg:pt-16 pb-32 sm:pb-20 md:pb-28 lg:pb-32 overflow-hidden">
+            <section className="relative text-white pt-8 lg:pt-16 pb-32 sm:pb-20 md:pb-28 lg:pb-32 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0e27 0%, #1a1d2e 100%)' }}>
                 <div className="container mx-auto px-6 sm:px-8 lg:px-16 relative z-10">
                     <div className="flex items-start gap-4 lg:gap-6 mb-4">
                         <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 flex-shrink-0">
@@ -188,56 +188,47 @@ export default function HostCalendar() {
 
             {/* Property Selector Card - Overlapping Hero */}
             <div className="container mx-auto px-6 sm:px-8 lg:px-16 -mt-20 sm:-mt-16 md:-mt-20 lg:-mt-24 relative z-20 mb-8 lg:mb-12">
-                <div className="bg-white rounded-2xl shadow-xl border border-neutral-100 p-6 sm:p-8 lg:p-10">
-                    <label className="block text-base lg:text-lg font-semibold text-neutral-900 mb-4">
+                <div className="bg-[#1e2139] rounded-2xl shadow-xl border border-[#5ce1e6]/15 p-6 sm:p-8 lg:p-10">
+                    <label className="block text-base lg:text-lg font-semibold text-white mb-4">
                         Select Property
                     </label>
-                    <div className="relative">
-                        <select
-                            value={selectedProperty || ''}
-                            onChange={(e) => setSelectedProperty(e.target.value)}
-                            className="w-full px-5 py-4 text-base lg:text-lg font-medium border-2 border-neutral-200 rounded-xl 
-                                     focus:ring-2 focus:ring-primary-500 focus:border-primary-500 
-                                     hover:border-neutral-300 transition-all duration-200
-                                     bg-white shadow-sm appearance-none cursor-pointer
-                                     text-neutral-900"
-                            style={{
-                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23525252'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                                backgroundRepeat: 'no-repeat',
-                                backgroundPosition: 'right 1rem center',
-                                backgroundSize: '1.5em 1.5em',
-                                paddingRight: '3rem'
-                            }}
-                        >
-                            {properties.map(property => (
-                                <option key={property._id} value={property._id}>
-                                    {property.title}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    <select
+                        value={selectedProperty || ''}
+                        onChange={(e) => setSelectedProperty(e.target.value)}
+                        className="w-full px-5 py-4 pr-14 text-base lg:text-lg font-bold border border-[#5ce1e6]/20 rounded-xl 
+                                 focus:ring-2 focus:ring-[#5CE1E6]/40 focus:border-[#5CE1E6]/50 
+                                 transition-all duration-200
+                                 bg-[#0a0e27]/60 shadow-md appearance-none cursor-pointer
+                                 text-white bg-[center_right_1.25rem] bg-no-repeat"
+                    >
+                        {properties.map(property => (
+                            <option key={property._id} value={property._id}>
+                                {property.title}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
             {/* Calendar Section */}
             <div className="container mx-auto px-6 sm:px-8 lg:px-16">
                 {/* Calendar */}
-                <div className="bg-white rounded-2xl shadow-lg border border-neutral-100 p-6 sm:p-8 lg:p-10 mb-6 lg:mb-8">
+                <div className="bg-[#1e2139] rounded-2xl shadow-lg border border-[#5ce1e6]/15 p-6 sm:p-8 lg:p-10 mb-6 lg:mb-8">
                     {/* Calendar Header */}
                     <div className="flex items-center justify-between mb-8">
-                        <h2 className="text-2xl lg:text-3xl font-bold text-neutral-900">{monthName}</h2>
+                        <h2 className="text-2xl lg:text-3xl font-bold text-white">{monthName}</h2>
                         <div className="flex gap-2">
                             <button
                                 onClick={previousMonth}
-                                className="p-2.5 lg:p-3 hover:bg-neutral-100 rounded-xl transition-colors border border-neutral-200"
+                                className="p-3 lg:p-3.5 hover:bg-[#0a0e27]/60 rounded-xl transition-colors border border-[#5ce1e6]/20"
                             >
-                                <ChevronLeft className="w-5 h-5 lg:w-6 lg:h-6 text-neutral-700" />
+                                <ChevronLeft className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
                             </button>
                             <button
                                 onClick={nextMonth}
-                                className="p-2.5 lg:p-3 hover:bg-neutral-100 rounded-xl transition-colors border border-neutral-200"
+                                className="p-3 lg:p-3.5 hover:bg-[#0a0e27]/60 rounded-xl transition-colors border border-[#5ce1e6]/20"
                             >
-                                <ChevronRight className="w-5 h-5 lg:w-6 lg:h-6 text-neutral-700" />
+                                <ChevronRight className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
                             </button>
                         </div>
                     </div>
@@ -245,7 +236,7 @@ export default function HostCalendar() {
                     {/* Calendar Grid */}
                     <div className="grid grid-cols-7 gap-2 sm:gap-3 lg:gap-4">
                         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                            <div key={day} className="text-center font-medium text-gray-400 py-2">
+                            <div key={day} className="text-center font-medium text-[#B0B7C3] py-2">
                                 {day}
                             </div>
                         ))}
@@ -272,52 +263,52 @@ export default function HostCalendar() {
                                     disabled={isPast}
                                     onClick={() => handleDateClick(date)}
                                     className={`aspect-square p-2 border rounded-lg transition-all relative overflow-hidden group ${isPast
-                                        ? 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                                        ? 'bg-[#0a0e27]/40 text-[#B0B7C3] cursor-not-allowed border-[#5ce1e6]/10'
                                         : isBooked
-                                            ? 'bg-red-50 border-red-200 text-red-900'
+                                            ? 'bg-red-500/15 border-red-400/40 text-red-200'
                                             : isBlocked
-                                                ? 'bg-gray-100 border-gray-300 text-gray-400'
+                                                ? 'bg-[#0a0e27]/50 border-[#5ce1e6]/10 text-[#B0B7C3]'
                                                 : isToday
-                                                    ? 'border-primary-500 bg-primary-50 text-primary-900 font-semibold'
-                                                    : 'border-gray-200 hover:border-primary-300 hover:bg-primary-50'
+                                                    ? 'border-[#5CE1E6] bg-[#0a0e27]/70 text-white font-semibold'
+                                                    : 'border-[#5ce1e6]/15 hover:border-[#5CE1E6]/50 hover:bg-[#0a0e27]/60'
                                         }`}
                                 >
                                     <div className="text-sm z-10 relative">{day}</div>
 
                                     {isBooked && bookingData && (
-                                        <div className="absolute inset-x-0 bottom-0 p-1 bg-red-100/80 backdrop-blur-sm text-[10px] truncate">
+                                        <div className="absolute inset-x-0 bottom-0 p-1 bg-red-500/30 backdrop-blur-sm text-[10px] truncate">
                                             {bookingData.memberId?.name?.split(' ')[0] || 'Guest'}
                                         </div>
                                     )}
 
-                                    {isBlocked && <div className="text-[10px] text-gray-500 mt-1">Blocked</div>}
+                                    {isBlocked && <div className="text-[10px] text-[#B0B7C3] mt-1">Blocked</div>}
                                 </button>
                             );
                         })}
                     </div>
 
                     {/* Legend */}
-                    <div className="mt-8 pt-8 border-t border-neutral-200">
-                        <h3 className="text-base lg:text-lg font-semibold text-neutral-900 mb-4">Legend</h3>
-                        <div className="flex flex-wrap gap-6 text-sm lg:text-base">
+                    <div className="mt-8 pt-8 border-t border-[#5ce1e6]/15">
+                        <h3 className="text-base lg:text-lg font-semibold text-white mb-4">Legend</h3>
+                        <div className="flex flex-wrap gap-6 text-sm lg:text-base text-[#B0B7C3]">
                             <div className="flex items-center gap-3">
-                                <div className="w-5 h-5 bg-green-100 border-2 border-green-300 rounded"></div>
-                                <span className="text-neutral-700 font-medium">Available</span>
+                                <div className="w-5 h-5 bg-[#0a0e27]/60 border border-[#5ce1e6]/30 rounded"></div>
+                                <span className="font-medium">Available</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <div className="w-5 h-5 bg-red-100 border-2 border-red-300 rounded"></div>
-                                <span className="text-neutral-700 font-medium">Booked</span>
+                                <div className="w-5 h-5 bg-red-500/20 border border-red-400/40 rounded"></div>
+                                <span className="font-medium">Booked</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <div className="w-5 h-5 bg-gray-100 border-2 border-gray-300 rounded"></div>
-                                <span className="text-neutral-700 font-medium">Blocked</span>
+                                <div className="w-5 h-5 bg-[#0a0e27]/50 border border-[#5ce1e6]/20 rounded"></div>
+                                <span className="font-medium">Blocked</span>
                             </div>
                         </div>
                     </div>
 
                     {/* Info Box */}
-                    <div className="mt-6 lg:mt-8 p-5 lg:p-6 bg-blue-50 border-2 border-blue-200 rounded-xl">
-                        <p className="text-sm lg:text-base text-blue-900 leading-relaxed">
+                    <div className="mt-6 lg:mt-8 p-5 lg:p-6 bg-[#0a0e27]/70 border border-[#5ce1e6]/20 rounded-xl">
+                        <p className="text-sm lg:text-base text-[#B0B7C3] leading-relaxed">
                             <strong className="font-semibold">Note:</strong> Click on dates to toggle availability. Bookings must be managed in the Bookings tab.
                         </p>
                     </div>

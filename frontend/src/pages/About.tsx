@@ -21,9 +21,12 @@ export default function About() {
     const navigate = useNavigate()
 
     return (
-        <div className="min-h-screen bg-neutral-50">
+        <div className="min-h-screen bg-[#0a0e27] text-white">
             {/* Hero Section */}
-            <section className="relative bg-primary-600 text-white py-20 md:py-24 overflow-hidden">
+            <section
+                className="relative text-white py-20 md:py-24 overflow-hidden"
+                style={{ background: 'linear-gradient(135deg, #0a0e27 0%, #1a1d2e 100%)' }}
+            >
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -43,7 +46,7 @@ export default function About() {
             </section>
 
             {/* Team Section - Founders - PREMIUM */}
-            <section className="relative bg-white py-12 md:py-20">
+            <section className="relative bg-dark py-12 md:py-20">
                 {/* Enhanced gradient fade from hero */}
                 <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-primary-700/20 via-primary-700/5 to-transparent pointer-events-none" />
 
@@ -52,7 +55,7 @@ export default function About() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: 0.2 }}
-                        className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 max-w-6xl mx-auto"
+                        className="bg-dark-card rounded-3xl shadow-2xl p-8 md:p-12 border border-dark-border max-w-6xl mx-auto"
                     >
                         <motion.div
                             initial="hidden"
@@ -65,10 +68,10 @@ export default function About() {
                                     <Users className="w-4 h-4" />
                                     <span className="font-medium tracking-wide uppercase text-xs">The Founders</span>
                                 </div>
-                                <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4 tracking-tight">
+                                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
                                     Meet the Visionaries
                                 </h2>
-                                <p className="text-base md:text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed font-light">
+                                <p className="text-base md:text-lg text-neutral-300 max-w-2xl mx-auto leading-relaxed font-light">
                                     IIT Roorkee alumni united by a shared vision: making travel meaningful and intentional.
                                 </p>
                             </motion.div>
@@ -110,7 +113,7 @@ export default function About() {
                                         variants={itemVariants}
                                         className="group relative h-full"
                                     >
-                                        <div className="relative bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-neutral-100 h-full flex flex-col">
+                                        <div className="relative bg-[#1e2139] rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-[#5ce1e6]/15 h-full flex flex-col">
                                             {/* Premium Image with Gradient Overlay */}
                                             <div className="relative aspect-[3/4] overflow-hidden bg-neutral-100 flex-shrink-0">
                                                 <img
@@ -133,15 +136,15 @@ export default function About() {
 
                                             {/* Content - Flex grow to fill remaining space */}
                                             <div className="p-6 flex flex-col flex-grow">
-                                                <p className="text-neutral-600 leading-relaxed mb-5 text-sm flex-grow">
+                                                <p className="text-neutral-300 leading-relaxed mb-5 text-sm flex-grow">
                                                     {member.bio}
                                                 </p>
 
-                                                <div className="pt-4 border-t border-neutral-200 mt-auto">
-                                                    <div className="text-xs text-neutral-500 font-medium uppercase tracking-wide mb-2">
+                                                <div className="pt-4 border-t border-[#5ce1e6]/15 mt-auto">
+                                                    <div className="text-xs text-[#B0B7C3] font-medium uppercase tracking-wide mb-2">
                                                         Passionate About
                                                     </div>
-                                                    <div className="text-sm font-medium text-primary-700 italic">
+                                                    <div className="text-sm font-medium text-[#5CE1E6] italic">
                                                         "{member.passion}"
                                                     </div>
                                                 </div>
@@ -158,7 +161,7 @@ export default function About() {
                 <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-transparent via-neutral-900/5 to-neutral-900/20 pointer-events-none" />
             </section>
 
-            <section className="relative py-12 md:py-20 bg-neutral-900 text-white">
+            <section className="relative py-12 md:py-20 bg-[#0f132f] text-white">
                 {/* Enhanced gradient fade from previous section */}
                 <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none" />
 
@@ -198,7 +201,7 @@ export default function About() {
             </section>
 
             {/* What Makes Us Different */}
-            <section className="relative py-12 md:py-20 bg-white">
+            <section className="relative py-12 md:py-20 bg-[#0a0e27]">
                 {/* Enhanced gradient fade from previous section */}
                 <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-neutral-900/20 via-neutral-900/5 to-transparent pointer-events-none" />
                 <div className="container mx-auto px-6 max-w-6xl">
@@ -213,10 +216,10 @@ export default function About() {
                                 <Compass className="w-4 h-4" />
                                 <span className="font-medium tracking-wide uppercase text-xs">Our Difference</span>
                             </div>
-                            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-5 tracking-tight">
+                            <h2 className="text-3xl md:text-4xl font-bold text-white mb-5 tracking-tight">
                                 What Makes Us Different
                             </h2>
-                            <p className="text-base md:text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed font-light">
+                            <p className="text-base md:text-lg text-neutral-300 max-w-2xl mx-auto leading-relaxed font-light">
                                 We don't just plan trips—we design transformative experiences that reconnect you with what matters most.
                             </p>
                         </motion.div>
@@ -251,20 +254,20 @@ export default function About() {
                                 <motion.div
                                     key={index}
                                     variants={itemVariants}
-                                    className="bg-neutral-50 rounded-2xl p-7 hover:shadow-md transition-all duration-300"
+                                    className="bg-[#1e2139] rounded-2xl p-7 transition-all duration-300 border border-[#5ce1e6]/15"
                                 >
                                     <div className="flex items-start gap-5">
-                                        <div className="p-3 bg-neutral-900 rounded-xl text-white shadow-sm shrink-0">
+                                        <div className="p-3 bg-[#0a0e27] rounded-xl text-white shadow-sm shrink-0 border border-[#5ce1e6]/20">
                                             {feature.icon}
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-bold text-neutral-900 mb-3 tracking-tight">
+                                            <h3 className="text-xl font-bold text-white mb-3 tracking-tight">
                                                 {feature.title}
                                             </h3>
-                                            <p className="text-neutral-600 leading-relaxed mb-3 text-sm">
+                                            <p className="text-neutral-300 leading-relaxed mb-3 text-sm">
                                                 {feature.description}
                                             </p>
-                                            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-neutral-900 text-white rounded-full text-xs font-medium">
+                                            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#0a0e27] text-white rounded-full text-xs font-medium border border-[#5ce1e6]/20">
                                                 <ChevronRight className="w-3 h-3" />
                                                 {feature.highlight}
                                             </div>
@@ -347,7 +350,7 @@ export default function About() {
             </section>
 
             {/* Impact Stats */}
-            <section className="relative py-12 md:py-20 bg-white">
+            <section className="relative py-12 md:py-20 bg-[#0a0e27]">
                 {/* Gradient fade from previous section */}
                 <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-neutral-900/10 to-transparent pointer-events-none" />
                 <div className="container mx-auto px-6 max-w-6xl">
@@ -362,10 +365,10 @@ export default function About() {
                                 <TrendingUp className="w-4 h-4" />
                                 <span className="font-medium tracking-wide uppercase text-xs">Impact</span>
                             </div>
-                            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-5 tracking-tight">
+                            <h2 className="text-3xl md:text-4xl font-bold text-white mb-5 tracking-tight">
                                 Our Impact Story
                             </h2>
-                            <p className="text-base md:text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed font-light">
+                            <p className="text-base md:text-lg text-neutral-300 max-w-2xl mx-auto leading-relaxed font-light">
                                 Numbers tell part of our story—but the real impact is in the lives we've touched.
                             </p>
                         </motion.div>
@@ -377,26 +380,26 @@ export default function About() {
                                 { value: '45+', label: 'Local Partners', icon: <Heart className="w-6 h-6" /> },
                                 { value: '99%', label: 'Would Recommend', icon: <Award className="w-6 h-6" /> }
                             ].map((stat, index) => (
-                                <motion.div key={index} variants={itemVariants} className="text-center bg-neutral-50 rounded-2xl p-7 hover:shadow-md transition-all duration-300">
-                                    <div className="flex justify-center mb-3 text-neutral-900">
+                                <motion.div key={index} variants={itemVariants} className="text-center bg-[#1e2139] rounded-2xl p-7 transition-all duration-300 border border-[#5ce1e6]/15">
+                                    <div className="flex justify-center mb-3 text-white">
                                         {stat.icon}
                                     </div>
-                                    <div className="text-4xl font-bold mb-2 text-neutral-900">
+                                    <div className="text-4xl font-bold mb-2 text-white">
                                         {stat.value}
                                     </div>
-                                    <div className="text-lg opacity-90 font-medium">{stat.label}</div>
+                                    <div className="text-lg opacity-90 font-medium text-[#B0B7C3]">{stat.label}</div>
                                 </motion.div>
                             ))}
                         </div>
 
                         <motion.div
                             variants={itemVariants}
-                            className="bg-primary-50/50 rounded-2xl p-8 text-center max-w-3xl mx-auto mt-12 border border-primary-100"
+                            className="bg-[#1e2139] rounded-2xl p-8 text-center max-w-3xl mx-auto mt-12 border border-[#5ce1e6]/15"
                         >
-                            <p className="text-base md:text-lg leading-relaxed italic text-neutral-700">
+                            <p className="text-base md:text-lg leading-relaxed italic text-[#B0B7C3]">
                                 "Beyond the numbers, we've watched strangers become lifelong friends, career-driven professionals find new purpose, and travelers return home not just with photos, but with profound shifts in perspective."
                             </p>
-                            <p className="text-sm mt-6 font-medium text-neutral-600">— The QuietSummit Team</p>
+                            <p className="text-sm mt-6 font-medium text-[#B0B7C3]">— The QuietSummit Team</p>
                         </motion.div>
                     </motion.div>
                 </div>
@@ -406,7 +409,10 @@ export default function About() {
             </section>
 
             {/* CTA Section */}
-            <section className="relative py-12 md:py-20 bg-primary-700 text-white">
+            <section
+                className="relative py-12 md:py-20 text-white"
+                style={{ background: 'linear-gradient(135deg, #0a0e27 0%, #1a1d2e 100%)' }}
+            >
                 {/* Gradient fade from previous section */}
                 <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
                 <div className="container mx-auto px-6 max-w-4xl text-center">
@@ -419,23 +425,23 @@ export default function About() {
                         <h2 className="text-3xl md:text-4xl font-bold mb-5 tracking-tight">
                             Ready to Slow Down?
                         </h2>
-                        <p className="text-base md:text-lg mb-8 leading-relaxed text-neutral-300 font-light">
+                        <p className="text-base md:text-lg mb-8 leading-relaxed text-[#B0B7C3] font-light">
                             Your transformation begins with a single step. Let's take it together.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 justify-center items-center">
                             <button
                                 onClick={() => navigate('/journeys')}
-                                className="w-full sm:w-auto px-10 sm:px-12 py-5 sm:py-6 text-base sm:text-lg font-extrabold rounded-3xl gradient-premium text-white shadow-luxury-2xl hover:shadow-luxury-xl hover:-translate-y-1 active:translate-y-0 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 inline-flex items-center justify-center gap-3 group relative overflow-hidden"
+                                className="w-full sm:w-auto px-10 sm:px-12 py-5 sm:py-6 text-base sm:text-lg font-extrabold rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-1 active:translate-y-0 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 inline-flex items-center justify-center gap-3 group relative overflow-hidden"
+                                style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#0a0e27' }}
                             >
-                                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 pointer-events-none"></span>
                                 <span className="relative z-10">Explore Journeys</span>
                                 <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 relative z-10 group-hover:translate-x-2 transition-transform" />
                             </button>
                             <button
                                 onClick={() => navigate('/contact')}
-                                className="w-full sm:w-auto px-10 sm:px-12 py-5 sm:py-6 text-base sm:text-lg font-extrabold rounded-3xl glass-luxury text-primary-700 shadow-luxury-lg hover:shadow-luxury-xl hover:-translate-y-1 active:translate-y-0 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 inline-flex items-center justify-center gap-2 relative overflow-hidden group"
+                                className="w-full sm:w-auto px-10 sm:px-12 py-5 sm:py-6 text-base sm:text-lg font-extrabold rounded-3xl border shadow-lg hover:shadow-xl hover:-translate-y-1 active:translate-y-0 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 inline-flex items-center justify-center gap-2 relative overflow-hidden group"
+                                style={{ background: 'rgba(30,33,57,0.7)', color: '#5CE1E6', borderColor: 'rgba(92,225,230,0.3)' }}
                             >
-                                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 pointer-events-none"></span>
                                 <span className="relative z-10">Let's Talk</span>
                             </button>
                         </div>

@@ -46,7 +46,7 @@ export default function ForgotPassword() {
     if (success) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-stone-50 to-stone-100 px-4 py-12">
-                <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+                <div className="max-w-md w-full bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
                     <div className="text-center">
                         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <CheckCircle className="w-8 h-8 text-green-600" />
@@ -73,7 +73,7 @@ export default function ForgotPassword() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-stone-50 to-stone-100 px-4 py-12">
-            <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+            <div className="max-w-md w-full bg-dark-card rounded-2xl shadow-xl p-8 border border-dark-border">
                 {/* Header */}
                 <div className="text-center mb-8">
                     <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">

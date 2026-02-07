@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User, Plus, Minus, AlertCircle, ChevronRight, ChevronDown } from 'lucide-react'
+import { User, Users, Plus, Minus, AlertCircle, ChevronRight, ChevronLeft, ChevronDown } from 'lucide-react'
 import Button from '../../common/Button'
 import Input from '../../common/Input'
 import PhoneInput from '../../common/PhoneInput'
@@ -29,6 +29,7 @@ export default function TravelerInfoStep({
     journey,
     bookingData,
     onNext,
+    onBack,
 }: TravelerInfoStepProps) {
     const navigate = useNavigate()
     const { isAuthenticated, user: userData } = useAuth()
@@ -205,8 +206,8 @@ export default function TravelerInfoStep({
     }
 
     return (
-        <div className="flex flex-col h-full bg-neutral-50/50">
-            <div className="flex-1 p-4 md:p-6 space-y-8 overflow-y-auto pb-24">
+        <div className="flex flex-col h-full" style={{ background: '#0b1224' }}>
+            <div className="flex-1 p-3 md:p-4 space-y-3 overflow-y-auto pb-6">
                 <LoginModal
                     isOpen={showLoginModal}
                     onClose={() => {
@@ -264,46 +265,49 @@ export default function TravelerInfoStep({
                 {isAuthenticated && !showLoginRequired && (
                     <>
                         {/* Departure Date Selection */}
-                        <div className="bg-white rounded-xl p-4 border border-neutral-200">
-                            <div className="mb-3">
-                                <h3 className="text-base font-bold text-neutral-900">Departure Date</h3>
-                                <p className="text-neutral-500 text-xs mt-1">
-                                    {availableDates.length > 0
-                                        ? "Select your preferred date"
-                                        : "Dates will be announced based on registrations"}
-                                </p>
+                        <div className="rounded-xl p-4 md:p-6 space-y-4" style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255, 255, 255, 0.1)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="p-1.5 rounded-full bg-teal-500/10">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-teal-400"></div>
+                                </div>
+                                <h3 className="text-sm sm:text-base font-semibold text-slate-200">Trip Schedule</h3>
                             </div>
 
                             {availableDates.length > 0 ? (
-                                <div className="relative">
-                                    <select
-                                        value={selectedDateIndex}
-                                        onChange={(e) => setSelectedDateIndex(Number(e.target.value))}
-                                        className="appearance-none w-full px-4 py-3 text-sm border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white font-medium text-neutral-900"
-                                    >
-                                        {availableDates.map((d, idx) => {
-                                            const isPast = d.date < new Date()
-                                            const isFull = d.seatsLeft <= 0
-                                            return (
-                                                <option key={idx} value={idx} disabled={isPast || isFull}>
-                                                    {d.label} {isPast ? '(Past)' : isFull ? '(Full)' : `(${d.seatsLeft} seats left)`}
-                                                </option>
-                                            )
-                                        })}
-                                    </select>
-                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                        <ChevronDown className="w-5 h-5 text-neutral-500" />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-1.5">
+                                        <label className="block text-xs font-medium text-slate-400 uppercase tracking-wide mb-1.5">Departure Date</label>
+                                        <div className="relative group/select">
+                                            <select
+                                                value={selectedDateIndex}
+                                                onChange={(e) => setSelectedDateIndex(Number(e.target.value))}
+                                                className="appearance-none w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all text-sm"
+                                            >
+                                                {availableDates.map((d, idx) => {
+                                                    const isPast = d.date < new Date()
+                                                    const isFull = d.seatsLeft <= 0
+                                                    return (
+                                                        <option key={idx} value={idx} disabled={isPast || isFull} className="bg-slate-900 text-white">
+                                                            {d.label} {isPast ? '(Past)' : isFull ? '(Full)' : `(${d.seatsLeft} seats left)`}
+                                                        </option>
+                                                    )
+                                                })}
+                                            </select>
+                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                <ChevronDown className="w-4 h-4 text-slate-400" />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="bg-primary-50 border border-primary-100 rounded-xl p-3 flex items-start gap-3">
-                                    <div className="p-1 bg-primary-100 rounded-full mt-0.5">
-                                        <AlertCircle className="w-4 h-4 text-primary-600" />
+                                <div className="rounded-lg p-3 flex items-start gap-4 bg-teal-500/5 border border-teal-500/20">
+                                    <div className="p-2 rounded-lg mt-0.5 bg-teal-500/10 shrink-0">
+                                        <AlertCircle className="w-5 h-5 text-teal-400" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-bold text-primary-800">Registration Only</p>
-                                        <p className="text-xs text-primary-600 mt-0.5 leading-relaxed">
-                                            Register now to join the interest pool. We will coordinate the final departure date with all registered travelers.
+                                        <p className="text-sm font-bold text-slate-200">Registration Only</p>
+                                        <p className="text-xs mt-1 leading-relaxed text-slate-400">
+                                            Register now to join the interest pool. We will coordinate the final departure date.
                                         </p>
                                     </div>
                                 </div>
@@ -311,32 +315,35 @@ export default function TravelerInfoStep({
                         </div>
 
                         {/* Number of Travelers */}
-                        <div className="bg-white rounded-xl p-4 border border-neutral-200">
+                        <div className="rounded-xl p-4 md:p-6 space-y-4" style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255, 255, 255, 0.1)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
                             <div className="flex items-center justify-between">
-                                <div>
-                                    <h3 className="text-base font-bold text-neutral-900">Number of Travelers</h3>
-                                    <p className="text-neutral-500 text-xs mt-1">Select how many people are joining</p>
+                                <div className="flex items-center gap-2">
+                                    <div className="p-1.5 rounded-full bg-teal-500/10">
+                                        <Users className="w-4 h-4 text-teal-400" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm sm:text-base font-semibold text-slate-200">Total Travelers</h3>
+                                        <p className="text-xs text-slate-400 mt-0.5">Who is joining you?</p>
+                                    </div>
                                 </div>
 
-                                <div className="flex items-center gap-3 bg-neutral-50 px-3 py-2 rounded-lg border border-neutral-200">
+                                <div className="flex items-center gap-3 bg-white/5 px-2 py-1.5 rounded-lg border border-white/10">
                                     <button
                                         onClick={() => setNumberOfTravelers(Math.max(1, numberOfTravelers - 1))}
-                                        className="w-8 h-8 flex items-center justify-center rounded-md bg-white border border-neutral-200 text-neutral-600 hover:bg-neutral-50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-white/10 text-slate-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                                         disabled={numberOfTravelers <= 1}
-                                        aria-label="Decrease number of travelers"
                                     >
                                         <Minus className="w-4 h-4" />
                                     </button>
 
-                                    <div className="min-w-[40px] text-center">
-                                        <span className="text-lg font-bold text-neutral-900">{numberOfTravelers}</span>
+                                    <div className="min-w-[32px] text-center">
+                                        <span className="text-lg font-bold text-white">{numberOfTravelers}</span>
                                     </div>
 
                                     <button
                                         onClick={() => setNumberOfTravelers(Math.min(10, numberOfTravelers + 1))}
-                                        className="w-8 h-8 flex items-center justify-center rounded-md bg-neutral-900 text-white hover:bg-neutral-800 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-8 h-8 flex items-center justify-center rounded-md bg-teal-500 text-white shadow-lg shadow-teal-500/20 hover:bg-teal-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                         disabled={numberOfTravelers >= 10}
-                                        aria-label="Increase number of travelers"
                                     >
                                         <Plus className="w-4 h-4" />
                                     </button>
@@ -346,74 +353,72 @@ export default function TravelerInfoStep({
 
                         {/* Traveler Details */}
                         <div className="space-y-4">
-                            <div className="flex items-center gap-2 px-1">
-                                <User className="w-5 h-5 text-neutral-900" />
-                                <h3 className="text-lg font-bold text-neutral-900">Traveler Details</h3>
-                            </div>
+                            <h3 className="text-lg font-semibold text-slate-200 px-1">Traveler Details</h3>
 
                             {travelers.map((traveler, index) => (
-                                <div key={index} className="bg-white rounded-xl p-4 border border-neutral-200 shadow-sm transition-all hover:border-neutral-300">
-                                    <div className="flex items-center justify-between mb-4 border-b border-neutral-100 pb-3">
-                                        <h4 className="text-sm font-bold text-neutral-900 flex items-center gap-2">
-                                            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-neutral-900 text-white text-xs font-bold">
+                                <div key={index} className="rounded-xl p-4 md:p-6 space-y-5" style={{ background: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255, 255, 255, 0.1)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}>
+                                    <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                                        <h4 className="text-sm font-bold flex items-center gap-3 text-slate-100">
+                                            <span className="flex items-center justify-center w-7 h-7 rounded-full bg-teal-500/10 text-teal-400 text-xs font-bold ring-1 ring-teal-500/20">
                                                 {index + 1}
                                             </span>
-                                            Traveler {index + 1}
+                                            Traveler Information
                                         </h4>
                                         {index === 0 && (
-                                            <span className="text-[10px] font-bold text-primary-700 bg-primary-50 px-2 py-0.5 rounded border border-primary-100 uppercase tracking-wide">
-                                                Lead
+                                            <span className="text-[10px] uppercase font-bold px-2.5 py-1 rounded bg-teal-500 text-white tracking-wide shadow-lg shadow-teal-500/20">
+                                                Lead Guest
                                             </span>
                                         )}
                                     </div>
 
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <div className="space-y-1.5">
-                                            <label className="block text-xs font-bold text-neutral-700">Full Name *</label>
-                                            <Input
+                                    <div className="grid md:grid-cols-2 gap-5">
+                                        <div>
+                                            <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Name <span className="text-red-400">*</span></label>
+                                            <input
                                                 value={traveler.name}
                                                 onChange={(e) => updateTraveler(index, 'name', e.target.value)}
-                                                placeholder="Enter full name"
-                                                className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                                                placeholder="e.g. John Doe"
+                                                className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all text-sm"
+                                                style={{ background: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)', color: 'white' }}
                                             />
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div className="space-y-1.5">
-                                                <label className="block text-xs font-bold text-neutral-700">Age *</label>
-                                                <Input
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Age <span className="text-red-400">*</span></label>
+                                                <input
                                                     type="number"
                                                     value={traveler.age}
                                                     onChange={(e) => updateTraveler(index, 'age', e.target.value === '' ? '' : parseInt(e.target.value))}
-                                                    placeholder="Age"
+                                                    placeholder="25"
                                                     min="1"
                                                     max="120"
-                                                    className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all h-[42px]"
+                                                    className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all text-sm"
+                                                    style={{ background: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)', color: 'white' }}
                                                 />
                                             </div>
 
-                                            <div className="space-y-1.5">
-                                                <label className="block text-xs font-bold text-neutral-700">Gender *</label>
-                                                <div className="relative">
+                                            <div>
+                                                <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Gender <span className="text-red-400">*</span></label>
+                                                <div className="relative group/select">
                                                     <select
                                                         value={traveler.gender}
                                                         onChange={(e) => updateTraveler(index, 'gender', e.target.value as 'male' | 'female' | 'other')}
-                                                        className="appearance-none w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white font-medium text-neutral-900 h-[42px]" aria-label="Select gender"                                                    >
-                                                        <option value="male">Male</option>
-                                                        <option value="female">Female</option>
-                                                        <option value="other">Other</option>
+                                                        className="appearance-none w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all text-sm cursor-pointer"
+                                                        style={{ background: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)', color: 'white' }}
+                                                    >
+                                                        <option value="male" className="bg-slate-900">Male</option>
+                                                        <option value="female" className="bg-slate-900">Female</option>
+                                                        <option value="other" className="bg-slate-900">Other</option>
                                                     </select>
-                                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                                        <ChevronDown className="w-4 h-4 text-neutral-500" />
+                                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                        <ChevronDown className="w-4 h-4 text-slate-400" />
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="md:col-span-2 space-y-1.5">
-                                            <label className="block text-xs font-bold text-neutral-700">
-                                                Phone Number *
-                                            </label>
+                                        <div className="md:col-span-2">
                                             <PhoneInput
                                                 value={traveler.emergencyContact}
                                                 onChange={(phone, countryCode) => {
@@ -421,8 +426,11 @@ export default function TravelerInfoStep({
                                                     updateTraveler(index, 'emergencyContactCountry', countryCode)
                                                 }}
                                                 placeholder="Enter phone number"
-                                                label=""
+                                                label="Phone Number"
+                                                required
+                                                darkMode={true}
                                             />
+                                            <p className="text-[10px] text-slate-500 mt-1.5 ml-0.5">Enter without country code if possible</p>
                                         </div>
                                     </div>
                                 </div>
@@ -434,13 +442,30 @@ export default function TravelerInfoStep({
 
             {/* Fixed Bottom Button */}
             {isAuthenticated && !showLoginRequired && (
-                <div className="bg-white px-4 py-5 border-t border-neutral-200/80 sticky bottom-0 left-0 right-0 z-[100] w-full mt-auto">
-                    <button
-                        onClick={handleNext}
-                        className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-green-500/25 hover:shadow-xl hover:shadow-green-500/30 active:scale-[0.98] text-base"
-                    >
-                        Continue <ChevronRight className="w-5 h-5" />
-                    </button>
+                <div className="px-3 md:px-4 py-3 sticky bottom-0 left-0 right-0 z-[100] w-full mt-auto backdrop-blur-md"
+                    style={{ background: 'rgba(15, 23, 42, 0.8)', borderTop: '1px solid rgba(92,225,230,0.1)' }}
+                >
+                    <div className="flex gap-3">
+                        <button
+                            onClick={onBack}
+                            className="h-12 px-5 flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 active:scale-95 transition-all text-sm font-bold"
+                        >
+                            <ChevronLeft className="w-5 h-5" />
+                            Back
+                        </button>
+                        <button
+                            onClick={handleNext}
+                            className="flex-1 text-white font-bold py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-teal-500/20 active:scale-[0.98] text-sm md:text-base group hover:shadow-teal-500/30 overflow-hidden relative"
+                            style={{ background: 'linear-gradient(90deg, #2dd4bf 0%, #0d9488 100%)' }}
+                        >
+                            {/* Shine Effect */}
+                            <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-shine"></div>
+                            <span className="relative z-10 flex items-center gap-2">
+                                Continue
+                                <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                            </span>
+                        </button>
+                    </div>
                 </div>
             )}
         </div>

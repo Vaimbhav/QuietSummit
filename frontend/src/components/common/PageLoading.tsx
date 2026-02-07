@@ -6,7 +6,7 @@ interface PageLoadingProps {
 
 export default function PageLoading({ message = 'Loading...' }: PageLoadingProps) {
     return (
-        <div className="fixed inset-0 z-[9998] bg-white/80 backdrop-blur-sm flex items-center justify-center">
+        <div className="fixed inset-0 z-[9998] bg-dark-card/95 backdrop-blur-sm flex items-center justify-center">
             <div className="text-center">
                 <motion.div
                     animate={{

@@ -80,9 +80,6 @@ export default function Button({
             className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
             disabled={disabled || isLoading}
         >
-            {/* Shimmer effect on hover */}
-            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none"></span>
-
             {isLoading && (
                 <svg className="animate-spin h-4 w-4 relative z-10" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3"></circle>

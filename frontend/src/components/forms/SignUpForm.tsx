@@ -332,7 +332,7 @@ export default function SignUpForm() {
                 </label>
                 <select
                     {...register('howDidYouHear', { required: 'Please select an option' })}
-                    className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-3 pr-12 rounded-lg border-2 border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-semibold appearance-none cursor-pointer shadow-sm hover:shadow-md hover:border-primary-400 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_1rem] bg-no-repeat"
                 >
                     <option value="">Select an option</option>
                     <option value="social-media">Social Media</option>

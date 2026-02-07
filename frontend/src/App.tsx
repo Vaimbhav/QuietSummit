@@ -11,6 +11,7 @@ import SkipToContent from '@components/common/SkipToContent'
 import { ToastProvider } from '@components/common/ToastProvider'
 import Loader from '@components/common/Loader'
 import ScrollToTop from '@components/common/ScrollToTop'
+import QuietBelieverCTA from '@components/common/QuietBelieverCTA'
 
 // Eager load critical pages
 import Home from '@pages/Home'
@@ -19,6 +20,10 @@ import SignUp from '@pages/SignUp'
 // Lazy load secondary pages
 const Journeys = lazy(() => import('@pages/Journeys'))
 const JourneyDetail = lazy(() => import('@pages/JourneyDetail'))
+const Pulse = lazy(() => import('@pages/Pulse'))
+const Guides = lazy(() => import('@pages/Guides'))
+const StayAndGive = lazy(() => import('@pages/StayAndGive'))
+const Search = lazy(() => import('@pages/Search'))
 const About = lazy(() => import('@pages/About'))
 const Contact = lazy(() => import('@pages/Contact'))
 const ForgotPassword = lazy(() => import('@pages/ForgotPassword'))
@@ -65,6 +70,7 @@ function AppContent() {
             <HealthCheckBanner />
             <AuthStateManager />
             <SessionManager />
+            <QuietBelieverCTA />
             <Header />
             <main id="main-content" className="grow">
                 <Suspense fallback={
@@ -77,6 +83,10 @@ function AppContent() {
                         <Route path="/" element={<Home />} />
                         <Route path="/journeys" element={<Journeys />} />
                         <Route path="/journeys/:id" element={<JourneyDetail />} />
+                        <Route path="/pulse" element={<Pulse />} />
+                        <Route path="/guides" element={<Guides />} />
+                        <Route path="/stay-and-give" element={<StayAndGive />} />
+                        <Route path="/search" element={<Search />} />
                         <Route path="/homestays" element={<Homestays />} />
                         <Route path="/homestays/:slug" element={<HomestayDetail />} />
 

@@ -21,21 +21,26 @@ export default function SpecialRequestsForm({ specialRequests, onUpdate }: Speci
     return (
         <div className="space-y-6">
             <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Special Requests</h3>
-                <p className="text-sm text-gray-600 mb-6">
+                <h3 className="text-lg font-semibold mb-4" style={{ color: '#ffffff' }}>Special Requests</h3>
+                <p className="text-sm mb-6" style={{ color: '#B0B7C3' }}>
                     Let the host know about any special requirements or preferences for your stay.
                 </p>
             </div>
 
             {/* Arrival Time */}
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: '#B0B7C3' }}>
                     Estimated Arrival Time
                 </label>
                 <select
                     value={formData.arrivalTime}
                     onChange={(e) => handleChange('arrivalTime', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-3 pr-12 rounded-xl appearance-none cursor-pointer font-medium shadow-sm transition-all bg-no-repeat"
+                    style={{
+                        background: 'rgba(30, 33, 57, 0.6) url(\'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==\') center right 1rem no-repeat',
+                        border: '2px solid rgba(92, 225, 230, 0.2)',
+                        color: '#ffffff'
+                    }}
                 >
                     <option value="">Select arrival time</option>
                     <option value="morning">Morning (8:00 AM - 12:00 PM)</option>
@@ -48,7 +53,7 @@ export default function SpecialRequestsForm({ specialRequests, onUpdate }: Speci
 
             {/* Trip Purpose */}
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: '#B0B7C3' }}>
                     Purpose of Trip
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -57,10 +62,12 @@ export default function SpecialRequestsForm({ specialRequests, onUpdate }: Speci
                             key={purpose}
                             type="button"
                             onClick={() => handleChange('tripPurpose', purpose)}
-                            className={`px-4 py-3 border-2 rounded-lg font-medium transition-all ${formData.tripPurpose === purpose
-                                    ? 'border-primary-600 bg-primary-50 text-primary-700'
-                                    : 'border-gray-300 hover:border-gray-400 text-gray-700'
-                                }`}
+                            className="px-4 py-3 rounded-lg font-medium transition-all"
+                            style={{
+                                border: formData.tripPurpose === purpose ? '2px solid #5CE1E6' : '2px solid rgba(92, 225, 230, 0.3)',
+                                background: formData.tripPurpose === purpose ? 'rgba(92, 225, 230, 0.15)' : 'transparent',
+                                color: formData.tripPurpose === purpose ? '#5CE1E6' : '#B0B7C3'
+                            }}
                         >
                             {purpose}
                         </button>
@@ -70,24 +77,29 @@ export default function SpecialRequestsForm({ specialRequests, onUpdate }: Speci
 
             {/* Special Requests */}
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: '#B0B7C3' }}>
                     Additional Requests or Notes
                 </label>
                 <textarea
                     value={formData.requests}
                     onChange={(e) => handleChange('requests', e.target.value)}
                     rows={5}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                    className="w-full px-4 py-2 rounded-lg resize-none"
+                    style={{
+                        background: 'rgba(30, 33, 57, 0.6)',
+                        border: '2px solid rgba(92, 225, 230, 0.2)',
+                        color: '#ffffff'
+                    }}
                     placeholder="E.g., dietary restrictions, accessibility needs, early check-in request, etc."
                 />
-                <p className="mt-2 text-xs text-gray-500">
+                <p className="mt-2 text-xs" style={{ color: '#B0B7C3' }}>
                     {formData.requests.length}/500 characters
                 </p>
             </div>
 
             {/* Common Requests */}
             <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Common Requests</h4>
+                <h4 className="text-sm font-medium mb-3" style={{ color: '#B0B7C3' }}>Common Requests</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                         'Early check-in',
@@ -107,7 +119,12 @@ export default function SpecialRequestsForm({ specialRequests, onUpdate }: Speci
                                     : `• ${request}`;
                                 handleChange('requests', newRequest);
                             }}
-                            className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 text-left transition-colors"
+                            className="px-4 py-2 text-sm rounded-lg text-left transition-colors"
+                            style={{
+                                border: '1px solid rgba(92, 225, 230, 0.3)',
+                                color: '#B0B7C3',
+                                background: 'rgba(30, 33, 57, 0.4)'
+                            }}
                         >
                             + {request}
                         </button>
@@ -115,10 +132,11 @@ export default function SpecialRequestsForm({ specialRequests, onUpdate }: Speci
                 </div>
             </div>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <div className="rounded-lg p-4" style={{ background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.3)' }}>
                 <div className="flex gap-3">
                     <svg
-                        className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"
+                        className="w-5 h-5 flex-shrink-0 mt-0.5"
+                        style={{ color: '#fbbf24' }}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                     >
@@ -129,8 +147,8 @@ export default function SpecialRequestsForm({ specialRequests, onUpdate }: Speci
                         />
                     </svg>
                     <div>
-                        <p className="text-sm font-medium text-amber-900">Please Note</p>
-                        <p className="text-sm text-amber-700 mt-1">
+                        <p className="text-sm font-medium" style={{ color: '#fbbf24' }}>Please Note</p>
+                        <p className="text-sm mt-1" style={{ color: '#B0B7C3' }}>
                             Special requests are subject to availability and may incur additional charges. The host will
                             confirm your requests after booking.
                         </p>

@@ -57,10 +57,10 @@ export default function BookingReview({
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Booking Summary */}
-            <div className="bg-gradient-to-br from-primary-50 to-blue-50 rounded-xl p-6 border border-primary-100">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Booking Summary</h3>
+            <div className="rounded-xl p-6" style={{ background: 'rgba(61, 157, 163, 0.1)', border: '1px solid rgba(92, 225, 230, 0.3)' }}>
+                <h3 className="text-lg font-semibold mb-4" style={{ color: '#ffffff' }}>Booking Summary</h3>
 
                 <div className="space-y-3">
                     <div className="flex items-start gap-4">
@@ -70,53 +70,53 @@ export default function BookingReview({
                             className="w-20 h-20 rounded-lg object-cover"
                         />
                         <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900">{property.title}</h4>
-                            <p className="text-sm text-gray-600">
+                            <h4 className="font-semibold" style={{ color: '#ffffff' }}>{property.title}</h4>
+                            <p className="text-sm" style={{ color: '#B0B7C3' }}>
                                 {property.address.city}, {property.address.state}
                             </p>
-                            <p className="text-sm text-gray-600">{property.propertyType}</p>
+                            <p className="text-sm" style={{ color: '#B0B7C3' }}>{property.propertyType}</p>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-primary-200">
+                    <div className="grid grid-cols-2 gap-4 pt-4" style={{ borderTop: '1px solid rgba(92, 225, 230, 0.2)' }}>
                         <div>
-                            <p className="text-xs text-gray-600 mb-1">Check-in</p>
-                            <p className="font-medium text-gray-900">{formatDate(checkIn)}</p>
+                            <p className="text-xs mb-1" style={{ color: '#5CE1E6' }}>Check-in</p>
+                            <p className="font-medium" style={{ color: '#ffffff' }}>{formatDate(checkIn)}</p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-600 mb-1">Check-out</p>
-                            <p className="font-medium text-gray-900">{formatDate(checkOut)}</p>
+                            <p className="text-xs mb-1" style={{ color: '#5CE1E6' }}>Check-out</p>
+                            <p className="font-medium" style={{ color: '#ffffff' }}>{formatDate(checkOut)}</p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-600 mb-1">Guests</p>
-                            <p className="font-medium text-gray-900">{guests} guest{guests > 1 ? 's' : ''}</p>
+                            <p className="text-xs mb-1" style={{ color: '#5CE1E6' }}>Guests</p>
+                            <p className="font-medium" style={{ color: '#ffffff' }}>{guests} guest{guests > 1 ? 's' : ''}</p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-600 mb-1">Nights</p>
-                            <p className="font-medium text-gray-900">{priceBreakdown.nights} night{priceBreakdown.nights > 1 ? 's' : ''}</p>
+                            <p className="text-xs mb-1" style={{ color: '#5CE1E6' }}>Nights</p>
+                            <p className="font-medium" style={{ color: '#ffffff' }}>{priceBreakdown.nights} night{priceBreakdown.nights > 1 ? 's' : ''}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Price Breakdown */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <div className="rounded-xl p-6" style={{ background: 'rgba(30, 33, 57, 0.9)', border: '1px solid rgba(92, 225, 230, 0.2)' }}>
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Price Details</h3>
+                    <h3 className="text-lg font-semibold" style={{ color: '#ffffff' }}>Price Details</h3>
                 </div>
 
                 <div className="space-y-3">
-                    <div className="flex justify-between text-gray-700">
+                    <div className="flex justify-between" style={{ color: '#B0B7C3' }}>
                         <span>₹{property.pricing.basePrice} × {priceBreakdown.nights} nights</span>
                         <span>₹{priceBreakdown.basePrice}</span>
                     </div>
                     {priceBreakdown.cleaningFee > 0 && (
-                        <div className="flex justify-between text-gray-700">
+                        <div className="flex justify-between" style={{ color: '#B0B7C3' }}>
                             <span>Cleaning fee</span>
                             <span>₹{priceBreakdown.cleaningFee}</span>
                         </div>
                     )}
-                    <div className="pt-3 border-t border-gray-200 flex justify-between font-bold text-lg text-gray-900">
+                    <div className="pt-3 flex justify-between font-bold text-lg" style={{ borderTop: '1px solid rgba(92, 225, 230, 0.2)', color: '#ffffff' }}>
                         <span>Total (INR)</span>
                         <span>₹{priceBreakdown.totalPrice}</span>
                     </div>
@@ -124,12 +124,13 @@ export default function BookingReview({
             </div>
 
             {/* Guest Information */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <div className="rounded-xl p-6" style={{ background: 'rgba(30, 33, 57, 0.9)', border: '1px solid rgba(92, 225, 230, 0.2)' }}>
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Guest Information</h3>
+                    <h3 className="text-lg font-semibold" style={{ color: '#ffffff' }}>Guest Information</h3>
                     <button
                         onClick={() => onEdit(1)}
-                        className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                        className="text-sm font-medium"
+                        style={{ color: '#5CE1E6' }}
                     >
                         Edit
                     </button>
@@ -137,17 +138,17 @@ export default function BookingReview({
 
                 <div className="space-y-3">
                     <div>
-                        <p className="text-xs text-gray-600 mb-1">Primary Guest</p>
-                        <p className="font-medium text-gray-900">{primaryGuest.name}</p>
-                        <p className="text-sm text-gray-600">{primaryGuest.email}</p>
-                        <p className="text-sm text-gray-600">{primaryGuest.phone}</p>
+                        <p className="text-xs mb-1" style={{ color: '#5CE1E6' }}>Primary Guest</p>
+                        <p className="font-medium" style={{ color: '#ffffff' }}>{primaryGuest.name}</p>
+                        <p className="text-sm" style={{ color: '#B0B7C3' }}>{primaryGuest.email}</p>
+                        <p className="text-sm" style={{ color: '#B0B7C3' }}>{primaryGuest.phone}</p>
                     </div>
 
                     {additionalGuests.length > 0 && (
-                        <div className="pt-3 border-t border-gray-200">
-                            <p className="text-xs text-gray-600 mb-2">Additional Guests</p>
+                        <div className="pt-3" style={{ borderTop: '1px solid rgba(92, 225, 230, 0.2)' }}>
+                            <p className="text-xs mb-2" style={{ color: '#5CE1E6' }}>Additional Guests</p>
                             {additionalGuests.map((guest, index) => (
-                                <p key={index} className="text-sm text-gray-700">
+                                <p key={index} className="text-sm" style={{ color: '#B0B7C3' }}>
                                     {guest.name} ({guest.age} years)
                                 </p>
                             ))}
@@ -158,12 +159,13 @@ export default function BookingReview({
 
             {/* Special Requests */}
             {(specialRequests.arrivalTime || specialRequests.requests || specialRequests.tripPurpose) && (
-                <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <div className="rounded-xl p-6" style={{ background: 'rgba(30, 33, 57, 0.9)', border: '1px solid rgba(92, 225, 230, 0.2)' }}>
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">Special Requests</h3>
+                        <h3 className="text-lg font-semibold" style={{ color: '#ffffff' }}>Special Requests</h3>
                         <button
                             onClick={() => onEdit(2)}
-                            className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                            className="text-sm font-medium"
+                            style={{ color: '#5CE1E6' }}
                         >
                             Edit
                         </button>
@@ -171,19 +173,19 @@ export default function BookingReview({
 
                     <div className="space-y-2 text-sm">
                         {specialRequests.tripPurpose && (
-                            <p className="text-gray-700">
-                                <span className="font-medium">Purpose:</span> {specialRequests.tripPurpose}
+                            <p style={{ color: '#B0B7C3' }}>
+                                <span className="font-medium" style={{ color: '#5CE1E6' }}>Purpose:</span> {specialRequests.tripPurpose}
                             </p>
                         )}
                         {specialRequests.arrivalTime && (
-                            <p className="text-gray-700">
-                                <span className="font-medium">Arrival:</span> {specialRequests.arrivalTime}
+                            <p style={{ color: '#B0B7C3' }}>
+                                <span className="font-medium" style={{ color: '#5CE1E6' }}>Arrival:</span> {specialRequests.arrivalTime}
                             </p>
                         )}
                         {specialRequests.requests && (
                             <div>
-                                <p className="font-medium text-gray-700 mb-1">Additional Requests:</p>
-                                <p className="text-gray-600 whitespace-pre-line">{specialRequests.requests}</p>
+                                <p className="font-medium mb-1" style={{ color: '#5CE1E6' }}>Additional Requests:</p>
+                                <p className="whitespace-pre-line" style={{ color: '#B0B7C3' }}>{specialRequests.requests}</p>
                             </div>
                         )}
                     </div>
@@ -191,9 +193,9 @@ export default function BookingReview({
             )}
 
             {/* Cancellation Policy */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Cancellation Policy</h3>
-                <p className="text-sm text-gray-700 mb-4">
+            <div className="rounded-xl p-6" style={{ background: 'rgba(30, 33, 57, 0.9)', border: '1px solid rgba(92, 225, 230, 0.2)' }}>
+                <h3 className="text-lg font-semibold mb-3" style={{ color: '#ffffff' }}>Cancellation Policy</h3>
+                <p className="text-sm mb-4" style={{ color: '#B0B7C3' }}>
                     Free cancellation up to 48 hours before check-in. After that, cancellations will incur a 50% charge.
                 </p>
                 <label className="flex items-start gap-3 cursor-pointer">
@@ -201,32 +203,34 @@ export default function BookingReview({
                         type="checkbox"
                         checked={acceptedCancellation}
                         onChange={(e) => onCancellationChange(e.target.checked)}
-                        className="mt-1 w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                        className="mt-1 w-4 h-4 rounded"
+                        style={{ accentColor: '#5CE1E6' }}
                     />
-                    <span className="text-sm text-gray-700">
+                    <span className="text-sm" style={{ color: '#B0B7C3' }}>
                         I understand and accept the cancellation policy
                     </span>
                 </label>
             </div>
 
             {/* Terms & Conditions */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Terms & Conditions</h3>
+            <div className="rounded-xl p-6" style={{ background: 'rgba(30, 33, 57, 0.9)', border: '1px solid rgba(92, 225, 230, 0.2)' }}>
+                <h3 className="text-lg font-semibold mb-3" style={{ color: '#ffffff' }}>Terms & Conditions</h3>
                 <div className="space-y-3">
                     <label className="flex items-start gap-3 cursor-pointer">
                         <input
                             type="checkbox"
                             checked={acceptedTerms}
                             onChange={(e) => onTermsChange(e.target.checked)}
-                            className="mt-1 w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                            className="mt-1 w-4 h-4 rounded"
+                            style={{ accentColor: '#5CE1E6' }}
                         />
-                        <span className="text-sm text-gray-700">
+                        <span className="text-sm" style={{ color: '#B0B7C3' }}>
                             I agree to the{' '}
-                            <a href="/terms" className="text-primary-600 hover:underline" target="_blank">
+                            <a href="/terms" className="hover:underline" style={{ color: '#5CE1E6' }} target="_blank">
                                 Terms of Service
                             </a>{' '}
                             and{' '}
-                            <a href="/privacy" className="text-primary-600 hover:underline" target="_blank">
+                            <a href="/privacy" className="hover:underline" style={{ color: '#5CE1E6' }} target="_blank">
                                 Privacy Policy
                             </a>
                         </span>
@@ -235,9 +239,10 @@ export default function BookingReview({
                     <label className="flex items-start gap-3 cursor-pointer">
                         <input
                             type="checkbox"
-                            className="mt-1 w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                            className="mt-1 w-4 h-4 rounded"
+                            style={{ accentColor: '#5CE1E6' }}
                         />
-                        <span className="text-sm text-gray-700">
+                        <span className="text-sm" style={{ color: '#B0B7C3' }}>
                             I acknowledge that I have read and agree to the house rules
                         </span>
                     </label>
@@ -245,8 +250,8 @@ export default function BookingReview({
             </div>
 
             {(!acceptedTerms || !acceptedCancellation) && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                    <p className="text-sm text-red-800">
+                <div className="rounded-lg p-4" style={{ background: 'rgba(255, 100, 100, 0.15)', border: '1px solid rgba(255, 100, 100, 0.3)' }}>
+                    <p className="text-sm" style={{ color: '#ff6464' }}>
                         Please accept the cancellation policy and terms & conditions to proceed with booking.
                     </p>
                 </div>

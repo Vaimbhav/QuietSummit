@@ -22,8 +22,26 @@ export interface IProperty extends Document {
         currency: string
         weeklyDiscount?: number
         monthlyDiscount?: number
+        longTermDiscount?: {
+            thirtyDays?: number
+            sixtyDays?: number
+            ninetyDays?: number
+        }
         cleaningFee?: number
         securityDeposit?: number
+    }
+    quietScore: {
+        connectivityLevel: number
+        silenceLevel: number
+        workFromMountain: {
+            isReady: boolean
+            wifiSpeed?: string
+            dedicatedWorkspace?: boolean
+            ergonomicFurniture?: boolean
+            powerBackup?: boolean
+            details?: string
+        }
+        overallScore?: number
     }
     capacity: {
         guests: number
@@ -174,6 +192,23 @@ const propertySchema = new Schema<IProperty>(
                 min: [0, 'Discount cannot be negative'],
                 max: [100, 'Discount cannot exceed 100%'],
             },
+            longTermDiscount: {
+                thirtyDays: {
+                    type: Number,
+                    min: [0, 'Discount cannot be negative'],
+                    max: [100, 'Discount cannot exceed 100%'],
+                },
+                sixtyDays: {
+                    type: Number,
+                    min: [0, 'Discount cannot be negative'],
+                    max: [100, 'Discount cannot exceed 100%'],
+                },
+                ninetyDays: {
+                    type: Number,
+                    min: [0, 'Discount cannot be negative'],
+                    max: [100, 'Discount cannot exceed 100%'],
+                },
+            },
             cleaningFee: {
                 type: Number,
                 min: [0, 'Cleaning fee cannot be negative'],
@@ -183,6 +218,53 @@ const propertySchema = new Schema<IProperty>(
                 type: Number,
                 min: [0, 'Security deposit cannot be negative'],
                 default: 0,
+            },
+        },
+        quietScore: {
+            connectivityLevel: {
+                type: Number,
+                required: [true, 'Connectivity level is required'],
+                min: [1, 'Connectivity level must be between 1 and 5'],
+                max: [5, 'Connectivity level must be between 1 and 5'],
+                default: 3,
+            },
+            silenceLevel: {
+                type: Number,
+                required: [true, 'Silence level is required'],
+                min: [1, 'Silence level must be between 1 and 5'],
+                max: [5, 'Silence level must be between 1 and 5'],
+                default: 3,
+            },
+            workFromMountain: {
+                isReady: {
+                    type: Boolean,
+                    default: false,
+                },
+                wifiSpeed: {
+                    type: String,
+                    enum: ['None', 'Slow', 'Moderate', 'Fast', 'Very Fast'],
+                },
+                dedicatedWorkspace: {
+                    type: Boolean,
+                    default: false,
+                },
+                ergonomicFurniture: {
+                    type: Boolean,
+                    default: false,
+                },
+                powerBackup: {
+                    type: Boolean,
+                    default: false,
+                },
+                details: {
+                    type: String,
+                    maxlength: [500, 'Details cannot exceed 500 characters'],
+                },
+            },
+            overallScore: {
+                type: Number,
+                min: [0, 'Overall score must be between 0 and 10'],
+                max: [10, 'Overall score must be between 0 and 10'],
             },
         },
         capacity: {

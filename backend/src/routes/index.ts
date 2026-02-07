@@ -17,6 +17,7 @@ import adminRouter from './admin'
 import notificationsRouter from './notifications'
 import searchRouter from './search'
 import profileRouter from './profile'
+import stayAndGiveRouter from './stayAndGive'
 
 const router = Router()
 
@@ -38,6 +39,7 @@ router.use('/admin', adminRouter)
 router.use('/notifications', notificationsRouter)
 router.use('/search', searchRouter)
 router.use('/profile', profileRouter)
+router.use('/stay-and-give', stayAndGiveRouter)
 
 router.get('/health', (_req, res) => {
     res.json({

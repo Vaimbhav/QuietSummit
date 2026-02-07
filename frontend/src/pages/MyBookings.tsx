@@ -36,15 +36,15 @@ export default function MyBookings() {
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'confirmed':
-                return 'bg-green-100 text-green-800';
+                return 'bg-green-400/20 text-green-300 border border-green-400/30';
             case 'pending':
-                return 'bg-yellow-100 text-yellow-800';
+                return 'bg-yellow-400/20 text-yellow-300 border border-yellow-400/30';
             case 'cancelled':
-                return 'bg-red-100 text-red-800';
+                return 'bg-red-400/20 text-red-300 border border-red-400/30';
             case 'completed':
-                return 'bg-blue-100 text-blue-800';
+                return 'bg-blue-400/20 text-blue-300 border border-blue-400/30';
             default:
-                return 'bg-gray-100 text-gray-800';
+                return 'bg-neutral-400/20 text-neutral-300 border border-neutral-400/30';
         }
     };
 
@@ -65,23 +65,22 @@ export default function MyBookings() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
-            <div className="container mx-auto px-6 max-w-6xl">
+        <div className="min-h-screen bg-dark py-6">
+            <div className="container mx-auto px-4 max-w-6xl">
                 {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">My Bookings</h1>
-                    <p className="text-gray-600">Manage your travel bookings and reservations</p>
+                <div className="mb-6">
+                    <h1 className="text-2xl font-bold text-white mb-2">My Bookings</h1>
+                    <p className="text-neutral-300 text-sm">Manage your travel bookings and reservations</p>
                 </div>
 
-                {/* Filters */}
-                <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-                    <div className="flex flex-wrap gap-4">
+                <div className="glass-effect rounded-xl shadow-sm p-3 md:p-4 mb-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                            <label className="block text-xs font-semibold text-neutral-200 mb-1.5">Type</label>
                             <select
                                 value={filter}
                                 onChange={(e) => setFilter(e.target.value as any)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-4 py-3 pr-12 border-2 border-dark-border rounded-xl focus:ring-2 focus:ring-primary-300 focus:border-primary-300 appearance-none cursor-pointer font-semibold shadow-sm hover:shadow-md transition-all hover:border-primary-300 bg-dark-card text-white bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_1rem] bg-no-repeat"
                                 aria-label="Filter by booking type"
                             >
                                 <option value="all">All Bookings</option>
@@ -90,11 +89,11 @@ export default function MyBookings() {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                            <label className="block text-xs font-semibold text-neutral-300 mb-1.5">Status</label>
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                                className="w-full px-3 py-2.5 border border-dark-border rounded-lg focus:ring-2 focus:ring-primary-300/50 focus:border-primary-300 appearance-none cursor-pointer font-semibold shadow-sm hover:shadow-md transition-all hover:border-primary-400/50 bg-dark-card text-white text-sm bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_1rem] bg-no-repeat"
                                 aria-label="Filter by booking status"
                             >
                                 <option value="all">All Status</option>
@@ -109,34 +108,34 @@ export default function MyBookings() {
 
                 {/* Error State */}
                 {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
+                    <div className="bg-red-500/20 border border-red-500/50 text-red-300 px-3 py-2.5 rounded-lg mb-5 text-sm">
                         {error}
                     </div>
                 )}
 
                 {/* Bookings List */}
                 {bookings.length === 0 ? (
-                    <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-                        <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">No bookings found</h3>
-                        <p className="text-gray-600 mb-6">Start exploring and book your next adventure!</p>
-                        <div className="flex gap-4 justify-center">
+                    <div className="glass-effect rounded-xl shadow-sm p-10 text-center border border-dark-border">
+                        <Calendar className="w-14 h-14 text-neutral-300 mx-auto mb-3" />
+                        <h3 className="text-lg font-semibold text-white mb-2">No bookings found</h3>
+                        <p className="text-neutral-300 text-sm mb-5">Start exploring and book your next adventure!</p>
+                        <div className="flex gap-3 justify-center">
                             <Link
                                 to="/journeys"
-                                className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                                className="btn-premium px-5 py-2.5 text-sm rounded-lg"
                             >
                                 Browse Journeys
                             </Link>
                             <Link
                                 to="/homestays"
-                                className="px-6 py-3 border border-primary-600 text-primary-600 rounded-lg hover:bg-primary-50"
+                                className="px-5 py-2.5 border border-primary-300 text-primary-300 rounded-lg hover:bg-primary-300/10 text-sm font-semibold transition-colors"
                             >
                                 Browse Properties
                             </Link>
                         </div>
                     </div>
                 ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {bookings.map((booking) => {
                             const isProperty = booking.propertyId !== undefined;
                             const item = isProperty ? booking.propertyId : booking.journeyId;
@@ -157,10 +156,10 @@ export default function MyBookings() {
                                 : (booking.journeyId?.location || 'Location unavailable');
 
                             return (
-                                <div key={booking._id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                                <div key={booking._id} className="glass-effect rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-dark-border">
                                     <div className="flex flex-col md:flex-row">
                                         {/* Image */}
-                                        <div className="md:w-64 h-48 md:h-auto shrink-0">
+                                        <div className="md:w-56 h-40 md:h-auto shrink-0">
                                             <img
                                                 src={image || '/images/placeholder.jpg'}
                                                 alt={item?.title || 'Booking'}
@@ -169,67 +168,67 @@ export default function MyBookings() {
                                         </div>
 
                                         {/* Content */}
-                                        <div className="flex-1 p-6">
-                                            <div className="flex items-start justify-between mb-4">
+                                        <div className="flex-1 p-5">
+                                            <div className="flex items-start justify-between mb-3">
                                                 <div>
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <span className="px-3 py-1 bg-primary-100 text-primary-800 rounded-full text-xs font-medium">
+                                                        <span className="px-2.5 py-1 bg-primary-300/20 text-primary-300 rounded-full text-xs font-medium border border-primary-300/30">
                                                             {isProperty ? 'Property' : 'Journey'}
                                                         </span>
-                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(booking.status)}`}>
+                                                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(booking.status)}`}>
                                                             {booking.status}
                                                         </span>
                                                     </div>
-                                                    <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                                                    <h3 className="text-lg font-semibold text-white mb-1">
                                                         {item?.title || 'Untitled'}
                                                     </h3>
-                                                    <p className="text-gray-600 flex items-center gap-1">
-                                                        <MapPin className="w-4 h-4" />
+                                                    <p className="text-neutral-300 text-sm flex items-center gap-1">
+                                                        <MapPin className="w-3.5 h-3.5" />
                                                         {location}
                                                     </p>
                                                 </div>
                                                 <div className="text-right">
-                                                    <p className="text-2xl font-bold text-gray-900">₹{booking.totalPrice}</p>
-                                                    <p className="text-sm text-gray-500">Total</p>
+                                                    <p className="text-xl font-bold text-white">₹{booking.totalPrice}</p>
+                                                    <p className="text-xs text-neutral-200">Total</p>
                                                 </div>
                                             </div>
 
-                                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t">
+                                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-dark-border">
                                                 <div className="flex items-center gap-2">
-                                                    <Calendar className="w-5 h-5 text-gray-400" />
+                                                    <Calendar className="w-4 h-4 text-neutral-300" />
                                                     <div>
-                                                        <p className="text-xs text-gray-500">Check-in</p>
-                                                        <p className="font-medium text-gray-900">{formatDate(booking.checkIn)}</p>
+                                                        <p className="text-xs text-neutral-200">Check-in</p>
+                                                        <p className="font-medium text-white text-sm">{formatDate(booking.checkIn)}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-2">
-                                                    <Calendar className="w-5 h-5 text-gray-400" />
+                                                    <Calendar className="w-4 h-4 text-neutral-300" />
                                                     <div>
-                                                        <p className="text-xs text-gray-500">Check-out</p>
-                                                        <p className="font-medium text-gray-900">{formatDate(booking.checkOut)}</p>
+                                                        <p className="text-xs text-neutral-200">Check-out</p>
+                                                        <p className="font-medium text-white text-sm">{formatDate(booking.checkOut)}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-2">
-                                                    <Users className="w-5 h-5 text-gray-400" />
+                                                    <Users className="w-4 h-4 text-neutral-300" />
                                                     <div>
-                                                        <p className="text-xs text-gray-500">Guests</p>
-                                                        <p className="font-medium text-gray-900">{booking.guests}</p>
+                                                        <p className="text-xs text-neutral-200">Guests</p>
+                                                        <p className="font-medium text-white text-sm">{booking.guests}</p>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div className="flex gap-3 mt-4">
+                                            <div className="flex gap-2 mt-3">
                                                 <Link
                                                     to={isProperty
                                                         ? `/homestays/${item?._id}`
                                                         : `/journeys/${item?._id}`
                                                     }
-                                                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
+                                                    className="btn-premium px-4 py-2 text-sm rounded-lg"
                                                 >
                                                     View Details
                                                 </Link>
                                                 {booking.status === 'confirmed' && (
-                                                    <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                                                    <button className="px-4 py-2 border border-dark-border text-neutral-300 rounded-lg hover:bg-dark-card text-sm font-medium transition-colors">
                                                         Cancel Booking
                                                     </button>
                                                 )}

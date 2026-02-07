@@ -12,6 +12,7 @@ import Button from '@components/common/Button'
 import BookingForm from '@components/forms/BookingForm'
 import BookingGuard from '@components/common/BookingGuard'
 import JourneyGallery from '@components/journey/JourneyGallery'
+import SEOHead from '@components/common/SEOHead'
 
 interface AccordionItemProps {
     title: string
@@ -24,19 +25,19 @@ interface AccordionItemProps {
 
 const PremiumAccordionItem = ({ title, icon, children, isOpen, onToggle, iconContainerClass = "gradient-premium text-white" }: AccordionItemProps) => {
     return (
-        <div className="glass-luxury rounded-2xl overflow-hidden shadow-luxury border-luxury mb-4">
+        <div className="rounded-2xl overflow-hidden bg-[#1e2139] border border-[#5ce1e6]/20 shadow-[0_8px_20px_rgba(0,0,0,0.3)]">
             <button
                 onClick={onToggle}
-                className="w-full flex items-center justify-between p-4 sm:p-5 bg-white/50 backdrop-blur-sm"
+                className="w-full flex items-center justify-between p-4 sm:p-5 bg-[#0a0e27]/40"
             >
                 <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-xl shadow-luxury ${iconContainerClass}`}>
+                    <div className={`p-2 rounded-xl ${iconContainerClass} bg-linear-to-br from-[#3d9da3] to-[#2d6b9e] shadow-[0_4px_12px_rgba(61,157,163,0.3)]`}>
                         {icon}
                     </div>
-                    <span className="font-bold text-lg text-neutral-900">{title}</span>
+                    <span className="font-bold text-lg text-white">{title}</span>
                 </div>
-                <div className={`p-1 rounded-full bg-neutral-100 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
-                    <ChevronDown className="w-5 h-5 text-neutral-500" />
+                <div className={`p-1 rounded-full transition-transform duration-300 ${isOpen ? 'rotate-180' : ''} bg-white/10`}>
+                    <ChevronDown className="w-5 h-5 text-[#B0B7C3]" />
                 </div>
             </button>
             <motion.div
@@ -45,7 +46,7 @@ const PremiumAccordionItem = ({ title, icon, children, isOpen, onToggle, iconCon
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
                 className="overflow-hidden"
             >
-                <div className="p-5 pt-2 border-t border-neutral-100/50 bg-white/30">
+                <div className="p-5 pt-2 border-t border-[#5ce1e6]/10 bg-[#0a0e27]/20">
                     {children}
                 </div>
             </motion.div>
@@ -101,18 +102,18 @@ export default function JourneyDetail() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-neutral-50">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary-600"></div>
+            <div className="min-h-screen flex items-center justify-center bg-[#0a0e27]">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#3d9da3]"></div>
             </div>
         )
     }
 
     if (error || !journey) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-50 text-center px-4">
+            <div className="min-h-screen flex flex-col items-center justify-center text-center px-4 bg-[#0a0e27]">
                 <div className="text-6xl mb-6">😔</div>
-                <h2 className="text-3xl font-bold text-neutral-900 mb-4">Journey Not Found</h2>
-                <p className="text-neutral-600 mb-8">{error || 'The journey you are looking for does not exist.'}</p>
+                <h2 className="text-3xl font-bold text-white mb-4">Journey Not Found</h2>
+                <p className="mb-8 text-[#B0B7C3]">{error || 'The journey you are looking for does not exist.'}</p>
                 <Button
                     onClick={(e) => { e.stopPropagation(); navigate('/journeys') }}
                     variant="primary"
@@ -126,19 +127,45 @@ export default function JourneyDetail() {
         )
     }
 
+    // SEO Schema Data
+    const schemaData = {
+        name: journey.title,
+        description: journey.description,
+        image: journey.images,
+        address: {
+            addressLocality: journey.location.region,
+            addressRegion: journey.location.region,
+            addressCountry: journey.location.country,
+        },
+        offers: journey.price ? {
+            price: journey.price,
+            priceCurrency: 'INR',
+            availability: 'https://schema.org/InStock',
+            validFrom: new Date().toISOString(),
+        } : undefined,
+        duration: `P${journey.duration}D`,
+        url: window.location.href,
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-100/50 via-primary-100/40 to-accent-100/50 pb-20 md:pb-0">
+        <div className="min-h-screen pb-20 md:pb-0 bg-[#0a0e27]">
+            <SEOHead
+                title={journey.title}
+                description={journey.description}
+                keywords={`${journey.title}, ${journey.location.region}, ${journey.location.country}, trek, adventure, himalayan journey`}
+                ogImage={journey.images[0]}
+                schema={schemaData}
+                schemaType="TouristAttraction"
+            />
+
             {/* Hero Section with Navigation */}
-            <section className="relative bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800 overflow-hidden">
+            <section className="relative bg-linear-to-br from-gray-900 via-slate-900 to-gray-800 overflow-hidden">
                 {/* Decorative background elements */}
                 <div className="absolute inset-0 opacity-10">
                     <div className="absolute top-0 left-0 w-96 h-96 bg-primary-500 rounded-full blur-3xl"></div>
                     <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent-500 rounded-full blur-3xl"></div>
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
-                        <div className="absolute inset-0" style={{
-                            backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)`,
-                            backgroundSize: '40px 40px'
-                        }}></div>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_2px_2px,rgba(255,255,255,0.15)_1px,transparent_0)] bg-size-[40px_40px]"></div>
                     </div>
                 </div>
 
@@ -150,7 +177,7 @@ export default function JourneyDetail() {
                             e.stopPropagation()
                             navigate('/journeys')
                         }}
-                        className="flex items-center gap-2 text-white/80 hover:text-white mb-4 sm:mb-6 transition-colors font-medium text-sm sm:text-base"
+                        className="flex items-center gap-2 text-white hover:text-white mb-4 sm:mb-6 transition-all font-medium text-sm sm:text-base px-4 py-2 rounded-lg bg-white/10 border border-white/20 hover:bg-white/20 hover:border-white/30"
                     >
                         <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                         Back to Journeys
@@ -176,25 +203,25 @@ export default function JourneyDetail() {
             </section>
 
             {/* Main Content */}
-            <div className="container mx-auto px-6 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12 max-w-full">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 lg:gap-12 max-w-full relative">
+            <div className="container mx-auto px-6 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10 max-w-full">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 max-w-full relative">
                     {/* Left Column - Main Content */}
-                    <div className="md:col-span-2 space-y-8 sm:space-y-10 lg:space-y-12">
+                    <div className="md:col-span-2 space-y-6 sm:space-y-8 lg:space-y-10">
                         {/* Header */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                         >
-                            <div className="flex items-center gap-2 sm:gap-3 text-primary-600 mb-3 sm:mb-4">
+                            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 text-[#5CE1E6]">
                                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                                 <span className="text-base sm:text-lg font-semibold tracking-wide">
                                     {journey.location.region}, {journey.location.country}
                                 </span>
                             </div>
-                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-neutral-900 mb-4 sm:mb-6 tracking-tight leading-tight">
+                            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4 tracking-tight leading-tight">
                                 {journey.title}
                             </h1>
-                            <p className="text-base sm:text-lg md:text-xl text-neutral-700 leading-relaxed">
+                            <p className="text-sm sm:text-base md:text-lg leading-relaxed text-[#B0B7C3]">
                                 {journey.description}
                             </p>
                         </motion.div>
@@ -204,42 +231,42 @@ export default function JourneyDetail() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5"
+                            className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4"
                         >
-                            <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
-                                <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
-                                <div className="text-2xl sm:text-3xl font-black text-neutral-900 text-premium gradient-text-premium">
+                            <div className="rounded-2xl p-4 sm:p-5 transition-all duration-300 group bg-[#1e2139] border border-[#5ce1e6]/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)]">
+                                <Calendar className="w-7 h-7 sm:w-8 sm:h-8 text-white p-2 rounded-xl mb-2 sm:mb-3 group-hover:scale-110 transition-transform bg-linear-to-br from-[#3d9da3] to-[#2d6b9e] shadow-[0_4px_12px_rgba(61,157,163,0.3)]" />
+                                <div className="text-xl sm:text-2xl font-black text-white">
                                     {typeof journey.duration === 'number' ? journey.duration : journey.duration.days}
                                 </div>
-                                <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">
+                                <div className="text-xs sm:text-sm font-bold mt-1 sm:mt-2 uppercase tracking-wide text-[#B0B7C3]">
                                     Days / {typeof journey.duration === 'number' ? journey.duration - 1 : journey.duration.nights} Nights
                                 </div>
                             </div>
-                            <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
-                                <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
-                                <div className="text-xl sm:text-2xl font-black text-neutral-900 text-premium gradient-text-premium">
+                            <div className="rounded-3xl p-5 sm:p-6 transition-all duration-300 group bg-[#1e2139] border border-[#5ce1e6]/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)]">
+                                <Calendar className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform bg-linear-to-br from-[#3d9da3] to-[#2d6b9e] shadow-[0_4px_12px_rgba(61,157,163,0.3)]" />
+                                <div className="text-xl sm:text-2xl font-black text-white">
                                     {journey.departureDate && !isNaN(new Date(journey.departureDate as any).getTime()) ? new Date(journey.departureDate).toLocaleDateString('en-US', {
                                         month: 'short',
                                         day: 'numeric',
                                         year: 'numeric'
                                     }) : "To be Decided"}
                                 </div>
-                                <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">Departure Date</div>
+                                <div className="text-xs sm:text-sm font-bold mt-1 sm:mt-2 uppercase tracking-wide text-[#B0B7C3]">Departure Date</div>
                             </div>
-                            <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
-                                <Users className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
-                                <div className="text-2xl sm:text-3xl font-black text-neutral-900 text-premium gradient-text-premium">{journey.maxGroupSize}</div>
-                                <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">Max Group Size</div>
+                            <div className="rounded-3xl p-5 sm:p-6 transition-all duration-300 group bg-[#1e2139] border border-[#5ce1e6]/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)]">
+                                <Users className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform bg-linear-to-br from-[#3d9da3] to-[#2d6b9e] shadow-[0_4px_12px_rgba(61,157,163,0.3)]" />
+                                <div className="text-2xl sm:text-3xl font-black text-white">{journey.maxGroupSize}</div>
+                                <div className="text-xs sm:text-sm font-bold mt-1 sm:mt-2 uppercase tracking-wide text-[#B0B7C3]">Max Group Size</div>
                             </div>
-                            <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
-                                <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
-                                <div className="text-2xl sm:text-3xl font-black text-neutral-900 capitalize text-premium gradient-text-premium">{journey.difficulty}</div>
-                                <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">Difficulty Level</div>
+                            <div className="rounded-3xl p-5 sm:p-6 transition-all duration-300 group bg-[#1e2139] border border-[#5ce1e6]/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)]">
+                                <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform bg-linear-to-br from-[#3d9da3] to-[#2d6b9e] shadow-[0_4px_12px_rgba(61,157,163,0.3)]" />
+                                <div className="text-2xl sm:text-3xl font-black text-white capitalize">{journey.difficulty}</div>
+                                <div className="text-xs sm:text-sm font-bold mt-1 sm:mt-2 uppercase tracking-wide text-[#B0B7C3]">Difficulty Level</div>
                             </div>
-                            <div className="glass-luxury rounded-3xl p-5 sm:p-6 shadow-luxury-lg border-luxury hover:shadow-luxury-xl transition-all duration-300 group">
-                                <Clock className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl gradient-premium mb-3 sm:mb-4 group-hover:scale-110 transition-transform shadow-luxury" />
-                                <div className="text-2xl sm:text-3xl font-black text-neutral-900 text-premium gradient-text-premium">{journey.season.length}</div>
-                                <div className="text-xs sm:text-sm font-bold text-neutral-600 mt-1 sm:mt-2 uppercase tracking-wide">Best Seasons</div>
+                            <div className="rounded-3xl p-5 sm:p-6 transition-all duration-300 group bg-[#1e2139] border border-[#5ce1e6]/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)]">
+                                <Clock className="w-8 h-8 sm:w-10 sm:h-10 text-white p-2 rounded-2xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform bg-linear-to-br from-[#3d9da3] to-[#2d6b9e] shadow-[0_4px_12px_rgba(61,157,163,0.3)]" />
+                                <div className="text-2xl sm:text-3xl font-black text-white">{journey.season.length}</div>
+                                <div className="text-xs sm:text-sm font-bold mt-1 sm:mt-2 uppercase tracking-wide text-[#B0B7C3]">Best Seasons</div>
                             </div>
                         </motion.div>
 
@@ -255,8 +282,8 @@ export default function JourneyDetail() {
                                 >
                                     <div className="flex flex-wrap gap-2">
                                         {journey.idealFor.map((item, idx) => (
-                                            <span key={idx} className="px-4 py-2 bg-white rounded-xl text-sm font-bold text-neutral-800 border border-neutral-100 shadow-sm flex items-center gap-2">
-                                                <div className="w-1.5 h-1.5 rounded-full gradient-accent"></div>
+                                            <span key={idx} className="px-4 py-2 rounded-xl text-sm font-bold text-white flex items-center gap-2 bg-[#0a0e27]/60 border border-[#5ce1e6]/20 shadow-[0_2px_8px_rgba(0,0,0,0.2)]">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-linear-to-br from-[#3d9da3] to-[#2d6b9e]"></div>
                                                 {item}
                                             </span>
                                         ))}
@@ -274,7 +301,7 @@ export default function JourneyDetail() {
                                 >
                                     <div className="flex flex-wrap gap-2">
                                         {journey.season.map((s, idx) => (
-                                            <span key={idx} className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl text-sm font-bold text-neutral-800 border border-neutral-100 shadow-sm">
+                                            <span key={idx} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-[#0a0e27]/60 border border-[#5ce1e6]/20 shadow-[0_2px_8px_rgba(0,0,0,0.2)]">
                                                 {getSeasonIcon(s)}
                                                 {s}
                                             </span>
@@ -292,11 +319,11 @@ export default function JourneyDetail() {
                             >
                                 <ul className="space-y-3">
                                     {journey.includes.map((item, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 bg-white/50 p-3 rounded-xl border border-neutral-100/50">
-                                            <div className="mt-0.5 p-1 bg-green-100 rounded-full shrink-0">
-                                                <Check className="w-3.5 h-3.5 text-green-600" strokeWidth={3} />
+                                        <li key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-[#0a0e27]/40 border border-[#5ce1e6]/10">
+                                            <div className="mt-0.5 p-1 rounded-full shrink-0 bg-[#5ce1e6]/20">
+                                                <Check className="w-3.5 h-3.5 text-[#5CE1E6]" strokeWidth={3} />
                                             </div>
-                                            <span className="text-sm text-neutral-700 font-semibold leading-relaxed">{item}</span>
+                                            <span className="text-sm leading-relaxed font-semibold text-[#B0B7C3]">{item}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -312,11 +339,11 @@ export default function JourneyDetail() {
                             >
                                 <ul className="space-y-3">
                                     {journey.excludes.map((item, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 bg-white/50 p-3 rounded-xl border border-neutral-100/50">
-                                            <div className="mt-0.5 p-1 bg-red-100 rounded-full shrink-0">
-                                                <X className="w-3.5 h-3.5 text-red-600" strokeWidth={2.5} />
+                                        <li key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-[#0a0e27]/40 border border-[#ff6464]/20">
+                                            <div className="mt-0.5 p-1 rounded-full shrink-0 bg-[#ff6464]/20">
+                                                <X className="w-3.5 h-3.5 text-[#ff6464]" strokeWidth={2.5} />
                                             </div>
-                                            <span className="text-sm text-neutral-600 font-medium leading-relaxed">{item}</span>
+                                            <span className="text-sm leading-relaxed font-medium text-[#B0B7C3]">{item}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -331,14 +358,14 @@ export default function JourneyDetail() {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.2 }}
-                                    className="glass-luxury rounded-4xl p-6 sm:p-8 md:p-10 shadow-luxury-lg border-luxury"
+                                    className="rounded-4xl p-6 sm:p-8 md:p-10 bg-[#1e2139] border border-[#5ce1e6]/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)]"
                                 >
-                                    <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 mb-5 sm:mb-6 md:mb-8 text-luxury">Ideal For</h2>
+                                    <h2 className="text-2xl sm:text-3xl font-black text-white mb-5 sm:mb-6 md:mb-8">Ideal For</h2>
                                     <div className="flex flex-wrap gap-3 sm:gap-4 -mx-1">
                                         {journey.idealFor.map((item, idx) => (
                                             <span
                                                 key={idx}
-                                                className="px-6 py-3 gradient-primary text-white rounded-2xl text-sm font-extrabold shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide mx-1"
+                                                className="px-6 py-3 text-white rounded-2xl text-sm font-extrabold hover:-translate-y-1 transition-all duration-300 uppercase tracking-wide mx-1 bg-linear-to-br from-[#3d9da3] to-[#2d6b9e] shadow-[0_4px_12px_rgba(61,157,163,0.3)]"
                                             >
                                                 {item}
                                             </span>
@@ -353,14 +380,14 @@ export default function JourneyDetail() {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.25 }}
-                                    className="glass-luxury rounded-4xl p-6 sm:p-8 md:p-10 shadow-luxury-lg border-luxury"
+                                    className="rounded-4xl p-6 sm:p-8 md:p-10 bg-[#1e2139] border border-[#5ce1e6]/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)]"
                                 >
-                                    <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 mb-5 sm:mb-7 text-luxury">Best Time to Visit</h2>
+                                    <h2 className="text-2xl sm:text-3xl font-black text-white mb-5 sm:mb-7">Best Time to Visit</h2>
                                     <div className="flex flex-wrap gap-3 sm:gap-4 -mx-1">
                                         {journey.season.map((s, idx) => (
                                             <span
                                                 key={idx}
-                                                className="flex items-center gap-2 sm:gap-2.5 px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 gradient-accent text-white rounded-2xl text-sm sm:text-base font-extrabold shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 mx-1"
+                                                className="flex items-center gap-2 sm:gap-2.5 px-5 sm:px-6 md:px-7 py-3 sm:py-3.5 text-white rounded-2xl text-sm sm:text-base font-extrabold hover:-translate-y-1 transition-all duration-300 mx-1 bg-linear-to-br from-[#3d9da3] to-[#2d6b9e] shadow-[0_4px_12px_rgba(61,157,163,0.3)]"
                                             >
                                                 {getSeasonIcon(s)}
                                                 {s}
@@ -378,36 +405,36 @@ export default function JourneyDetail() {
                                 className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 md:gap-6"
                             >
                                 {/* Includes */}
-                                <div className="glass-luxury rounded-4xl p-6 sm:p-8 md:p-10 shadow-luxury-lg border-luxury">
+                                <div className="rounded-4xl p-6 sm:p-8 md:p-10 bg-[#1e2139] border border-[#5ce1e6]/20 shadow-[0_12px_28px_rgba(0,0,0,0.35)]">
                                     <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-                                        <div className="p-2.5 sm:p-3 gradient-primary rounded-2xl shrink-0 shadow-luxury">
+                                        <div className="p-2.5 sm:p-3 rounded-2xl shrink-0 bg-linear-to-br from-[#3d9da3] to-[#2d6b9e] shadow-[0_4px_12px_rgba(61,157,163,0.3)]">
                                             <Check className="w-6 h-6 sm:w-7 sm:h-7 text-white" strokeWidth={3} />
                                         </div>
-                                        <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-neutral-900 text-luxury">What's Included</h2>
+                                        <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white">What's Included</h2>
                                     </div>
                                     <ul className="space-y-3 sm:space-y-4">
                                         {journey.includes.map((item, idx) => (
                                             <li key={idx} className="flex items-start gap-3 sm:gap-4 group">
-                                                <Check className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 shrink-0 mt-0.5 group-hover:scale-110 transition-transform" strokeWidth={2.5} />
-                                                <span className="text-sm sm:text-base md:text-lg text-neutral-700 leading-relaxed font-medium">{item}</span>
+                                                <Check className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 mt-0.5 group-hover:scale-110 transition-transform text-[#5CE1E6]" strokeWidth={2.5} />
+                                                <span className="text-sm sm:text-base md:text-lg leading-relaxed font-medium text-[#B0B7C3]">{item}</span>
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
 
                                 {/* Excludes */}
-                                <div className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 border border-neutral-200 shadow-sm">
+                                <div className="rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 bg-[#1e2139] border border-[#ff6464]/20 shadow-[0_8px_20px_rgba(0,0,0,0.3)]">
                                     <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 md:mb-6">
-                                        <div className="p-1.5 sm:p-2 bg-red-100 rounded-lg shrink-0">
-                                            <X className="w-5 h-5 sm:w-6 sm:h-6 text-red-700" />
+                                        <div className="p-1.5 sm:p-2 rounded-lg shrink-0 bg-[#ff6464]/20">
+                                            <X className="w-5 h-5 sm:w-6 sm:h-6 text-[#ff6464]" />
                                         </div>
-                                        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-neutral-900 tracking-tight">Not Included</h2>
+                                        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-tight">Not Included</h2>
                                     </div>
                                     <ul className="space-y-2 sm:space-y-2.5 md:space-y-3">
                                         {journey.excludes.map((item, idx) => (
                                             <li key={idx} className="flex items-start gap-2 sm:gap-2.5 md:gap-3">
-                                                <X className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-red-600 shrink-0 mt-0.5" />
-                                                <span className="text-xs sm:text-sm md:text-base text-neutral-700 leading-relaxed">{item}</span>
+                                                <X className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0 mt-0.5 text-[#ff6464]" />
+                                                <span className="text-xs sm:text-sm md:text-base leading-relaxed text-[#B0B7C3]">{item}</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -421,14 +448,14 @@ export default function JourneyDetail() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.4 }}
-                                className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 border border-neutral-200 shadow-sm"
+                                className="rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 bg-[#1e2139] border border-[#5ce1e6]/20 shadow-[0_8px_20px_rgba(0,0,0,0.3)]"
                             >
-                                <h2 className="text-2xl sm:text-2xl md:text-3xl font-bold text-neutral-900 mb-6 sm:mb-7 md:mb-8 tracking-tight">Day-by-Day Itinerary</h2>
+                                <h2 className="text-2xl sm:text-2xl md:text-3xl font-bold text-white mb-6 sm:mb-7 md:mb-8 tracking-tight">Day-by-Day Itinerary</h2>
                                 <div className="space-y-3 sm:space-y-4">
                                     {journey.itinerary.map((day, idx) => (
                                         <div
                                             key={day.day}
-                                            className="border border-neutral-200 rounded-lg sm:rounded-xl overflow-hidden transition-all hover:border-primary-300"
+                                            className="rounded-lg sm:rounded-xl overflow-hidden transition-all border border-[#5ce1e6]/20"
                                         >
                                             <button
                                                 type="button"
@@ -437,21 +464,21 @@ export default function JourneyDetail() {
                                                     e.stopPropagation()
                                                     setExpandedDay(expandedDay === idx ? null : idx)
                                                 }}
-                                                className="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 bg-neutral-50 hover:bg-neutral-100 transition-colors"
+                                                className="w-full flex items-center justify-between p-4 sm:p-5 md:p-6 transition-colors bg-[#0a0e27]/40 hover:bg-[#0a0e27]/60"
                                             >
                                                 <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-                                                    <div className="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-primary-600 text-white rounded-full font-bold text-base sm:text-lg shrink-0">
+                                                    <div className="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 text-white rounded-full font-bold text-base sm:text-lg shrink-0 bg-linear-to-br from-[#3d9da3] to-[#2d6b9e]">
                                                         {day.day}
                                                     </div>
                                                     <div className="text-left flex-1 min-w-0">
-                                                        <h3 className="text-base sm:text-lg font-bold text-neutral-900 truncate">{day.title}</h3>
-                                                        <p className="text-xs sm:text-sm text-neutral-600 font-medium truncate">{day.accommodation}</p>
+                                                        <h3 className="text-base sm:text-lg font-bold text-white truncate">{day.title}</h3>
+                                                        <p className="text-xs sm:text-sm font-medium truncate text-[#B0B7C3]">{day.accommodation}</p>
                                                     </div>
                                                 </div>
                                                 {expandedDay === idx ? (
-                                                    <ChevronUp className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-600 shrink-0 ml-2" />
+                                                    <ChevronUp className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 ml-2 text-[#B0B7C3]" />
                                                 ) : (
-                                                    <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-600 shrink-0 ml-2" />
+                                                    <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 ml-2 text-[#B0B7C3]" />
                                                 )}
                                             </button>
 
@@ -460,9 +487,9 @@ export default function JourneyDetail() {
                                                     initial={{ height: 0, opacity: 0 }}
                                                     animate={{ height: 'auto', opacity: 1 }}
                                                     exit={{ height: 0, opacity: 0 }}
-                                                    className="p-6 bg-white border-t border-neutral-200"
+                                                    className="p-6 bg-[#0a0e27]/40 border-t border-[#5ce1e6]/10"
                                                 >
-                                                    <p className="text-neutral-700 leading-relaxed mb-6">{day.description}</p>
+                                                    <p className="leading-relaxed mb-6 text-[#B0B7C3]">{day.description}</p>
 
                                                     {day.activities && day.activities.length > 0 && (
                                                         <div className="mb-6">
@@ -500,23 +527,23 @@ export default function JourneyDetail() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.5 }}
-                                className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 border border-neutral-200 shadow-sm"
+                                className="rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 bg-[#1e2139] border border-[#5ce1e6]/20 shadow-[0_8px_20px_rgba(0,0,0,0.3)]"
                             >
-                                <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900 mb-6 sm:mb-8 tracking-tight">What Travelers Say</h2>
+                                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 sm:mb-8 tracking-tight">What Travelers Say</h2>
                                 <div className="space-y-4 sm:space-y-6">
                                     {journey.testimonials.map((testimonial, idx) => (
-                                        <div key={idx} className="border-l-4 border-primary-500 pl-4 sm:pl-6 py-2">
+                                        <div key={idx} className="pl-4 sm:pl-6 py-2 border-l-4 border-[#3d9da3]">
                                             <div className="flex items-center gap-1 sm:gap-2 mb-2 sm:mb-3">
                                                 {Array.from({ length: 5 }).map((_, i) => (
                                                     <Star
                                                         key={i}
-                                                        className={`w-4 h-4 sm:w-5 sm:h-5 ${i < testimonial.rating ? 'fill-amber-400 text-amber-400' : 'text-neutral-300'
+                                                        className={`w-4 h-4 sm:w-5 sm:h-5 ${i < testimonial.rating ? 'fill-amber-400 text-amber-400' : 'text-neutral-500'
                                                             }`}
                                                     />
                                                 ))}
                                             </div>
-                                            <p className="text-sm sm:text-base text-neutral-700 leading-relaxed mb-2 sm:mb-3 italic">"{testimonial.text}"</p>
-                                            <p className="text-xs sm:text-sm font-bold text-neutral-900">— {testimonial.author}</p>
+                                            <p className="text-sm sm:text-base leading-relaxed mb-2 sm:mb-3 italic text-[#B0B7C3]">"{testimonial.text}"</p>
+                                            <p className="text-xs sm:text-sm font-bold text-white">— {testimonial.author}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -530,30 +557,30 @@ export default function JourneyDetail() {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="sticky top-28 z-10 bg-white/80 backdrop-blur-md rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-7 lg:p-8 border-2 border-primary-200 shadow-lg"
+                            className="sticky top-24 z-10 rounded-xl p-5 shadow-lg bg-[#1e2139] border-2 border-[#5ce1e6]/30"
                         >
-                            <div className="mb-5 sm:mb-6">
-                                <div className="flex items-baseline gap-2 mb-2">
-                                    <span className="text-xs sm:text-sm text-neutral-600 font-medium">Starting from</span>
+                            <div className="mb-4">
+                                <div className="flex items-baseline gap-2 mb-1.5">
+                                    <span className="text-base font-medium text-[#B0B7C3]">Starting from</span>
                                 </div>
-                                <div className="flex items-baseline gap-1.5 sm:gap-2">
-                                    <span className="text-3xl sm:text-3xl md:text-4xl font-bold text-neutral-900">
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-3xl font-bold text-white">
                                         {journey.price ? `₹${journey.price.toLocaleString()}` : 'Price on Request'}
                                     </span>
-                                    <span className="text-sm sm:text-base text-neutral-600 font-medium">/ person</span>
+                                    <span className="text-base font-medium text-[#B0B7C3]">/ person</span>
                                 </div>
                             </div>
 
-                            <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-7 md:mb-8">
-                                <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
-                                    <span className="text-sm sm:text-base text-neutral-700 font-medium">Duration</span>
-                                    <span className="text-sm sm:text-base text-neutral-900 font-bold">
+                            <div className="space-y-3 mb-5">
+                                <div className="flex items-center justify-between py-3 border-b border-[#5ce1e6]/20">
+                                    <span className="text-base font-medium text-[#B0B7C3]">Duration</span>
+                                    <span className="text-base text-white font-bold">
                                         {typeof journey.duration === 'number' ? journey.duration : journey.duration.days} Days / {typeof journey.duration === 'number' ? journey.duration - 1 : journey.duration.nights} Nights
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
-                                    <span className="text-sm sm:text-base text-neutral-700 font-medium">Departure</span>
-                                    <span className="text-sm sm:text-base text-neutral-900 font-bold">
+                                <div className="flex items-center justify-between py-3 border-b border-[#5ce1e6]/20">
+                                    <span className="text-base font-medium text-[#B0B7C3]">Departure</span>
+                                    <span className="text-base text-white font-bold">
                                         {journey.departureDate && !isNaN(new Date(journey.departureDate as any).getTime()) ? new Date(journey.departureDate).toLocaleDateString('en-US', {
                                             month: 'short',
                                             day: 'numeric',
@@ -562,38 +589,38 @@ export default function JourneyDetail() {
                                     </span>
                                 </div>
                                 {journey.totalSeats !== undefined && (
-                                    <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
-                                        <span className="text-sm sm:text-base text-neutral-700 font-medium">Availability</span>
-                                        <span className={`text-sm sm:text-base font-bold ${(journey.totalSeats - (journey.bookedSeats || 0)) < 5
-                                            ? 'text-red-600'
-                                            : 'text-green-600'
+                                    <div className="flex items-center justify-between py-3 border-b border-[#5ce1e6]/20">
+                                        <span className="text-base font-medium text-[#B0B7C3]">Availability</span>
+                                        <span className={`text-base font-bold ${(journey.totalSeats - (journey.bookedSeats || 0)) < 5
+                                            ? 'text-red-400'
+                                            : 'text-green-400'
                                             }`}>
                                             {(journey.totalSeats - (journey.bookedSeats || 0))} seats left
                                         </span>
                                     </div>
                                 )}
-                                <div className="flex items-center justify-between py-2.5 sm:py-3 border-b border-neutral-200">
-                                    <span className="text-sm sm:text-base text-neutral-700 font-medium">Group Size</span>
-                                    <span className="text-sm sm:text-base text-neutral-900 font-bold">Max {journey.maxGroupSize}</span>
+                                <div className="flex items-center justify-between py-3 border-b border-[#5ce1e6]/20">
+                                    <span className="text-base font-medium text-[#B0B7C3]">Group Size</span>
+                                    <span className="text-base text-white font-bold">Max {journey.maxGroupSize}</span>
                                 </div>
-                                <div className="flex items-center justify-between py-2.5 sm:py-3">
-                                    <span className="text-sm sm:text-base text-neutral-700 font-medium">Difficulty</span>
-                                    <span className="text-sm sm:text-base text-neutral-900 font-bold capitalize">{journey.difficulty}</span>
+                                <div className="flex items-center justify-between py-3">
+                                    <span className="text-base font-medium text-[#B0B7C3]">Difficulty</span>
+                                    <span className="text-base text-white font-bold capitalize">{journey.difficulty}</span>
                                 </div>
 
                                 {/* Booking Options Info */}
-                                <div className="mt-4 p-4 bg-primary-50 rounded-xl border border-primary-100">
+                                <div className="mt-4 p-4 rounded-lg bg-[#3d9da3]/15 border border-[#5ce1e6]/30">
                                     <div className="flex justify-between items-center mb-2">
-                                        <span className="text-sm text-neutral-600 font-medium">Full Price</span>
-                                        <span className="font-bold text-neutral-900">{journey.price ? `₹${journey.price.toLocaleString()}` : 'On Request'}</span>
+                                        <span className="text-base font-medium text-[#B0B7C3]">Full Price</span>
+                                        <span className="text-base font-bold text-white">{journey.price ? `₹${journey.price.toLocaleString()}` : 'On Request'}</span>
                                     </div>
                                     {journey.registrationPrice && (
-                                        <div className="flex justify-between items-center pb-2 border-b border-primary-200 mb-2">
-                                            <span className="text-sm text-neutral-600 font-medium">Registration</span>
-                                            <span className="font-bold text-primary-700">₹{journey.registrationPrice.toLocaleString()}</span>
+                                        <div className="flex justify-between items-center pb-2 mb-2 border-b border-[#5ce1e6]/20">
+                                            <span className="text-base font-medium text-[#B0B7C3]">Registration</span>
+                                            <span className="text-base font-bold text-[#5CE1E6]">₹{journey.registrationPrice.toLocaleString()}</span>
                                         </div>
                                     )}
-                                    <p className="text-[10px] sm:text-xs text-primary-800/70 italic text-center">
+                                    <p className="text-xs italic text-center text-[#B0B7C3]">
                                         *Registration amount is non-refundable. Balance due on departure.
                                     </p>
                                 </div>
@@ -620,35 +647,31 @@ export default function JourneyDetail() {
                                     }
 
                                     return (
-                                        <Button
+                                        <button
                                             onClick={(e) => {
                                                 e.stopPropagation()
                                                 openBooking()
                                             }}
                                             disabled={!isBookable}
-                                            variant={!isBookable ? "outline" : "primary"}
-                                            size="lg"
-                                            className={`w-full mb-3 sm:mb-4 text-base sm:text-lg font-bold py-3 sm:py-4 ${!isBookable ? 'bg-red-50! text-red-600! border-red-600! disabled:opacity-100!' : ''}`}
+                                            className={`w-full mb-4 text-base font-bold py-4 rounded-xl transition-all ${!isBookable ? 'bg-red-50 text-red-600 border-2 border-red-600 opacity-70' : 'text-white shadow-lg bg-linear-to-br from-[#3d9da3] to-[#2d6b9e]'}`}
                                         >
                                             {label}
-                                        </Button>
+                                        </button>
                                     )
                                 }}
                             </BookingGuard>
 
-                            <Button
+                            <button
                                 onClick={(e) => {
                                     e.stopPropagation()
                                     navigate('/contact')
                                 }}
-                                variant="ghost"
-                                size="lg"
-                                className="w-full font-semibold text-sm sm:text-base py-3 sm:py-4"
+                                className="w-full font-semibold text-base py-4 rounded-xl border-2 transition-all border-[#5ce1e6]/30 text-[#5CE1E6] bg-transparent"
                             >
                                 Contact Us
-                            </Button>
+                            </button>
 
-                            <p className="text-xs text-neutral-500 text-center mt-4 sm:mt-5 md:mt-6 leading-relaxed px-2">
+                            <p className="text-xs text-center mt-4 leading-relaxed px-1 text-[#B0B7C3]">
                                 Have questions? Our team is here to help you plan your perfect journey.
                             </p>
                         </motion.div>
@@ -657,13 +680,13 @@ export default function JourneyDetail() {
             </div>
 
             {/* Fixed Bottom Bar (Mobile Only) */}
-            <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white border-t-2 border-primary-200 shadow-2xl p-4">
-                <div className="flex items-center justify-between gap-4 max-w-screen-xl mx-auto">
+            <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden shadow-2xl p-3 bg-[#1e2139] border-t-2 border-[#5ce1e6]/30">
+                <div className="flex items-center justify-between gap-3 max-w-7xl mx-auto">
                     <div className="flex flex-col">
-                        <span className="text-xs text-neutral-600 font-medium">Price</span>
+                        <span className="text-xs font-medium text-[#B0B7C3]">Price</span>
                         <div className="flex items-baseline gap-1">
-                            <span className="text-2xl font-bold text-neutral-900">{journey.price ? `₹${journey.price.toLocaleString()}` : 'On Request'}</span>
-                            <span className="text-xs text-neutral-600">/ person</span>
+                            <span className="text-xl font-bold text-white">{journey.price ? `₹${journey.price.toLocaleString()}` : 'On Request'}</span>
+                            <span className="text-xs text-[#B0B7C3]">/ person</span>
                         </div>
                     </div>
                     <BookingGuard onAuthenticated={() => setIsBookingOpen(true)}>
@@ -686,18 +709,16 @@ export default function JourneyDetail() {
                             }
 
                             return (
-                                <Button
+                                <button
                                     onClick={(e) => {
                                         e.stopPropagation()
                                         openBooking()
                                     }}
                                     disabled={!isBookable}
-                                    variant={!isBookable ? "outline" : "primary"}
-                                    size="lg"
-                                    className={`px-8 py-3 text-base font-bold ${!isBookable ? '!bg-red-50 !text-red-600 !border-red-600 disabled:!opacity-100' : ''}`}
+                                    className={`px-6 py-2.5 rounded-xl text-base font-bold transition-all ${!isBookable ? 'bg-red-50 text-red-600 border-2 border-red-600 opacity-70' : 'text-white shadow-lg bg-linear-to-br from-[#3d9da3] to-[#2d6b9e]'}`}
                                 >
                                     {label}
-                                </Button>
+                                </button>
                             )
                         }}
                     </BookingGuard>

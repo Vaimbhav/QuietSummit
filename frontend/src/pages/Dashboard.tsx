@@ -201,13 +201,13 @@ export default function Dashboard() {
     // Loading state
     if (loading) {
         return (
-            <div className="min-h-screen bg-neutral-50 flex items-center justify-center p-6">
+            <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(135deg, #0a0e27 0%, #1a1d2e 100%)' }}>
                 <div className="text-center">
                     <div className="relative w-16 h-16 mx-auto mb-6">
-                        <div className="absolute inset-0 border-4 border-neutral-200 rounded-full"></div>
-                        <div className="absolute inset-0 border-4 border-primary-600 rounded-full border-t-transparent animate-spin"></div>
+                        <div className="absolute inset-0 border-4 rounded-full" style={{ borderColor: 'rgba(92,225,230,0.2)' }}></div>
+                        <div className="absolute inset-0 border-4 rounded-full border-t-transparent animate-spin" style={{ borderColor: '#5CE1E6' }}></div>
                     </div>
-                    <p className="text-base font-medium text-neutral-600">Loading your dashboard...</p>
+                    <p className="text-base font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>Loading your dashboard...</p>
                 </div>
             </div>
         )
@@ -216,14 +216,14 @@ export default function Dashboard() {
     // Error state
     if (error || !profile) {
         return (
-            <div className="min-h-screen bg-neutral-50 flex items-center justify-center p-6">
-                <Card className="text-center max-w-md">
-                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <AlertCircle className="w-8 h-8 text-red-600" />
+            <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(135deg, #0a0e27 0%, #1a1d2e 100%)' }}>
+                <Card variant="dark" className="text-center max-w-md backdrop-blur-md border shadow-xl" style={{ background: 'rgba(30,33,57,0.6)', borderColor: 'rgba(92,225,230,0.2)' }}>
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(239,68,68,0.2)' }}>
+                        <AlertCircle className="w-8 h-8 text-red-400" />
                     </div>
-                    <h2 className="text-xl font-bold mb-2 text-neutral-900">Profile Not Found</h2>
-                    <p className="text-neutral-600 mb-6">{error || 'Unable to load your profile'}</p>
-                    <Button onClick={() => navigate('/signup')}>Go to Sign Up</Button>
+                    <h2 className="text-xl font-bold mb-2 text-white">Profile Not Found</h2>
+                    <p className="mb-6" style={{ color: 'rgba(255,255,255,0.7)' }}>{error || 'Unable to load your profile'}</p>
+                    <Button onClick={() => navigate('/signup')} style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#0a0e27' }}>Go to Sign Up</Button>
                 </Card>
             </div>
         )
@@ -235,9 +235,12 @@ export default function Dashboard() {
     })
 
     return (
-        <div className="min-h-screen bg-neutral-50">
+        <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0a0e27 0%, #1a1d2e 100%)' }}>
             {/* Premium Hero Section - Mobile Optimized */}
-            <section className="relative bg-primary-600 text-white py-12 sm:py-16 md:py-20 overflow-hidden">
+            <section className="relative text-white py-12 sm:py-16 md:py-20 overflow-hidden">
+                {/* Background gradient overlay */}
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(92,225,230,0.1) 0%, rgba(74,144,226,0.1) 100%)' }} />
+
                 <div className="container mx-auto px-6 sm:px-8 relative z-10">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -246,15 +249,15 @@ export default function Dashboard() {
                     >
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                             <div className="flex items-center gap-4">
-                                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-2xl sm:text-3xl font-bold border border-white/20 flex-shrink-0">
+                                <div className="w-14 h-14 sm:w-16 sm:h-16 backdrop-blur-md rounded-2xl flex items-center justify-center text-2xl sm:text-3xl font-bold border flex-shrink-0" style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', borderColor: 'rgba(255,255,255,0.2)', color: '#0a0e27' }}>
                                     {profile.name.charAt(0).toUpperCase()}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 leading-tight">
-                                        Welcome back,<br className="sm:hidden" /> {profile.name.split(' ')[0]}!
+                                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold mb-2 leading-tight">
+                                        Welcome back, <span style={{ color: '#5CE1E6' }}>{profile.name.split(' ')[0]}</span>!
                                     </h1>
-                                    <p className="text-sm sm:text-base text-white/90">
-                                        Manage your properties and bookings overview
+                                    <p className="text-sm sm:text-base" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                                        Your personal travel dashboard
                                     </p>
                                 </div>
                             </div>
@@ -262,10 +265,11 @@ export default function Dashboard() {
                             {authUser?.role === 'host' && (
                                 <button
                                     onClick={() => navigate('/host/dashboard')}
-                                    className="group relative px-6 py-3 bg-gradient-to-r from-amber-200 to-amber-400 text-primary-900 rounded-xl font-bold shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 hover:scale-[1.02] transition-all duration-300 flex items-center gap-2 text-sm shrink-0 overflow-hidden"
+                                    className="group relative px-6 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 flex items-center gap-2 text-sm shrink-0 overflow-hidden"
+                                    style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#0a0e27' }}
                                 >
                                     <span className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
-                                    <div className="p-1 bg-primary-900/10 rounded-full mr-1">
+                                    <div className="p-1 rounded-full mr-1" style={{ background: 'rgba(10,14,39,0.1)' }}>
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                                     </div>
                                     <span className="relative z-10">Switch to Hosting</span>
@@ -279,12 +283,12 @@ export default function Dashboard() {
 
             {/* Stats Overview - Premium Mobile Grid */}
             <div className="container mx-auto px-6 sm:px-8 lg:px-16 -mt-8 relative z-20 mb-8 lg:mb-12">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                     {[
-                        { icon: Package, label: 'Total Bookings', value: stats.totalBookings, color: 'bg-blue-600', iconBg: 'bg-blue-100' },
-                        { icon: Plane, label: 'Upcoming', value: stats.upcomingTrips, color: 'bg-green-600', iconBg: 'bg-green-100' },
-                        { icon: CheckCircle, label: 'Completed', value: stats.completedTrips, color: 'bg-purple-600', iconBg: 'bg-purple-100' },
-                        { icon: DollarSign, label: 'Total Spend', value: `₹${stats.totalSpent.toLocaleString()}`, color: 'bg-emerald-600', iconBg: 'bg-emerald-100', fullWidth: true },
+                        { icon: Package, label: 'Total Bookings', value: stats.totalBookings, gradientFrom: '#5CE1E6', gradientTo: '#4A90E2' },
+                        { icon: Plane, label: 'Upcoming', value: stats.upcomingTrips, gradientFrom: '#10b981', gradientTo: '#059669' },
+                        { icon: CheckCircle, label: 'Completed', value: stats.completedTrips, gradientFrom: '#8b5cf6', gradientTo: '#6d28d9' },
+                        { icon: DollarSign, label: 'Total Spend', value: `₹${stats.totalSpent.toLocaleString()}`, gradientFrom: '#f59e0b', gradientTo: '#d97706', fullWidth: true },
                     ].map((stat, idx) => (
                         <motion.div
                             key={stat.label}
@@ -293,16 +297,16 @@ export default function Dashboard() {
                             transition={{ delay: idx * 0.1 }}
                             className={`${stat.fullWidth ? 'col-span-2 lg:col-span-1' : ''}`}
                         >
-                            <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-md border border-neutral-100 hover:shadow-lg transition-shadow">
-                                <div className={`w-12 h-12 ${stat.iconBg} rounded-xl flex items-center justify-center mb-3`}>
-                                    <stat.icon className={`w-6 h-6 ${stat.color.replace('bg-', 'text-')}`} strokeWidth={2} />
+                            <div className="backdrop-blur-md rounded-2xl p-5 sm:p-6 shadow-xl border hover:shadow-2xl hover:scale-105 transition-all duration-300" style={{ background: 'rgba(30,33,57,0.6)', borderColor: 'rgba(92,225,230,0.2)' }}>
+                                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-3" style={{ background: `linear-gradient(135deg, ${stat.gradientFrom} 0%, ${stat.gradientTo} 100%)` }}>
+                                    <stat.icon className="w-6 h-6 text-white" strokeWidth={2} />
                                 </div>
-                                <p className="text-2xl sm:text-3xl font-bold text-neutral-900 mb-1">{stat.value}</p>
+                                <p className="text-2xl sm:text-3xl font-bold text-white mb-1">{stat.value}</p>
                                 <div className="flex items-center gap-2">
-                                    <p className="text-xs sm:text-sm text-neutral-600 font-medium">{stat.label}</p>
-                                    {stat.fullWidth && (
-                                        <span className="inline-flex items-center gap-1 text-xs bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">
-                                            <span>↗</span> ₹0 <span className="text-neutral-500">this month</span>
+                                    <p className="text-xs sm:text-sm font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>{stat.label}</p>
+                                    {stat.fullWidth && stats.totalSpent > 0 && (
+                                        <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.2)', color: '#10b981' }}>
+                                            <span>↗</span>
                                         </span>
                                     )}
                                 </div>
@@ -318,19 +322,19 @@ export default function Dashboard() {
                     {/* Left Sidebar - Mobile Optimized */}
                     <div className="lg:col-span-1 space-y-6 lg:sticky lg:top-24 h-fit">
                         {/* Profile Card */}
-                        <Card className="bg-white border border-neutral-100">
+                        <Card variant="dark" className="backdrop-blur-md border shadow-xl" style={{ background: 'rgba(30,33,57,0.6)', borderColor: 'rgba(92,225,230,0.2)' }}>
                             <div className="text-center">
-                                <div className="w-20 h-20 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold shadow-sm">
+                                <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold shadow-lg" style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#0a0e27' }}>
                                     {profile.name.charAt(0).toUpperCase()}
                                 </div>
-                                <h2 className="text-xl font-bold text-neutral-900 mb-2">
+                                <h2 className="text-xl font-bold text-white mb-2">
                                     {profile.name}
                                 </h2>
-                                <p className="text-sm text-neutral-600 flex items-center justify-center gap-2 mb-4 px-2">
+                                <p className="text-sm flex items-center justify-center gap-2 mb-4 px-2" style={{ color: 'rgba(255,255,255,0.7)' }}>
                                     <Mail className="w-4 h-4 shrink-0" />
                                     <span className="truncate">{profile.email}</span>
                                 </p>
-                                <div className="flex items-center justify-center gap-2 text-xs text-neutral-600 bg-neutral-50 rounded-full px-4 py-2 mx-auto w-fit">
+                                <div className="flex items-center justify-center gap-2 text-xs rounded-full px-4 py-2 mx-auto w-fit" style={{ color: 'rgba(255,255,255,0.8)', background: 'rgba(92,225,230,0.15)' }}>
                                     <Calendar className="w-4 h-4" />
                                     <span>Member since {memberSince}</span>
                                 </div>
@@ -338,9 +342,9 @@ export default function Dashboard() {
                         </Card>
 
                         {/* Member Benefits */}
-                        <Card className="hidden lg:block">
-                            <h3 className="text-lg font-bold text-neutral-900 mb-4 flex items-center gap-2">
-                                <Award className="w-5 h-5 text-primary-600" />
+                        <Card variant="dark" className="hidden lg:block backdrop-blur-md border shadow-xl" style={{ background: 'rgba(30,33,57,0.6)', borderColor: 'rgba(92,225,230,0.2)' }}>
+                            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                <Award className="w-5 h-5" style={{ color: '#5CE1E6' }} />
                                 Member Benefits
                             </h3>
                             <ul className="space-y-3">
@@ -351,8 +355,8 @@ export default function Dashboard() {
                                     'Travel inspiration newsletter',
                                     'Member-only events',
                                 ].map((benefit, idx) => (
-                                    <li key={idx} className="flex items-start gap-2 text-sm text-neutral-600">
-                                        <CheckCircle className="w-5 h-5 text-primary-600 shrink-0 mt-0.5" />
+                                    <li key={idx} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                                        <CheckCircle className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#5CE1E6' }} />
                                         <span>{benefit}</span>
                                     </li>
                                 ))}
@@ -363,10 +367,10 @@ export default function Dashboard() {
                     {/* Main Content Area */}
                     <div className="lg:col-span-2 space-y-6">
                         {/* Travel Preferences */}
-                        <Card>
+                        <Card variant="dark" className="backdrop-blur-md border shadow-xl" style={{ background: 'rgba(30,33,57,0.6)', borderColor: 'rgba(92,225,230,0.2)' }}>
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-                                <h3 className="text-2xl font-bold text-neutral-900 flex items-center gap-2">
-                                    <Settings className="w-6 h-6 text-primary-600" />
+                                <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                                    <Settings className="w-6 h-6" style={{ color: '#5CE1E6' }} />
                                     Travel Preferences
                                 </h3>
                                 <Button
@@ -374,6 +378,7 @@ export default function Dashboard() {
                                     isLoading={updating}
                                     size="sm"
                                     className="w-full sm:w-auto"
+                                    style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#0a0e27' }}
                                 >
                                     Save Changes
                                 </Button>
@@ -381,26 +386,27 @@ export default function Dashboard() {
 
                             <div className="space-y-6">
                                 <div>
-                                    <label className="text-sm font-bold text-neutral-700 mb-3 flex items-center gap-2">
-                                        <Clock className="w-4 h-4 text-primary-600" />
+                                    <label className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                                        <Clock className="w-4 h-4" style={{ color: '#5CE1E6' }} />
                                         Your Interests
                                     </label>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         {allInterests.map((interest) => (
                                             <label
                                                 key={interest}
-                                                className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all hover:scale-105 ${selectedInterests.includes(interest)
-                                                    ? 'border-primary-500 bg-primary-50 shadow-md'
-                                                    : 'border-neutral-200 hover:border-primary-200'
-                                                    }`}
+                                                className="flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all hover:scale-105"
+                                                style={selectedInterests.includes(interest)
+                                                    ? { borderColor: '#5CE1E6', background: 'rgba(92,225,230,0.15)', boxShadow: '0 4px 6px rgba(92,225,230,0.2)' }
+                                                    : { borderColor: 'rgba(92,225,230,0.2)', background: 'rgba(10,14,39,0.4)' }}
                                             >
                                                 <input
                                                     type="checkbox"
                                                     checked={selectedInterests.includes(interest)}
                                                     onChange={() => toggleInterest(interest)}
-                                                    className="w-5 h-5 rounded border-neutral-300 text-primary-600 shrink-0"
+                                                    className="w-5 h-5 rounded shrink-0"
+                                                    style={{ accentColor: '#5CE1E6' }}
                                                 />
-                                                <span className="text-sm font-medium text-neutral-700">
+                                                <span className="text-sm font-medium text-white">
                                                     {interest}
                                                 </span>
                                             </label>
@@ -408,20 +414,21 @@ export default function Dashboard() {
                                     </div>
                                 </div>
 
-                                <div className="p-4 bg-gradient-to-br from-primary-50 to-accent-50 rounded-xl border-2 border-primary-100">
+                                <div className="p-4 rounded-xl border-2" style={{ background: 'rgba(92,225,230,0.1)', borderColor: 'rgba(92,225,230,0.3)' }}>
                                     <label className="flex items-start gap-3 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             checked={newsletter}
                                             onChange={(e) => setNewsletter(e.target.checked)}
-                                            className="mt-1 w-5 h-5 rounded border-neutral-300 text-primary-600"
+                                            className="mt-1 w-5 h-5 rounded"
+                                            style={{ accentColor: '#5CE1E6' }}
                                         />
                                         <div>
-                                            <div className="font-bold text-neutral-900 flex items-center gap-2 mb-1">
-                                                <Bell className="w-4 h-4 text-primary-600" />
+                                            <div className="font-bold text-white flex items-center gap-2 mb-1">
+                                                <Bell className="w-4 h-4" style={{ color: '#5CE1E6' }} />
                                                 Newsletter Subscription
                                             </div>
-                                            <span className="text-sm text-neutral-600">
+                                            <span className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>
                                                 Receive travel tips, exclusive offers, and journey updates
                                             </span>
                                         </div>
@@ -431,30 +438,36 @@ export default function Dashboard() {
                         </Card>
 
                         {/* Bookings Section */}
-                        <Card>
+                        <Card variant="dark" className="backdrop-blur-md border shadow-xl" style={{ background: 'rgba(30,33,57,0.6)', borderColor: 'rgba(92,225,230,0.2)' }}>
                             <div className="mb-6">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                                    <h3 className="text-2xl font-bold text-neutral-900 flex items-center gap-2">
-                                        <Plane className="w-6 h-6 text-primary-600" />
+                                    <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                                        <Plane className="w-6 h-6" style={{ color: '#5CE1E6' }} />
                                         Your Bookings
                                     </h3>
                                     {/* Type Toggle */}
-                                    <div className="bg-neutral-100 p-1 rounded-lg flex self-start sm:self-auto">
+                                    <div className="p-1 rounded-lg flex self-start sm:self-auto" style={{ background: 'rgba(10,14,39,0.6)' }}>
                                         <button
                                             onClick={() => setBookingType('Journey')}
                                             className={`px-3 py-1.5 rounded-md text-sm font-bold transition-all ${bookingType === 'Journey'
-                                                ? 'bg-white text-primary-600 shadow-sm'
-                                                : 'text-neutral-500 hover:text-neutral-700'
+                                                ? 'shadow-sm'
+                                                : 'hover:text-white'
                                                 }`}
+                                            style={bookingType === 'Journey'
+                                                ? { background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#0a0e27' }
+                                                : { color: 'rgba(255,255,255,0.6)' }}
                                         >
                                             Adventures
                                         </button>
                                         <button
                                             onClick={() => setBookingType('Property')}
                                             className={`px-3 py-1.5 rounded-md text-sm font-bold transition-all ${bookingType === 'Property'
-                                                ? 'bg-white text-primary-600 shadow-sm'
-                                                : 'text-neutral-500 hover:text-neutral-700'
+                                                ? 'shadow-sm'
+                                                : 'hover:text-white'
                                                 }`}
+                                            style={bookingType === 'Property'
+                                                ? { background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#0a0e27' }
+                                                : { color: 'rgba(255,255,255,0.6)' }}
                                         >
                                             Stays
                                         </button>
@@ -462,7 +475,7 @@ export default function Dashboard() {
                                 </div>
 
                                 {/* Tabs */}
-                                <div className="flex gap-2 border-b border-neutral-200">
+                                <div className="flex gap-2" style={{ borderBottom: '1px solid rgba(92,225,230,0.2)' }}>
                                     {[
                                         { key: 'upcoming' as const, label: 'Upcoming', count: tabCounts.upcoming },
                                         { key: 'past' as const, label: 'Past', count: tabCounts.past },
@@ -471,24 +484,23 @@ export default function Dashboard() {
                                         <button
                                             key={tab.key}
                                             onClick={() => setActiveTab(tab.key)}
-                                            className={`px-4 py-3 font-bold text-sm transition-all relative ${activeTab === tab.key
-                                                ? 'text-primary-600'
-                                                : 'text-neutral-600 hover:text-neutral-900'
-                                                }`}
+                                            className="px-4 py-3 font-bold text-sm transition-all relative"
+                                            style={{ color: activeTab === tab.key ? '#5CE1E6' : 'rgba(255,255,255,0.6)' }}
                                         >
                                             {tab.label}
                                             {tab.count > 0 && (
-                                                <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-bold ${activeTab === tab.key
-                                                    ? 'bg-primary-100 text-primary-700'
-                                                    : 'bg-neutral-100 text-neutral-600'
-                                                    }`}>
+                                                <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold"
+                                                    style={activeTab === tab.key
+                                                        ? { background: 'rgba(92,225,230,0.2)', color: '#5CE1E6' }
+                                                        : { background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>
                                                     {tab.count}
                                                 </span>
                                             )}
                                             {activeTab === tab.key && (
                                                 <motion.div
                                                     layoutId="activeTab"
-                                                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600"
+                                                    className="absolute bottom-0 left-0 right-0 h-0.5"
+                                                    style={{ background: '#5CE1E6' }}
                                                 />
                                             )}
                                         </button>
@@ -506,11 +518,11 @@ export default function Dashboard() {
                                         exit={{ opacity: 0 }}
                                         className="text-center py-12"
                                     >
-                                        <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <Package className="w-8 h-8 text-neutral-400" />
+                                        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(92,225,230,0.1)' }}>
+                                            <Package className="w-8 h-8" style={{ color: '#5CE1E6' }} />
                                         </div>
-                                        <p className="text-neutral-600 mb-4">No {activeTab} bookings</p>
-                                        <Button onClick={() => navigate('/journeys')} variant="outline">
+                                        <p className="mb-4" style={{ color: 'rgba(255,255,255,0.7)' }}>No {activeTab} bookings</p>
+                                        <Button onClick={() => navigate('/journeys')} variant="outline" style={{ borderColor: '#5CE1E6', color: '#5CE1E6' }}>
                                             Browse Journeys
                                         </Button>
                                     </motion.div>
@@ -529,29 +541,33 @@ export default function Dashboard() {
                                                 animate={{ opacity: 1, y: 0 }}
                                                 transition={{ delay: idx * 0.05 }}
                                                 onClick={() => navigate(`/booking-confirmation/${booking._id}`)}
-                                                className="group p-5 bg-gradient-to-br from-white to-neutral-50 rounded-2xl border-2 border-neutral-200 hover:border-primary-300 hover:shadow-luxury-lg transition-all cursor-pointer"
+                                                className="group p-5 backdrop-blur-md rounded-2xl border-2 hover:shadow-2xl transition-all cursor-pointer"
+                                                style={{ background: 'rgba(10,14,39,0.4)', borderColor: 'rgba(92,225,230,0.2)' }}
+                                                onMouseEnter={(e) => e.currentTarget.style.borderColor = '#5CE1E6'}
+                                                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(92,225,230,0.2)'}
                                             >
                                                 <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
                                                     <div className="flex-1">
-                                                        <h4 className="font-bold text-lg text-neutral-900 mb-1 group-hover:text-primary-600 transition-colors">
+                                                        <h4 className="font-bold text-lg text-white mb-1 group-hover:text-[#5CE1E6] transition-colors">
                                                             {booking.journeyTitle}
                                                         </h4>
-                                                        <p className="text-sm text-neutral-600 flex items-center gap-1">
+                                                        <p className="text-sm flex items-center gap-1" style={{ color: 'rgba(255,255,255,0.7)' }}>
                                                             <MapPin className="w-3 h-3 shrink-0" />
                                                             {booking.destination}
                                                         </p>
                                                     </div>
                                                     <span className={`px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${booking.bookingStatus === 'confirmed'
-                                                        ? 'bg-green-100 text-green-700'
+                                                        ? 'text-green-400'
                                                         : booking.bookingStatus === 'pending'
-                                                            ? 'bg-yellow-100 text-yellow-700'
-                                                            : 'bg-red-100 text-red-700'
-                                                        }`}>
+                                                            ? 'text-yellow-400'
+                                                            : 'text-red-400'
+                                                        }`}
+                                                        style={{ background: 'rgba(255,255,255,0.1)' }}>
                                                         {booking.bookingStatus.toUpperCase()}
                                                     </span>
                                                 </div>
 
-                                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-neutral-600">
+                                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
                                                     <div className="flex items-center gap-1">
                                                         <Calendar className="w-4 h-4 shrink-0" />
                                                         <span className="truncate">
@@ -570,7 +586,7 @@ export default function Dashboard() {
                                                         <User className="w-4 h-4 shrink-0" />
                                                         {booking.numberOfTravelers} {booking.numberOfTravelers > 1 ? 'travelers' : 'traveler'}
                                                     </div>
-                                                    <div className="flex items-center gap-1 font-bold text-primary-700">
+                                                    <div className="flex items-center gap-1 font-bold" style={{ color: '#5CE1E6' }}>
                                                         <DollarSign className="w-4 h-4 shrink-0" />
                                                         ₹{booking.totalAmount.toLocaleString()}
                                                     </div>
@@ -583,21 +599,24 @@ export default function Dashboard() {
                         </Card>
 
                         {/* Quick Actions */}
-                        <Card>
-                            <h3 className="text-2xl font-bold text-neutral-900 mb-6">
+                        <Card variant="dark" className="backdrop-blur-md border shadow-xl" style={{ background: 'rgba(30,33,57,0.6)', borderColor: 'rgba(92,225,230,0.2)' }}>
+                            <h3 className="text-2xl font-bold text-white mb-6">
                                 Quick Actions
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <motion.a
                                     href="/journeys"
                                     whileHover={{ scale: 1.02, y: -2 }}
-                                    className="block p-6 bg-gradient-to-br from-primary-50 to-accent-50 rounded-2xl border-2 border-primary-100 hover:border-primary-300 hover:shadow-lg transition-all"
+                                    className="block p-6 rounded-2xl border-2 hover:shadow-2xl transition-all"
+                                    style={{ background: 'rgba(92,225,230,0.1)', borderColor: 'rgba(92,225,230,0.3)' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.borderColor = '#5CE1E6'}
+                                    onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(92,225,230,0.3)'}
                                 >
-                                    <MapPin className="w-8 h-8 text-primary-600 mb-3" />
-                                    <h4 className="text-lg font-bold text-neutral-900 mb-1">
+                                    <MapPin className="w-8 h-8 mb-3" style={{ color: '#5CE1E6' }} />
+                                    <h4 className="text-lg font-bold text-white mb-1">
                                         Browse Journeys
                                     </h4>
-                                    <p className="text-sm text-neutral-600">
+                                    <p className="text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
                                         Discover your next adventure
                                     </p>
                                 </motion.a>
@@ -605,13 +624,16 @@ export default function Dashboard() {
                                 <motion.a
                                     href="/properties"
                                     whileHover={{ scale: 1.02, y: -2 }}
-                                    className="block p-6 bg-gradient-to-br from-accent-50 to-primary-50 rounded-2xl border-2 border-accent-100 hover:border-accent-300 hover:shadow-lg transition-all"
+                                    className="block p-6 rounded-2xl border-2 hover:shadow-2xl transition-all"
+                                    style={{ background: 'rgba(74,144,226,0.1)', borderColor: 'rgba(74,144,226,0.3)' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.borderColor = '#4A90E2'}
+                                    onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(74,144,226,0.3)'}
                                 >
-                                    <Package className="w-8 h-8 text-accent-600 mb-3" />
-                                    <h4 className="text-lg font-bold text-neutral-900 mb-1">
+                                    <Package className="w-8 h-8 mb-3" style={{ color: '#4A90E2' }} />
+                                    <h4 className="text-lg font-bold text-white mb-1">
                                         Browse Properties
                                     </h4>
-                                    <p className="text-sm text-neutral-600">
+                                    <p className="text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>
                                         Find your perfect stay
                                     </p>
                                 </motion.a>

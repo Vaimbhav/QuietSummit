@@ -146,7 +146,7 @@ export default function GoogleAuthSuccess() {
             <div className="min-h-screen flex items-center justify-center bg-neutral-50">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-                    <p className="text-neutral-600">Completing authentication...</p>
+                    <p className="text-neutral-300">Completing authentication...</p>
                 </div>
             </div>
         )
@@ -158,7 +158,7 @@ export default function GoogleAuthSuccess() {
                 <div className="text-center max-w-md mx-auto p-6">
                     <div className="text-red-600 text-5xl mb-4">⚠️</div>
                     <h2 className="text-2xl font-bold text-neutral-900 mb-2">Authentication Error</h2>
-                    <p className="text-neutral-600 mb-6">{error}</p>
+                    <p className="text-neutral-300 mb-6">{error}</p>
                     <button
                         onClick={() => navigate('/signup')}
                         className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
@@ -176,12 +176,12 @@ export default function GoogleAuthSuccess() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8 md:p-12"
+                    className="max-w-2xl w-full bg-dark-card rounded-2xl shadow-xl p-8 md:p-12 border border-dark-border"
                 >
                     <div className="text-center mb-10">
                         <div className="text-5xl mb-4">👋</div>
                         <h1 className="text-3xl font-bold text-neutral-900 mb-3">Welcome to QuietSummit!</h1>
-                        <p className="text-lg text-neutral-600">
+                        <p className="text-lg text-neutral-300">
                             We're glad you're here. How would you like to use QuietSummit?
                         </p>
                     </div>

@@ -241,30 +241,30 @@ export default function ReviewStep({ journey, bookingData, onBack, onClose, onNe
 
     if (isSuccess) {
         return (
-            <div className="flex flex-col items-center justify-center h-full py-12 text-center">
+            <div className="flex flex-col items-center justify-center h-full py-12 text-center text-white">
                 <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6"
+                    className="w-24 h-24 bg-teal-500/20 rounded-full flex items-center justify-center mb-6"
                 >
-                    <CheckCircle className="w-12 h-12 text-green-600" />
+                    <CheckCircle className="w-12 h-12 text-teal-400" />
                 </motion.div>
-                <h3 className="text-3xl font-black text-neutral-900 mb-4">
+                <h3 className="text-3xl font-black text-white mb-4">
                     Booking Confirmed! 🎉
                 </h3>
-                <p className="text-lg text-neutral-600 mb-2">
+                <p className="text-lg text-slate-300 mb-2">
                     Your journey to {journey.destination} is confirmed
                 </p>
                 {bookingReference && (
-                    <div className="inline-block px-6 py-3 bg-primary-50 rounded-xl mb-6">
-                        <p className="text-sm text-neutral-600">Booking Reference</p>
-                        <p className="text-2xl font-black text-primary-600">{bookingReference}</p>
+                    <div className="inline-block px-6 py-3 bg-white/5 rounded-xl mb-6 border border-white/10">
+                        <p className="text-sm text-slate-400">Booking Reference</p>
+                        <p className="text-2xl font-black text-teal-400">{bookingReference}</p>
                     </div>
                 )}
-                <p className="text-neutral-600">
+                <p className="text-slate-400">
                     A confirmation email has been sent to {bookingData.email}
                 </p>
-                <div className="mt-8 flex items-center gap-2 text-neutral-500">
+                <div className="mt-8 flex items-center gap-2 text-slate-500">
                     <Loader2 className="w-4 h-4 animate-spin" />
                     <p className="text-sm">Redirecting to confirmation page...</p>
                 </div>
@@ -273,47 +273,51 @@ export default function ReviewStep({ journey, bookingData, onBack, onClose, onNe
     }
 
     return (
-        <div className="flex flex-col h-full bg-neutral-50/50">
-            <div className="flex-1 p-4 md:p-6 space-y-4 overflow-y-auto pb-2"> {/* Reduced padding for better spacing with footer */}
+        <div className="flex flex-col h-full relative">
+            <div className="flex-1 p-3 md:p-5 space-y-3 overflow-y-auto pb-6">
                 {/* Header Info */}
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center">
-                            <Clock className="w-5 h-5 text-orange-500" />
+                <div className="bg-white/5 rounded-2xl p-4 md:p-5 flex items-center justify-between backdrop-blur-md" 
+                     style={{ border: '1px solid rgba(255, 255, 255, 0.1)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center ring-1 ring-orange-500/20">
+                            <Clock className="w-5 h-5 text-orange-400" />
                         </div>
                         <div>
-                            <p className="font-bold text-neutral-900 text-sm">Journey Start</p>
-                            <p className="text-xs text-neutral-500">{formatDate(bookingData.departureDate)}</p>
+                            <p className="font-bold text-slate-200 text-sm mb-0.5">Journey Start</p>
+                            <p className="text-xs text-slate-400">{formatDate(bookingData.departureDate)}</p>
                         </div>
                     </div>
                     <div className="text-right">
-                        <p className="font-bold text-neutral-900 text-sm">{typeof journey.duration === 'number' ? `${journey.duration} Days` : `${journey.duration.days} Days`}</p>
-                        <p className="text-xs text-neutral-500">Duration</p>
+                        <p className="font-bold text-slate-200 text-sm mb-0.5">{typeof journey.duration === 'number' ? `${journey.duration} Days` : `${journey.duration.days} Days`}</p>
+                        <p className="text-xs text-slate-400">Duration</p>
                     </div>
                 </div>
 
                 {/* Journey Item Card */}
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100">
+                <div className="bg-white/5 rounded-2xl p-4 md:p-5 backdrop-blur-md" 
+                     style={{ border: '1px solid rgba(255, 255, 255, 0.1)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
                     <div className="flex gap-4">
-                        <div className="w-20 h-20 rounded-lg bg-neutral-200 overflow-hidden shrink-0">
+                        <div className="w-20 h-20 rounded-xl bg-slate-800 overflow-hidden shrink-0 ring-1 ring-white/10">
                             <img
                                 src={journey.images[0] || '/images/placeholder.jpg'}
                                 alt={journey.title}
                                 className="w-full h-full object-cover"
                             />
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <h3 className="font-bold text-neutral-900 text-sm truncate">{journey.title}</h3>
-                            <p className="text-xs text-neutral-500 mt-0.5 mb-2 truncate">{journey.destination}</p>
+                        <div className="flex-1 min-w-0 flex flex-col justify-center">
+                            <div className="mb-2">
+                                <h3 className="font-bold text-slate-100 text-sm md:text-base truncate leading-tight">{journey.title}</h3>
+                                <p className="text-xs text-slate-400 mt-1 truncate">{journey.destination}</p>
+                            </div>
 
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between mt-auto">
                                 <div>
-                                    <p className="font-bold text-neutral-900">{formatCurrency(journey.price)}</p>
-                                    <p className="text-xs text-neutral-400">per person</p>
+                                    <p className="font-bold text-white text-base">{formatCurrency(journey.price)}</p>
+                                    <p className="text-[10px] text-slate-400">per person</p>
                                 </div>
 
-                                <div className="flex items-center gap-2 bg-green-50 px-2 py-1.5 rounded-lg border border-green-100">
-                                    <span className="text-xs font-bold text-green-700 whitespace-nowrap">
+                                <div className="flex items-center gap-1.5 bg-teal-500/10 px-2.5 py-1.5 rounded-lg border border-teal-500/20">
+                                    <span className="text-xs font-bold text-teal-400 whitespace-nowrap">
                                         {bookingData.numberOfTravelers} Travelers
                                     </span>
                                 </div>
@@ -322,110 +326,116 @@ export default function ReviewStep({ journey, bookingData, onBack, onClose, onNe
                     </div>
                 </div>
 
-                {/* Travelers Details (Condensed) */}
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100">
-                    <h4 className="font-bold text-neutral-900 text-sm mb-3 flex items-center gap-2">
-                        <Info className="w-4 h-4 text-neutral-400" />
+                {/* Travelers Details */}
+                <div className="bg-white/5 rounded-2xl p-4 md:p-5 backdrop-blur-md" 
+                     style={{ border: '1px solid rgba(255, 255, 255, 0.1)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                    <h4 className="font-bold text-slate-200 text-sm mb-3 flex items-center gap-2">
+                        <Info className="w-4 h-4 text-slate-400" />
                         Travelers Details
                     </h4>
                     <div className="space-y-2">
                         {bookingData.travelers?.map((traveler, index) => (
-                            <div key={index} className="flex justify-between items-center text-xs border-b border-neutral-50 last:border-0 pb-2 last:pb-0">
-                                <span className="text-neutral-600 font-medium">{index + 1}. {traveler.name}</span>
-                                <span className="text-neutral-400">{traveler.age} yrs • {traveler.gender}</span>
+                            <div key={index} className="flex justify-between items-center text-xs p-2.5 rounded-lg bg-white/5 border border-white/5">
+                                <span className="text-slate-300 font-medium flex items-center gap-2">
+                                    <span className="w-5 h-5 rounded-full bg-slate-700 text-[10px] flex items-center justify-center text-slate-300">{index + 1}</span>
+                                    {traveler.name}
+                                </span>
+                                <span className="text-slate-400 bg-black/20 px-2 py-0.5 rounded text-[10px] font-medium tracking-wide uppercase">
+                                    {traveler.age} yrs • {traveler.gender}
+                                </span>
                             </div>
                         ))}
                     </div>
                 </div>
 
                 {/* Payment Options */}
-                {journey.registrationPrice && (
-                    <div className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100">
-                        <h4 className="font-bold text-neutral-900 text-sm mb-3">Payment Option</h4>
-                        <div className="grid grid-cols-2 gap-3">
-                            <button
-                                onClick={() => handlePaymentTypeChange('full')}
-                                className={`p-3 rounded-xl border text-left transition-all relative ${paymentType === 'full'
-                                    ? 'border-primary-600 bg-primary-50 ring-1 ring-primary-600'
-                                    : 'border-neutral-200 hover:border-neutral-300'
-                                    }`}
-                            >
-                                {paymentType === 'full' && (
-                                    <div className="absolute top-2 right-2 w-4 h-4 bg-primary-600 rounded-full flex items-center justify-center">
-                                        <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
-                                    </div>
-                                )}
-                                <div className="font-bold text-sm text-neutral-900">Pay Full Amount</div>
-                                <div className="text-xs text-neutral-500 mt-1">Complete your booking</div>
-                            </button>
+                <div className="bg-white/5 rounded-2xl p-4 md:p-5 backdrop-blur-md" 
+                     style={{ border: '1px solid rgba(255, 255, 255, 0.1)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                    <h4 className="font-bold text-slate-200 text-sm mb-3">Payment Option</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                        <button
+                            onClick={() => handlePaymentTypeChange('full')}
+                            className={`p-4 rounded-xl border text-left transition-all relative group ${paymentType === 'full'
+                                ? 'border-teal-500/50 bg-teal-500/10 ring-1 ring-teal-500/30'
+                                : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20'
+                                }`}
+                        >
+                            {paymentType === 'full' && (
+                                <div className="absolute -top-2 -right-2 w-5 h-5 bg-[#2dd4bf] rounded-full flex items-center justify-center shadow-lg shadow-teal-500/30 ring-2 ring-[#0f172a]">
+                                    <Check className="w-3 h-3 text-[#0f172a]" strokeWidth={3.5} />
+                                </div>
+                            )}
+                            <div className={`font-bold text-sm mb-1 ${paymentType === 'full' ? 'text-teal-400' : 'text-slate-300'}`}>Pay Full Amount</div>
+                            <div className="text-[11px] text-slate-500 leading-tight">Complete your booking</div>
+                        </button>
 
-                            <button
-                                onClick={() => handlePaymentTypeChange('registration')}
-                                className={`p-3 rounded-xl border text-left transition-all relative ${paymentType === 'registration'
-                                    ? 'border-primary-600 bg-primary-50 ring-1 ring-primary-600'
-                                    : 'border-neutral-200 hover:border-neutral-300'
-                                    }`}
-                            >
-                                {paymentType === 'registration' && (
-                                    <div className="absolute top-2 right-2 w-4 h-4 bg-primary-600 rounded-full flex items-center justify-center">
-                                        <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
-                                    </div>
-                                )}
-                                <div className="font-bold text-sm text-neutral-900">Registration Only</div>
-                                <div className="text-xs text-neutral-500 mt-1">Pay rest on departure</div>
-                            </button>
-                        </div>
-                        {paymentType === 'registration' && (
-                            <div className="mt-3 bg-amber-50 p-3 rounded-lg border border-amber-100 flex gap-2">
-                                <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                                <p className="text-xs text-amber-800 leading-relaxed">
-                                    <strong>Note:</strong> Registration fee is non-refundable. The remaining balance will be collected upon arrival.
-                                </p>
-                            </div>
-                        )}
+                        <button
+                            onClick={() => handlePaymentTypeChange('registration')}
+                            className={`p-4 rounded-xl border text-left transition-all relative group ${paymentType === 'registration'
+                                ? 'border-teal-500/50 bg-teal-500/10 ring-1 ring-teal-500/30'
+                                : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20'
+                                }`}
+                        >
+                            {paymentType === 'registration' && (
+                                <div className="absolute -top-2 -right-2 w-5 h-5 bg-[#2dd4bf] rounded-full flex items-center justify-center shadow-lg shadow-teal-500/30 ring-2 ring-[#0f172a]">
+                                    <Check className="w-3 h-3 text-[#0f172a]" strokeWidth={3.5} />
+                                </div>
+                            )}
+                            <div className={`font-bold text-sm mb-1 ${paymentType === 'registration' ? 'text-teal-400' : 'text-slate-300'}`}>Registration Only</div>
+                            <div className="text-[11px] text-slate-500 leading-tight">Pay rest on departure</div>
+                        </button>
                     </div>
-                )}
+                    {paymentType === 'registration' && (
+                        <div className="mt-3 bg-amber-500/10 p-3 rounded-lg border border-amber-500/20 flex gap-3 items-start">
+                            <Info className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                            <p className="text-xs text-amber-200/80 leading-relaxed font-medium">
+                                <strong className="text-amber-400">Note:</strong> Registration fee is non-refundable. The remaining balance will be collected upon arrival.
+                            </p>
+                        </div>
+                    )}
+                </div>
 
                 {/* Bill Details */}
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100">
-                    <h4 className="font-bold text-neutral-900 text-sm mb-3">Bill details</h4>
+                <div className="bg-white/5 rounded-2xl p-4 md:p-5 backdrop-blur-md" 
+                     style={{ border: '1px solid rgba(255, 255, 255, 0.1)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                    <h4 className="font-bold text-slate-200 text-sm mb-4">Bill details</h4>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                         <div className="flex justify-between items-center text-xs">
-                            <span className="text-neutral-600 flex items-center gap-1">
-                                <ShoppingBag className="w-3 h-3" />
+                            <span className="text-slate-400 flex items-center gap-2">
+                                <ShoppingBag className="w-3.5 h-3.5" />
                                 Base Fare
                             </span>
-                            <span className="text-neutral-900 font-medium">{formatCurrency(bookingData.price || 0)}</span>
+                            <span className="text-slate-200 font-medium tracking-wide">{formatCurrency(bookingData.price || 0)}</span>
                         </div>
 
                         <div className="flex justify-between items-center text-xs">
-                            <span className="text-neutral-600 flex items-center gap-1">
-                                <FileText className="w-3 h-3" />
+                            <span className="text-slate-400 flex items-center gap-2">
+                                <FileText className="w-3.5 h-3.5" />
                                 Taxes & Fees (18% GST)
                             </span>
-                            <span className="text-neutral-900 font-medium">{formatCurrency(bookingData.taxes || 0)}</span>
+                            <span className="text-slate-200 font-medium tracking-wide">{formatCurrency(bookingData.taxes || 0)}</span>
                         </div>
 
                         {bookingData.discount && bookingData.discount > 0 && (
-                            <div className="flex justify-between items-center text-xs text-green-600">
-                                <span className="flex items-center gap-1 font-medium">
+                            <div className="flex justify-between items-center text-xs text-green-400">
+                                <span className="flex items-center gap-2 font-medium">
                                     Coupon Discount
                                 </span>
-                                <span className="font-bold">-{formatCurrency(bookingData.discount)}</span>
+                                <span className="font-bold tracking-wide">-{formatCurrency(bookingData.discount)}</span>
                             </div>
                         )}
 
-                        <div className="h-px bg-neutral-100 my-1"></div>
+                        <div className="h-px bg-white/10 my-2"></div>
 
-                        <div className="flex justify-between items-center text-sm">
-                            <span className="font-bold text-neutral-900">
+                        <div className="flex justify-between items-center">
+                            <span className="font-bold text-slate-100 text-sm">
                                 {paymentType === 'registration' ? 'Payable Now' : 'Grand total'}
                             </span>
-                            <span className="font-bold text-neutral-900">{formatCurrency(bookingData.totalAmount || 0)}</span>
+                            <span className="font-black text-xl text-teal-400 tracking-tight">{formatCurrency(bookingData.totalAmount || 0)}</span>
                         </div>
                         {paymentType === 'registration' && (
-                            <div className="flex justify-between items-center text-xs text-neutral-500 mt-1">
+                            <div className="flex justify-between items-center text-[10px] text-slate-500 mt-1 pl-1">
                                 <span>Balance due later</span>
                                 <span>
                                     {formatCurrency(
@@ -438,88 +448,52 @@ export default function ReviewStep({ journey, bookingData, onBack, onClose, onNe
                 </div>
 
                 {/* Cancellation Policy */}
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-neutral-100 mb-4">
-                    <h4 className="font-bold text-neutral-900 text-sm mb-2 flex items-center gap-2">
-                        <ShieldCheck className="w-4 h-4 text-neutral-400" />
+                <div className="bg-white/5 rounded-2xl p-4 md:p-5 backdrop-blur-md" 
+                     style={{ border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                    <h4 className="font-bold text-slate-200 text-xs mb-2 flex items-center gap-1.5">
+                        <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
                         Cancellation Policy
                     </h4>
-                    <p className="text-xs text-neutral-500 leading-relaxed bg-neutral-50 p-3 rounded-lg border border-neutral-100">
+                    <p className="text-[11px] text-slate-400 leading-relaxed bg-white/5 p-3 rounded-lg border border-white/5">
                         Trip bookings can be cancelled subject to terms. The full booking amount will be refunded upon cancellation, except for the registration fee which is non-refundable.
                     </p>
                 </div>
             </div>
 
             {/* Bottom Action Bar - Fixed Bottom Position */}
-            <div className="bg-white/80 backdrop-blur-md px-6 py-4 pb-8 border-t border-neutral-100 sticky bottom-0 left-0 right-0 z-[100] w-full mt-auto shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
-
-                {/* Mobile Layout */}
-                <div className="flex md:hidden items-center gap-4 max-w-md mx-auto">
+            <div className="px-3 md:px-4 py-3 sticky bottom-0 left-0 right-0 z-[100] w-full mt-auto backdrop-blur-md" 
+                    style={{ background: 'rgba(15, 23, 42, 0.8)', borderTop: '1px solid rgba(92,225,230,0.1)' }}>
+                
+                {/* Unified Layout */}
+                <div className="flex items-center gap-3">
                     <button
                         onClick={onBack}
                         disabled={isProcessing}
-                        className="w-14 h-14 rounded-full border border-neutral-200 bg-white text-neutral-600 flex items-center justify-center hover:bg-neutral-50 hover:border-neutral-300 transition-all active:scale-95 flex-shrink-0 shadow-sm"
-                        aria-label="Go back"
+                        className="h-12 px-5 flex items-center justify-center gap-2 rounded-2xl bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 active:scale-95 transition-all text-sm font-bold"
                     >
-                        <ChevronLeft className="w-6 h-6" />
+                        <ChevronLeft className="w-5 h-5" />
+                        Back
                     </button>
 
                     <button
                         onClick={handlePayment}
                         disabled={isProcessing}
-                        className="flex-1 group relative overflow-hidden bg-primary-600 text-white h-14 rounded-full flex items-center justify-between px-2 pl-6 pr-2 transition-all shadow-[0_8px_30px_rgba(58,111,90,0.3)] hover:shadow-[0_8px_35px_rgba(58,111,90,0.4)] hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-75 disabled:cursor-not-allowed disabled:transform-none"
+                        className="flex-1 text-white font-bold py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-teal-500/20 active:scale-[0.98] text-sm md:text-base group hover:shadow-teal-500/30 overflow-hidden relative disabled:opacity-75 disabled:cursor-not-allowed"
+                        style={{ background: 'linear-gradient(90deg, #2dd4bf 0%, #0d9488 100%)' }}
                     >
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-primary-700 opacity-100"></div>
-
-                        {/* Shine effect */}
-                        <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-shine"></div>
-
-                        <div className="flex flex-col items-start leading-none relative z-10">
-                            <span className="text-[10px] text-primary-100 font-medium tracking-wider uppercase mb-0.5">Total Pay</span>
-                            <span className="text-xl font-bold tracking-tight">{formatCurrency(bookingData.totalAmount || 0)}</span>
-                        </div>
-
-                        <div className="h-10 px-6 rounded-full bg-white text-primary-700 flex items-center gap-2 font-bold text-sm shadow-lg relative z-10 group-hover:scale-105 transition-transform duration-300">
-                            {isProcessing ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                                <>
-                                    Pay Now <ChevronRight className="w-4 h-4 text-primary-600" strokeWidth={3} />
-                                </>
-                            )}
-                        </div>
-                    </button>
-                </div>
-
-                {/* Desktop Layout */}
-                <div className="hidden md:flex items-center justify-between w-full">
-                    <button
-                        onClick={onBack}
-                        disabled={isProcessing}
-                        className="w-12 h-12 rounded-full border border-neutral-200 bg-white text-neutral-600 flex items-center justify-center hover:bg-neutral-50 hover:border-neutral-300 transition-all shadow-sm"
-                    >
-                        <ChevronLeft className="w-5 h-5" />
-                    </button>
-
-                    <div className="flex items-center gap-6 bg-primary-900 rounded-2xl p-2 pr-2 pl-6 shadow-luxury">
-                        <div className="text-right">
-                            <p className="text-[10px] text-primary-200 font-bold uppercase tracking-wider mb-0.5">Total Pay</p>
-                            <p className="text-xl font-black text-white">{formatCurrency(bookingData.totalAmount || 0)}</p>
-                        </div>
-
-                        <button
-                            onClick={handlePayment}
-                            disabled={isProcessing}
-                            className="bg-white text-primary-800 font-bold py-3 px-8 rounded-xl flex items-center gap-2 transition-all hover:shadow-lg active:scale-95 disabled:opacity-75 disabled:cursor-not-allowed"
-                        >
+                        {/* Shine Effect */}
+                        <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-shine"></div>
+                        <span className="relative z-10 flex items-center gap-2">
                             {isProcessing ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />
                             ) : (
                                 <>
-                                    Pay Now <ChevronRight className="w-5 h-5" strokeWidth={2.5} />
+                                    Pay {formatCurrency(bookingData.totalAmount || 0)}
+                                    <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
                                 </>
                             )}
-                        </button>
-                    </div>
+                        </span>
+                    </button>
                 </div>
             </div>
         </div>

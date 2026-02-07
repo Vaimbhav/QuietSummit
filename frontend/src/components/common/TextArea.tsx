@@ -17,8 +17,8 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
                 <textarea
                     ref={ref}
                     className={`
-            w-full px-4 py-3.5 rounded-xl border-2 border-neutral-200 bg-white
-            focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-500
+            w-full px-4 py-3.5 rounded-xl border-2 border-dark-border bg-dark-card text-white
+            focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-300
             hover:border-neutral-300
             disabled:bg-neutral-100 disabled:cursor-not-allowed
             transition-all duration-300 resize-none shadow-sm hover:shadow-md focus:shadow-lg

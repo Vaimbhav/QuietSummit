@@ -103,8 +103,6 @@ export default function PaymentStep({ journey, bookingData, onBack, onClose }: P
                 redirect: false,
                 handler: async function (response: any) {
                     try {
-                        console.log('Payment success callback received', response);
-
                         // Verify payment
                         await verifyPayment({
                             razorpay_order_id: response.razorpay_order_id,
