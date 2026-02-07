@@ -233,7 +233,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         onClick={handleClose}
-                        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[10000]"
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000]"
                     />
 
                     {/* Modal */}
@@ -244,12 +244,16 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
                             transition={{ duration: 0.3, ease: 'easeOut' }}
                             onClick={(e) => e.stopPropagation()}
-                            className="glass-luxury rounded-4xl shadow-luxury-2xl max-w-md w-full p-6 sm:p-8 relative pointer-events-auto border-luxury"
+                            className="rounded-4xl max-w-md w-full p-6 sm:p-8 relative pointer-events-auto"
+                            style={{ background: '#1e2139', border: '2px solid rgba(92,225,230,0.3)', boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(92,225,230,0.1)' }}
                         >
                             {/* Close button */}
                             <button
                                 onClick={handleClose}
-                                className="absolute top-6 right-6 p-2 rounded-full hover:bg-neutral-100 transition-colors"
+                                className="absolute top-6 right-6 p-2 rounded-full transition-colors"
+                                style={{ color: '#B0B7C3' }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(92,225,230,0.1)'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                                 aria-label="Close modal"
                             >
                                 <X className="w-5 h-5" />
@@ -269,10 +273,10 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                     >
                                         <CheckCircle className="w-10 h-10 text-green-600" />
                                     </motion.div>
-                                    <h3 className="text-2xl font-bold text-neutral-900 mb-2">
+                                    <h3 className="text-2xl font-bold mb-2" style={{ color: 'white' }}>
                                         Welcome Back! 🎉
                                     </h3>
-                                    <p className="text-neutral-600">
+                                    <p style={{ color: '#B0B7C3' }}>
                                         Welcome to QuietSummit! Your journey awaits...
                                     </p>
                                 </motion.div>
@@ -290,13 +294,13 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                     >
                                         <Mail className="w-10 h-10 text-blue-600" />
                                     </motion.div>
-                                    <h3 className="text-2xl font-bold text-neutral-900 mb-2">
+                                    <h3 className="text-2xl font-bold mb-2" style={{ color: 'white' }}>
                                         Check Your Email
                                     </h3>
-                                    <p className="text-neutral-600 mb-4">
+                                    <p className="mb-4" style={{ color: '#B0B7C3' }}>
                                         We've sent password reset instructions to {resetEmail}
                                     </p>
-                                    <p className="text-sm text-neutral-500">
+                                    <p className="text-sm" style={{ color: '#B0B7C3' }}>
                                         Redirecting to login...
                                     </p>
                                 </motion.div>
@@ -307,14 +311,15 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
                                             transition={{ delay: 0.1, type: 'spring' }}
-                                            className="w-14 h-14 bg-gradient-to-br from-primary-500 to-accent-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg"
+                                            className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg"
+                                            style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)' }}
                                         >
                                             <Lock className="w-7 h-7 text-white" />
                                         </motion.div>
-                                        <h2 className="text-2xl font-black text-neutral-900 mb-1">
+                                        <h2 className="text-2xl font-black mb-1" style={{ color: 'white' }}>
                                             Welcome Back
                                         </h2>
-                                        <p className="text-neutral-600 text-sm">
+                                        <p className="text-sm" style={{ color: '#B0B7C3' }}>
                                             Enter your credentials to access your account
                                         </p>
                                     </div>
@@ -344,7 +349,10 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute right-4 top-12 text-neutral-500 hover:text-neutral-700"
+                                                className="absolute right-4 top-12 transition-colors"
+                                                style={{ color: '#B0B7C3' }}
+                                                onMouseEnter={(e) => e.currentTarget.style.color = '#5CE1E6'}
+                                                onMouseLeave={(e) => e.currentTarget.style.color = '#B0B7C3'}
                                                 aria-label={showPassword ? 'Hide password' : 'Show password'}
                                             >
                                                 {showPassword ? (
@@ -362,14 +370,18 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                                     type="checkbox"
                                                     checked={rememberMe}
                                                     onChange={(e) => setRememberMe(e.target.checked)}
-                                                    className="w-4 h-4 rounded border-neutral-300"
+                                                    className="w-4 h-4 rounded"
+                                                    style={{ accentColor: '#5CE1E6', borderColor: 'rgba(92,225,230,0.3)' }}
                                                 />
-                                                <span className="text-neutral-600">Remember me</span>
+                                                <span style={{ color: '#B0B7C3' }}>Remember me</span>
                                             </label>
                                             <Link
                                                 to="/forgot-password"
                                                 onClick={() => onClose()}
-                                                className="text-primary-600 hover:text-primary-700 font-semibold transition-colors"
+                                                className="font-semibold transition-colors"
+                                                style={{ color: '#5CE1E6' }}
+                                                onMouseEnter={(e) => e.currentTarget.style.color = '#4A90E2'}
+                                                onMouseLeave={(e) => e.currentTarget.style.color = '#5CE1E6'}
                                             >
                                                 Forgot password?
                                             </Link>
@@ -391,6 +403,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                             size="lg"
                                             className="w-full"
                                             isLoading={isLoading}
+                                            style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#0a0e27', fontWeight: '700', boxShadow: '0 10px 24px rgba(92,225,230,0.3)' }}
                                         >
                                             {isLoading ? 'Logging in...' : 'Login'}
                                         </Button>
@@ -399,17 +412,28 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                     <div className="mt-5">
                                         <div className="relative">
                                             <div className="absolute inset-0 flex items-center">
-                                                <div className="w-full border-t border-neutral-200"></div>
+                                                <div className="w-full border-t" style={{ borderColor: 'rgba(92,225,230,0.2)' }}></div>
                                             </div>
                                             <div className="relative flex justify-center text-sm">
-                                                <span className="px-4 bg-white text-neutral-500">Or continue with</span>
+                                                <span className="px-4" style={{ background: '#1e2139', color: '#B0B7C3' }}>Or continue with</span>
                                             </div>
                                         </div>
 
                                         <button
                                             onClick={handleGoogleLogin}
                                             type="button"
-                                            className="mt-4 w-full flex items-center justify-center gap-3 px-5 py-2.5 bg-white border border-neutral-200 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:border-neutral-300 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 font-medium text-neutral-700"
+                                            className="mt-4 w-full flex items-center justify-center gap-3 px-5 py-2.5 rounded-xl transition-all duration-200 font-medium"
+                                            style={{ background: '#0a0e27', border: '2px solid rgba(92,225,230,0.3)', color: 'white', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.background = 'rgba(92,225,230,0.1)'
+                                                e.currentTarget.style.borderColor = '#5CE1E6'
+                                                e.currentTarget.style.transform = 'translateY(-2px)'
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.background = '#0a0e27'
+                                                e.currentTarget.style.borderColor = 'rgba(92,225,230,0.3)'
+                                                e.currentTarget.style.transform = 'translateY(0)'
+                                            }}
                                         >
                                             <svg className="w-5 h-5" viewBox="0 0 24 24">
                                                 <path
@@ -434,7 +458,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                     </div>
 
                                     <div className="mt-5 text-center">
-                                        <p className="text-sm text-neutral-500 mb-3">
+                                        <p className="text-sm mb-3" style={{ color: '#B0B7C3' }}>
                                             Not a member yet?
                                         </p>
                                         <Button
@@ -446,6 +470,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                             variant="outline"
                                             size="md"
                                             className="w-full"
+                                            style={{ borderColor: '#5CE1E6', color: '#5CE1E6' }}
                                         >
                                             Become a Quiet Believer
                                         </Button>
@@ -460,7 +485,10 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                             setError(null)
                                             setResetEmail('')
                                         }}
-                                        className="absolute top-6 left-6 p-2 rounded-full hover:bg-neutral-100 transition-colors"
+                                        className="absolute top-6 left-6 p-2 rounded-full transition-colors"
+                                        style={{ color: '#B0B7C3' }}
+                                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(92,225,230,0.1)'}
+                                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                                         aria-label="Back to login"
                                     >
                                         <ArrowLeft className="w-5 h-5" />
@@ -471,14 +499,15 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
                                             transition={{ delay: 0.1, type: 'spring' }}
-                                            className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
+                                            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
+                                            style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)' }}
                                         >
                                             <Mail className="w-8 h-8 text-white" />
                                         </motion.div>
-                                        <h2 className="text-3xl font-black text-neutral-900 mb-2">
+                                        <h2 className="text-3xl font-black mb-2" style={{ color: 'white' }}>
                                             Reset Password
                                         </h2>
-                                        <p className="text-neutral-600 text-sm">
+                                        <p className="text-sm" style={{ color: '#B0B7C3' }}>
                                             Enter your email and we'll send you a link to reset your password
                                         </p>
                                     </div>
@@ -512,12 +541,13 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                                             size="lg"
                                             className="w-full"
                                             isLoading={isLoading}
+                                            style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#0a0e27', fontWeight: '700', boxShadow: '0 10px 24px rgba(92,225,230,0.3)' }}
                                         >
                                             {isLoading ? 'Sending...' : 'Send Reset Link'}
                                         </Button>
                                     </form>
 
-                                    <p className="mt-6 text-center text-sm text-neutral-600">
+                                    <p className="mt-6 text-center text-sm" style={{ color: '#B0B7C3' }}>
                                         Check your email for a password reset link. You can close this dialog.
                                     </p>
                                 </>

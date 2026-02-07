@@ -156,13 +156,13 @@ export default function SignUpForm() {
                 className="text-center py-12"
             >
                 <div className="text-6xl mb-6">🎉</div>
-                <h3 className="text-3xl font-bold text-neutral-900 mb-4">
+                <h3 className="text-3xl font-bold mb-4" style={{ color: 'white' }}>
                     Welcome to the QuietSummit Community!
                 </h3>
-                <p className="text-lg text-neutral-600 mb-8">
+                <p className="text-lg mb-8" style={{ color: '#B0B7C3' }}>
                     Thank you for becoming a Quiet Believer. We'll keep you updated on our latest journeys and exclusive offers.
                 </p>
-                <Button onClick={() => setIsSuccess(false)}>
+                <Button onClick={() => setIsSuccess(false)} style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#0a0e27', fontWeight: '600' }}>
                     Sign Up Another Person
                 </Button>
             </motion.div>
@@ -176,46 +176,82 @@ export default function SignUpForm() {
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-6"
         >
-            <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="flex gap-4 mb-8 justify-center">
                 <div
                     onClick={() => setIsHostMode(false)}
-                    className={`cursor-pointer relative p-6 rounded-2xl border-2 transition-all duration-300 ${!isHostMode
-                        ? 'border-primary-600 bg-primary-50 ring-1 ring-primary-600 shadow-lg scale-[1.02]'
-                        : 'border-neutral-100 bg-white hover:border-primary-200 hover:shadow-md opacity-80 hover:opacity-100'
-                        }`}
+                    className="cursor-pointer relative p-6 rounded-2xl border-2 transition-all duration-300 w-40 aspect-square flex flex-col items-center justify-center"
+                    style={!isHostMode ? {
+                        borderColor: '#5CE1E6',
+                        background: 'rgba(92,225,230,0.1)',
+                        boxShadow: '0 0 20px rgba(92,225,230,0.2), 0 8px 16px rgba(0,0,0,0.3)'
+                    } : {
+                        borderColor: 'rgba(92,225,230,0.2)',
+                        background: '#1e2139',
+                        opacity: 0.7
+                    }}
+                    onMouseEnter={(e) => {
+                        if (isHostMode) {
+                            e.currentTarget.style.opacity = '1'
+                            e.currentTarget.style.borderColor = 'rgba(92,225,230,0.4)'
+                        }
+                    }}
+                    onMouseLeave={(e) => {
+                        if (isHostMode) {
+                            e.currentTarget.style.opacity = '0.7'
+                            e.currentTarget.style.borderColor = 'rgba(92,225,230,0.2)'
+                        }
+                    }}
                 >
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 text-2xl ${!isHostMode ? 'bg-primary-100' : 'bg-neutral-100'}`}>
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center mb-3 text-3xl" style={{ background: !isHostMode ? 'rgba(92,225,230,0.2)' : 'rgba(255,255,255,0.05)' }}>
                         🌏
                     </div>
-                    <div className="absolute top-4 right-4">
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${!isHostMode ? 'border-primary-600 bg-primary-600' : 'border-neutral-300'}`}>
+                    <div className="absolute top-3 right-3">
+                        <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center" style={!isHostMode ? { borderColor: '#5CE1E6', background: '#5CE1E6' } : { borderColor: 'rgba(176,183,195,0.3)' }}>
                             {(!isHostMode) && <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
                         </div>
                     </div>
-                    <h3 className={`font-bold text-lg mb-1 ${!isHostMode ? 'text-primary-900' : 'text-neutral-700'}`}>Member</h3>
-                    <p className={`text-sm leading-relaxed ${!isHostMode ? 'text-primary-700' : 'text-neutral-500'}`}>
-                        I want to discover and book unique journeys.
+                    <h3 className="font-bold text-base mb-1 text-center" style={{ color: !isHostMode ? '#5CE1E6' : '#B0B7C3' }}>Member</h3>
+                    <p className="text-xs leading-relaxed text-center" style={{ color: !isHostMode ? 'white' : '#B0B7C3' }}>
+                        Discover & book journeys
                     </p>
                 </div>
 
                 <div
                     onClick={() => setIsHostMode(true)}
-                    className={`cursor-pointer relative p-6 rounded-2xl border-2 transition-all duration-300 ${isHostMode
-                        ? 'border-primary-600 bg-primary-50 ring-1 ring-primary-600 shadow-lg scale-[1.02]'
-                        : 'border-neutral-100 bg-white hover:border-primary-200 hover:shadow-md opacity-80 hover:opacity-100'
-                        }`}
+                    className="cursor-pointer relative p-6 rounded-2xl border-2 transition-all duration-300 w-40 aspect-square flex flex-col items-center justify-center"
+                    style={isHostMode ? {
+                        borderColor: '#5CE1E6',
+                        background: 'rgba(92,225,230,0.1)',
+                        boxShadow: '0 0 20px rgba(92,225,230,0.2), 0 8px 16px rgba(0,0,0,0.3)'
+                    } : {
+                        borderColor: 'rgba(92,225,230,0.2)',
+                        background: '#1e2139',
+                        opacity: 0.7
+                    }}
+                    onMouseEnter={(e) => {
+                        if (!isHostMode) {
+                            e.currentTarget.style.opacity = '1'
+                            e.currentTarget.style.borderColor = 'rgba(92,225,230,0.4)'
+                        }
+                    }}
+                    onMouseLeave={(e) => {
+                        if (!isHostMode) {
+                            e.currentTarget.style.opacity = '0.7'
+                            e.currentTarget.style.borderColor = 'rgba(92,225,230,0.2)'
+                        }
+                    }}
                 >
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 text-2xl ${isHostMode ? 'bg-primary-100' : 'bg-neutral-100'}`}>
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center mb-3 text-3xl" style={{ background: isHostMode ? 'rgba(92,225,230,0.2)' : 'rgba(255,255,255,0.05)' }}>
                         🏡
                     </div>
-                    <div className="absolute top-4 right-4">
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isHostMode ? 'border-primary-600 bg-primary-600' : 'border-neutral-300'}`}>
+                    <div className="absolute top-3 right-3">
+                        <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center" style={isHostMode ? { borderColor: '#5CE1E6', background: '#5CE1E6' } : { borderColor: 'rgba(176,183,195,0.3)' }}>
                             {(isHostMode) && <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
                         </div>
                     </div>
-                    <h3 className={`font-bold text-lg mb-1 ${isHostMode ? 'text-primary-900' : 'text-neutral-700'}`}>Host</h3>
-                    <p className={`text-sm leading-relaxed ${isHostMode ? 'text-primary-700' : 'text-neutral-500'}`}>
-                        I want to list my property and host travelers.
+                    <h3 className="font-bold text-base mb-1 text-center" style={{ color: isHostMode ? '#5CE1E6' : '#B0B7C3' }}>Host</h3>
+                    <p className="text-xs leading-relaxed text-center" style={{ color: isHostMode ? 'white' : '#B0B7C3' }}>
+                        List & host travelers
                     </p>
                 </div>
             </div>
@@ -264,6 +300,7 @@ export default function SignUpForm() {
                     setPhoneCountry(countryCode)
                 }}
                 defaultCountry="IN"
+                darkMode={true}
             />
 
             <div className="grid md:grid-cols-2 gap-6">
@@ -303,7 +340,7 @@ export default function SignUpForm() {
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-3">
+                <label className="block text-sm font-medium mb-3" style={{ color: 'white' }}>
                     What interests you? (Select all that apply)
                 </label>
                 <div className="grid md:grid-cols-2 gap-3">
@@ -313,9 +350,10 @@ export default function SignUpForm() {
                                 type="checkbox"
                                 value={interest}
                                 {...register('interests', { required: 'Please select at least one interest' })}
-                                className="w-5 h-5 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
+                                className="w-5 h-5 rounded border-[#5CE1E6]/30 bg-[#1e2139] text-[#5CE1E6] focus:ring-[#5CE1E6]/50"
+                                style={{ accentColor: '#5CE1E6' }}
                             />
-                            <span className="text-neutral-700 group-hover:text-primary-600 transition-colors">
+                            <span className="group-hover:text-[#5CE1E6] transition-colors" style={{ color: '#B0B7C3' }}>
                                 {interest}
                             </span>
                         </label>
@@ -327,34 +365,36 @@ export default function SignUpForm() {
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'white' }}>
                     How did you hear about us?
                 </label>
                 <select
                     {...register('howDidYouHear', { required: 'Please select an option' })}
-                    className="w-full px-4 py-3 pr-12 rounded-lg border-2 border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-semibold appearance-none cursor-pointer shadow-sm hover:shadow-md hover:border-primary-400 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_1rem] bg-no-repeat"
+                    className="w-full px-4 py-3 pr-12 rounded-lg border-2 focus:outline-none focus:ring-2 font-semibold appearance-none cursor-pointer shadow-sm hover:shadow-md transition-all bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCw2TDgsMTBMMTIsNiIgc3Ryb2tlPSIjNUNFMUU2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-[center_right_1rem] bg-no-repeat"
+                    style={{ background: '#1e2139', borderColor: 'rgba(92,225,230,0.3)', color: 'white' }}
                 >
-                    <option value="">Select an option</option>
-                    <option value="social-media">Social Media</option>
-                    <option value="friend">Friend or Family</option>
-                    <option value="search-engine">Search Engine</option>
-                    <option value="blog">Travel Blog</option>
-                    <option value="other">Other</option>
+                    <option value="" style={{ background: '#1e2139', color: 'white' }}>Select an option</option>
+                    <option value="social-media" style={{ background: '#1e2139', color: 'white' }}>Social Media</option>
+                    <option value="friend" style={{ background: '#1e2139', color: 'white' }}>Friend or Family</option>
+                    <option value="search-engine" style={{ background: '#1e2139', color: 'white' }}>Search Engine</option>
+                    <option value="blog" style={{ background: '#1e2139', color: 'white' }}>Travel Blog</option>
+                    <option value="other" style={{ background: '#1e2139', color: 'white' }}>Other</option>
                 </select>
                 {errors.howDidYouHear && (
                     <p className="mt-1 text-sm text-red-600">{errors.howDidYouHear.message}</p>
                 )}
             </div>
 
-            <div className="bg-primary-50 p-4 rounded-lg">
+            <div className="p-4 rounded-lg" style={{ background: 'rgba(92,225,230,0.05)', border: '1px solid rgba(92,225,230,0.2)' }}>
                 <label className="flex items-start space-x-3 cursor-pointer">
                     <input
                         type="checkbox"
                         {...register('subscribeToNewsletter')}
                         defaultChecked={true}
-                        className="mt-1 w-5 h-5 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
+                        className="mt-1 w-5 h-5 rounded focus:ring-[#5CE1E6]/50"
+                        style={{ accentColor: '#5CE1E6', borderColor: 'rgba(92,225,230,0.3)', background: '#1e2139' }}
                     />
-                    <span className="text-sm text-neutral-700">
+                    <span className="text-sm" style={{ color: '#B0B7C3' }}>
                         I agree to receive updates, travel tips, and exclusive offers from QuietSummit. You can unsubscribe at any time.
                     </span>
                 </label>
@@ -383,6 +423,7 @@ export default function SignUpForm() {
                 size="lg"
                 className="w-full"
                 isLoading={isSubmitting}
+                style={{ background: 'linear-gradient(135deg, #5CE1E6 0%, #4A90E2 100%)', color: '#0a0e27', fontWeight: '700', boxShadow: '0 10px 24px rgba(92,225,230,0.3)' }}
             >
                 {isSubmitting ? 'Creating Your Account...' : (isHostMode ? 'Start Hosting' : 'Start Your Journey')}
             </Button>
@@ -390,10 +431,10 @@ export default function SignUpForm() {
             <div className="mt-6">
                 <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-neutral-200"></div>
+                        <div className="w-full border-t" style={{ borderColor: 'rgba(92,225,230,0.2)' }}></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                        <span className="px-4 bg-white text-neutral-500">Or sign up with</span>
+                        <span className="px-4" style={{ background: '#0a0e27', color: '#B0B7C3' }}>Or sign up with</span>
                     </div>
                 </div>
 
@@ -403,7 +444,18 @@ export default function SignUpForm() {
                         window.location.href = googleAuthUrl
                     }}
                     type="button"
-                    className="mt-6 w-full flex items-center justify-center gap-3 px-6 py-3 border border-neutral-300 rounded-xl hover:bg-neutral-50 transition-colors font-semibold text-neutral-700"
+                    className="mt-6 w-full flex items-center justify-center gap-3 px-6 py-3 border rounded-xl transition-all font-semibold"
+                    style={{ background: '#1e2139', borderColor: 'rgba(92,225,230,0.3)', color: 'white', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(92,225,230,0.1)'
+                        e.currentTarget.style.borderColor = '#5CE1E6'
+                        e.currentTarget.style.transform = 'translateY(-2px)'
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.background = '#1e2139'
+                        e.currentTarget.style.borderColor = 'rgba(92,225,230,0.3)'
+                        e.currentTarget.style.transform = 'translateY(0)'
+                    }}
                 >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path

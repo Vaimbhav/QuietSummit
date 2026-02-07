@@ -12,22 +12,21 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         return (
             <div className="w-full">
                 {label && (
-                    <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'white' }}>
                         {label}
                     </label>
                 )}
                 <div className="relative">
                     {leftIcon && (
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#B0B7C3' }}>
                             {leftIcon}
                         </div>
                     )}
                     <input
                         ref={ref}
                         className={`
-              w-full px-4 py-3.5 rounded-xl border-2 border-dark-border bg-dark-card text-white
-              focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-300
-              hover:border-neutral-300
+              w-full px-4 py-3.5 rounded-xl border-2 text-white
+              focus:outline-none focus:ring-2
               disabled:bg-neutral-100 disabled:cursor-not-allowed
               transition-all duration-300 shadow-sm hover:shadow-md focus:shadow-lg
               ${leftIcon ? 'pl-11' : ''}
@@ -35,10 +34,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               ${error ? 'border-red-400 focus:ring-red-400 focus:border-red-500' : ''}
               ${className}
             `}
+                        style={!error ? {
+                            borderColor: 'rgba(92,225,230,0.3)',
+                            background: '#1e2139',
+                            ...(props.style || {})
+                        } : { background: '#1e2139', ...(props.style || {}) }}
                         {...props}
                     />
                     {rightIcon && (
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400">
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: '#B0B7C3' }}>
                             {rightIcon}
                         </div>
                     )}

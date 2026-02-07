@@ -31,23 +31,21 @@ export default function Button({
             hover:bg-primary-700
         `,
         secondary: `
-            bg-white
-            text-neutral-900
-            border border-neutral-200
+            bg-transparent
+            text-white
+            border-2
             shadow-sm
             hover:shadow-md
-            hover:bg-neutral-50
         `,
         outline: `
             bg-transparent
-            border-2 border-primary-600
-            text-primary-600 
-            hover:bg-primary-50
+            border-2
+            hover:bg-[rgba(92,225,230,0.1)]
         `,
         ghost: `
             bg-transparent
-            text-primary-600 
-            hover:bg-primary-50
+            text-[#5CE1E6]
+            hover:bg-[rgba(92,225,230,0.1)]
         `,
         luxury: `
             bg-white
